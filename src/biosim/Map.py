@@ -9,9 +9,6 @@ class Map:
     Map of the islands biography
     """
     def __init__(self):
-        """
-
-        """
 
     def get_map(self):
         """

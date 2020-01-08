@@ -21,6 +21,7 @@ class Ocean(Biography):
 
     pass
 
+
 class Mountain:
     """
     Island area type that is impassable (passive) in simulation
@@ -30,6 +31,7 @@ class Mountain:
     """
 
     """
+
 
 class Desert(Biography):
     """
@@ -41,6 +43,7 @@ class Desert(Biography):
 
     """
 
+
 class Savannah(Biography):
     """
     Area type that holds some fodder, but can suffer overgrazing
@@ -48,7 +51,7 @@ class Savannah(Biography):
     def __init__(self, f_max_savannah, alpha):
         super().__init__(self, f_max)
     """
-
+    
     """
     def fodder_growth(self, alpha):
         """
