@@ -74,3 +74,5 @@ class Jungle(Geography):
         :return:
         """
 
+    def fodder_amount(self):
+        pass
