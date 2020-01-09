@@ -11,6 +11,7 @@ class GeographyTest:
     Tests for the geography class where we work with the different
     landscapes.
     """
+
     def test_ocean(self):
         """
         Tests if ocean is an instance
