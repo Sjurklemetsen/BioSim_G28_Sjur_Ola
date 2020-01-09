@@ -5,6 +5,7 @@ __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
 from src.biosim.Geography import *
 
+
 class Map:
     """
     Map of the islands biography
@@ -12,47 +13,54 @@ class Map:
     as values
     """
 
-    pop_count = 0
-    @classmethod
-    def add_population(cls):
-        cls.pop_count += 1
-
-    def __init__(self):
-        self.o = Geography.Ocean()
-        self.m = Geography.Mountain()
-        self.d = Geography.Desert()
-        self.s = Geography.Savannah()
-        self.j = Geography.Jungle()
+    def __init__(self, area_type):
+        self.o = Ocean()
+        self.m = Mountain()
+        self.d = Desert()
+        self.s = Savannah()
+        self.j = Jungle()
+        self.area_type = area_type
+        string = self.area_type.replace('\n', '')
+        self.area_list = list(string)
+        self.lines = len(self.area_type.split('\n'))
+        self.rows = int(len(self.area_list) / self.lines)
+        self.coordinates = [(x, y) for x in range(self.lines)
+                            for y in range(self.rows)]
+        self.cells = {}
 
     def create_map(self):
-        string = area_type.replace('\n', '')
-        area_list = list(string)
-        lines = len(area_type.split('\n'))
-        rows = int(len(area_list) / lines)
-        coordinates = [(x, y) for x in range(lines) for y in range(rows)]
-
-        for i in area_list:
+        for i in self.area_list:
             if i == 'O':
-                area_list[i] = self.o
+                self.area_list[i] = self.o
             elif i == 'M':
-                area_list[i] == self.m
+                self.area_list[i] == self.m
             elif i == 'D':
-                area_list[i] = self.d
+                self.area_list[i] = self.d
             elif i == 'S':
-                area_list[i] = self.s
+                self.area_list[i] = self.s
             else:
-                area_list[i] = self.j
+                self.area_list[i] = self.j
 
-        self.cells = {}
-        for i in area_list:
-            self.cells[coordinates[i]] = area_list[i]
-
-    def add_population(self):
+        for i in self.area_list:
+            self.cells[self.coordinates[i]] = self.area_list[i]
+        return self.cells
 
 
+if __name__ == "__main__":
+    map_string = """\
+                  OOOOOOOOOOOOOOOOOOOOO
+                  OOOOOOOOSMMMMJJJJJJJO 
+                  OSSSSSJJJJMMJJJJJJJOO
+                  OSSSSSSSSSMMJJJJJJOOO
+                  OSSSSSJJJJJJJJJJJJOOO
+                  OSSSSSJJJDDJJJSJJJOOO
+                  OSSJJJJJDDDJJJSSSSOOO
+                  OOSSSSJJJDDJJJSOOOOOO
+                  OSSSJJJJJDDJJJJJJJOOO
+                  OSSSSJJJJDDJJJJOOOOOO
+                  OOSSSSJJJJJJJJOOOOOOO
+                  OOOSSSSJJJJJJJOOOOOOO
+                  OOOOOOOOOOOOOOOOOOOOO"""
 
-
-
-
-
-
+    test_map = Map(map_string)
+    print(test_map.create_map())
