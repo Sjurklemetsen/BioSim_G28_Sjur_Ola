@@ -4,15 +4,16 @@ __author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
 __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
 
-class Biography:
+class Geography:
     """
     Biography of the whole island
     """
+
     def __init__(self, f_max):
         pass
 
 
-class Ocean(Biography):
+class Ocean(Geography):
     """
     Island area type that is impassable (passive) in simulation
     """
@@ -33,7 +34,7 @@ class Mountain:
     """
 
 
-class Desert(Biography):
+class Desert(Geography):
     """
     Area type that holds no fodder, but animals can inhabit the cells
     """
@@ -44,7 +45,7 @@ class Desert(Biography):
     """
 
 
-class Savannah(Biography):
+class Savannah(Geography):
     """
     Area type that holds some fodder, but can suffer overgrazing
     """
@@ -61,7 +62,7 @@ class Savannah(Biography):
         """
 
 
-class Jungle(Biography):
+class Jungle(Geography):
     """
     Area type that holds alot of fodder snd replenishes fodder to max each year.
     """
