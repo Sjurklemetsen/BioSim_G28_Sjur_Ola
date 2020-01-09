@@ -19,7 +19,6 @@ class Ocean(Geography):
     """
     def __init__(self, f_max):
         super().__init__(self, f_max)
-
     pass
 
 
@@ -64,7 +63,7 @@ class Savannah(Geography):
 
 class Jungle(Geography):
     """
-    Area type that holds alot of fodder snd replenishes fodder to max each year.
+    Area type that holds a lot of fodder snd replenishes fodder to max each year.
     """
     def __init__(self, f_max_jungle):
         super().__init__(self, f_max)
