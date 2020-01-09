@@ -9,6 +9,7 @@ class Map:
     Map of the islands biography
     """
     def __init__(self):
+        pass
 
     def get_map(self):
         """
@@ -16,18 +17,17 @@ class Map:
         as values
         :return:
         """
+        pass
 
     def new_fodder_savannah(self):
         """
         Savannah fodder grows according to its own formula
         :return:
         """
+        pass
     def new_fodder_jungle(self):
         """
         fodder in jungle replenishes to full
         :return:
         """
-
-
-
-
+        pass
