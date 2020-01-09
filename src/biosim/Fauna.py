@@ -10,13 +10,25 @@ class Fauna:
     """
     Class for all the animals in the fauna.
     """
-    @classmethod
-    def birth_weight(cls):
-        return np.random.normal(cls.w_birth, cls.sigma_birth)
+    w_birth = None
+    sigma_birth = None
+    beta = None
+    eta = None
+    a_half = None
+    phi_age = None
+    w_half = None
+    phi_weight = None
+    mu = None
+    lamda = None
+    gamma = None
+    zeta = None
+    xi = None
+    omega = None
+    F = None
 
     def __init__(self):
         self.age = 0
-        self.weight = self.birth_weight()
+        self.weight = np.random.normal(self.w_birth, self.sigma_birth)
 
     def age(self):
         """
