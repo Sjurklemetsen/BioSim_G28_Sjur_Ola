@@ -3,9 +3,9 @@
 __author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
 __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
-from src.biosim.Geography import *
 import math
 import random as rd
+import numpy as np
 
 
 class Fauna:
@@ -64,14 +64,13 @@ class Fauna:
             return False
 
     def __init__(self, age=None, weight=None):
+        self.age = age
+        self.weight = weight
+
         if age is None:
             self.age = 0
-        else:
-            self.age = age
         if weight is None:
             self.weight = np.random.normal(self.w_birth, self.sigma_birth)
-        else:
-            self.weight = weight
 
     def aging(self):
         """
@@ -80,12 +79,21 @@ class Fauna:
         """
         self.age += 1
 
+    def age(self):
+        """
+        :return: Age of the animal
+        """
+        return self.age
+
     def weight_decrease(self):
         """
         The weight of the animal decrease for each year
         :return:
         """
         self.weight -= self.eta * self.weight
+
+    def animal_weight(self):
+        return self.weight
 
     def birth(self):
         """
@@ -112,9 +120,14 @@ class Herbivore(Fauna):
     F = 10.0
 
     def __init__(self):
-        pass
         super().__init__(self)
-        pass
+        self.age = age
+        self.weight = weight
+
+        if age is None:
+            self.age = 0
+        if weight is None:
+            self.weight = np.random.normal(self.w_birth, self.sigma_birth)
 
     def eat(self):
         """
@@ -124,7 +137,8 @@ class Herbivore(Fauna):
         :return:
         """
 
-        self.weight += self.beta * 
+        "self.weight += self.beta *"
+        pass
 
 
 class Carnivore(Fauna):
@@ -147,6 +161,13 @@ class Carnivore(Fauna):
 
     def __init__(self):
         super().__init__(self)
+        self.age = age
+        self.weight = weight
+        if age is None:
+            self.age = 0
+
+        if weight is None:
+            self.weight = np.random.normal(self.w_birth, self.sigma_birth)
 
     def eat(self):
         """
