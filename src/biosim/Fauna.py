@@ -3,7 +3,7 @@
 __author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
 __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
-import numpy as np
+from src.biosim.Geography import *
 import math
 import random as rd
 
@@ -51,10 +51,9 @@ class Fauna:
         return rd.random() < prob_move
 
     @property
-    def death(self):
+    def check_death(self):
         """
         Function that checks if the animal is dead or not
-        Lag funksjon som fjerner dyr fra cellene hvis True ####
         :return: Boolean expression
         """
         if self.fitness == 0:
@@ -64,9 +63,15 @@ class Fauna:
         else:
             return False
 
-    def __init__(self):
-        self.age = 0
-        self.weight = np.random.normal(self.w_birth, self.sigma_birth)
+    def __init__(self, age=None, weight=None):
+        if age is None:
+            self.age = 0
+        else:
+            self.age = age
+        if weight is None:
+            self.weight = np.random.normal(self.w_birth, self.sigma_birth)
+        else:
+            self.weight = weight
 
     def aging(self):
         """
@@ -114,12 +119,12 @@ class Herbivore(Fauna):
     def eat(self):
         """
         The herbivore is eating if its placed in a jungle or savannah cell
-        The fodder decrease when a animale eat
+        The fodder decrease when a animal eat
         weight update
         :return:
         """
 
-        self.weight += self.beta * fodder
+        self.weight += self.beta * 
 
 
 class Carnivore(Fauna):
@@ -152,9 +157,3 @@ class Carnivore(Fauna):
         :return:
         """
         pass
-
-    """
-    Skriv funskjon som fjerner dyr 
-    Skriv funskjon som teller antall dyr i en celle 
-    
-    """
