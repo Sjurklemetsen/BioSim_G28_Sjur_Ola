@@ -3,11 +3,21 @@
 __author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
 __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
+from src.biosim import Fauna as fa
+
 
 class FaunaTest:
     """
-    Tests for the fauna class.
+    Tests for Fauna class.
     """
+
+    def test_fitness(self):
+        """
+        tests if the fitness returns a boolean expression
+        :return: bool
+        """
+        a = fa.Fauna()
+        assert isinstance(a.fitness(), int)
 
     def test_age(self):
         """
@@ -17,14 +27,18 @@ class FaunaTest:
 
         :return:
         """
-        pass
+        h = fa.Herbivore()
+        assert h.age() == 0
+        assert isinstance(h.age(), int)
 
     def test_weight(self):
         """
-        Test that an animal looses weight each year
+        Tests if age on an animal
         :return:
         """
-        pass
+        f = fa.Fauna(weight=10)
+        w = f.animal_weight()
+        assert w == 10
 
     def test_migration(self):
         """
