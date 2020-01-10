@@ -41,7 +41,7 @@ class Fauna:
                         ))
 
     @property
-    def migration(self):
+    def check_migration(self):
         """
         Method that check if the animal is ready to move to another cell
         Lag funksjon som flytter dyr fra en celle til en annen hvis True ####
@@ -132,7 +132,7 @@ class Carnivore(Fauna):
     w_half = 4.0
     phi_weight = 0.4
     mu = 0.4
-    lamda = 1.0
+    landa = 1.0
     gamma = 0.8
     zeta = 3.5
     xi = 1.1

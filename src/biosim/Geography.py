@@ -3,15 +3,23 @@
 __author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
 __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
+from biosim.Fauna import *
 
 class Geography:
     """
     Biography of the whole island
     """
-    f_max = None
 
     def __init__(self, f_max):
         pass
+
+    def migration(self):
+        if Fauna.check_migration() is True:
+            pass
+        pass
+
+
+
 
 
 class Ocean(Geography):
@@ -74,15 +82,16 @@ class Jungle(Geography):
     """
     f_max = 800
 
-    def __init__(self, f_max_jungle):
+    def __init__(self, f_max):
         super().__init__(self, f_max)
+        self.fodder = f_max
 
     def fodder_replenish(self):
         """
         Replenishes fodder each year
         :return:
         """
-        pass
-    
+        self.fodder = f_max
+
     def fodder_amount(self):
-        pass
+        return self.fodder
