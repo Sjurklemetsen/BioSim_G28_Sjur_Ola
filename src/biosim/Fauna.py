@@ -12,7 +12,7 @@ class Fauna:
     """
     Class for an animal in the fauna
     """
-    parameters = {
+    p = {
         'w_birth': None,
         'sigma_birth': None,
         'beta': None,
@@ -40,7 +40,8 @@ class Fauna:
         if age is None:
             self.age = 0
         if weight is None:
-            self.weight = np.random.normal(self.w_birth, self.sigma_birth)
+            self.weight = np.random.normal(self.p['w_birth'],
+                                           self.p['sigma_birth'])
 
     def aging(self):
         """
@@ -55,22 +56,28 @@ class Fauna:
         The weight of the animal decrease for each year
         :return:
         """
-        self.weight -= self.eta * self.weight
+        self.weight -= self.p['eta'] * self.weight
         self.update_fitness()
+
+    def get_weight(self):
+        """
+        :return: The weight of the animal: float
+        """
+        return self.weight
 
     def update_fitness(self):
         """
-        Update the fitness of an animal based on the new age and weight
-        :return:
+        Update the fitness of the animal based on the new age and weight
+        :return: New updated value: float
         """
         if self.weight <= 0:
-            self.fitness = 0
+            return 0
         else:
-            self.fitness = (1 / (1 + math.exp(
-                self.phi_age * (self.age - self.a_half))) * 1 / (
-                    1 / (1 + math.exp(
-                        - self.phi_weight(self.weight - self.w_half)))
-                            ))
+            self.fitness = 1 / (1 + np.exp(self.p['phi_age'] * (
+                self.age - self.p['a_half']
+                    ))) * 1 / (1 + np.exp(-self.p['phi_weight'] * (
+                        self.weight - self.p['w_half'])))
+        return self.fitness
 
     def check_death(self):
         """
@@ -79,7 +86,7 @@ class Fauna:
         """
         if self.fitness == 0:
             return True
-        elif rd.random() < self.omega * (1 - self.fitness):
+        elif rd.random() < self.p['omega'] * (1 - self.fitness):
             return True
         else:
             return False
@@ -89,7 +96,7 @@ class Fauna:
         Method that check if the animal is ready to move to another cell
         :return: Boolean expression
         """
-        prob_move = self.mu * self.fitness
+        prob_move = self.p['mu'] * self.fitness
         return rd.random() < prob_move
 
     def check_birth(self, n_animals):
@@ -98,9 +105,9 @@ class Fauna:
         :param n_animals:
         :return: Boolean expression
         """
-        probability = min(1, self.gamma * self.fitness * (n_animals - 1))
+        probability = min(1, self.p['gamma'] * self.fitness * (n_animals - 1))
 
-        if self.weight < self.zeta * (self.w_birth + self.sigma_birth):
+        if self.weight < self.p['zeta'] * (self.p['w_birth'] + self.p['sigma_birth']):
             return False
         if rd.random() <= probability:
             return True
@@ -109,7 +116,7 @@ class Fauna:
 
 
 class Herbivore(Fauna):
-    parameters = {
+    p = {
         "w_birth": 8.0,
         "sigma_birth": 1.5,
         "beta": 0.9,
@@ -127,25 +134,20 @@ class Herbivore(Fauna):
         "F": 10.0,
     }
 
-    def __init__(self, age=None, weight=None):
-        super().__init__(self)
-        pass
-    pass
+    def __init__(self, age, weight):
+        super().__init__(age, weight)
 
     def eat(self, fodder):
         """
-        The herbivore is eating if its placed in a jungle or savannah cell
-        The fodder decrease when a animal eat
-        weight update
+        The herbivore has a weight increase if it eats fodder in a jungle or
+        a savannah cell
         :return:
         """
-
-        "self.weight += self.beta *"
-        pass
+        self.weight += fodder * self.p['beta']
 
 
 class Carnivore(Fauna):
-    parameters = {
+    p = {
         "w_birth": 6.0,
         "sigma_birth": 1.0,
         "beta": 0.75,
@@ -164,15 +166,8 @@ class Carnivore(Fauna):
         "DeltaPhiMax": 10.0
     }
 
-    def __init__(self, age=None, weight=None):
-        super().__init__(self)
-        self.age = age
-        self.weight = weight
-        if age is None:
-            self.age = 0
-
-        if weight is None:
-            self.weight = np.random.normal(self.w_birth, self.sigma_birth)
+    def __init__(self, age, weight):
+        super().__init__(self, age, weight)
 
     def eat(self):
         """
