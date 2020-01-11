@@ -6,20 +6,19 @@ __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 from src.biosim import Fauna as fa
 
 
-class FaunaTest:
+class TestFauna:
     """
     Tests for Fauna class.
     """
 
-    def test_fitness(self):
-        """
-        tests if the fitness returns a boolean expression
-        :return: bool
-        """
-        a = fa.Fauna()
-        assert isinstance(a.fitness(), int)
+    def test_constructor_default(self):
+        herb = fa.Herbivore()
+        assert isinstance(herb, fa.Herbivore)
+        assert herb.age == 0
+        assert herb.weight >= 0
+        assert herb.fitness >= 0
 
-    def test_age(self):
+    def test_aging(self):
         """
         Test if the age of an animal in the fauna is the correct one.
         Test that the age is equal to zero when a animal is born
@@ -27,44 +26,67 @@ class FaunaTest:
 
         :return:
         """
-        h = fa.Herbivore()
-        assert h.age() == 0
-        assert isinstance(h.age(), int)
+        herb = fa.Herbivore()
+        herb.aging()
+        assert herb.age == 1
+        assert isinstance(herb.age, int)
 
-    def test_weight(self):
+    def test_weight_decrease(self):
         """
-        Tests if age on an animal
+        Tests if weight_decrease function decreases weight
         :return:
         """
-        f = fa.Fauna(weight=10)
-        w = f.animal_weight()
-        assert w == 10
+        herb = fa.Herbivore(weight=10)
+        herb.weight_decrease()
+        assert herb.weight <= 10
 
-    def test_migration(self):
+    def test_get_weight(self):
         """
-        Test if the animals move towards the most optimal cell
-        Test if the animal only moves to one of the four adjacent cells
-        Test if the animal cannot move to a mountain or ocean cell
+        Tests if function returns correct weight and that its an integer
         :return:
         """
-        pass
+        herb = fa.Herbivore(weight=10)
+        assert herb.get_weight() == 10
+        assert isinstance(herb.get_weight(), (int, float))
+
+    def test_update_fitness(self):
+        """
+        Tests if the fitness returns a integer
+        :return: integer
+        """
+        herb = fa.Herbivore()
+        assert isinstance(herb.update_fitness(), (int, float))
+
+    def test_check_death(self):
+        """
+        Tests if an animal with weight=0 returns True(animal dies) and that
+        the function returns a boolean expression
+        :return:
+        """
+        herb = fa.Herbivore(weight=0)
+        herb1 = fa.Herbivore()
+        assert herb.check_death() is True
+        assert isinstance(herb1.check_death(), bool)
+
+    def test_check_migration(self):
+        """
+        Test if method works and returns a boolean expression (True for ready
+        to move and False will not move)
+        """
+        herb = fa.Herbivore(age=10)
+        assert isinstance(herb.check_migration(), bool)
 
     def test_birth(self):
         """
         When there is only one animal, test that no birth occurs.
-        Test that the mother looses the right amout of weight after birth
-        Test that animals cant give more than 1 offspirng each cycle
         Test that animals cannot give birth if their weight is too low
+        test that method works and returns True or False
         :return:
         """
-        pass
-
-    def test_death(self):
-        """
-        Test that an animal dies when its fitness is zero
-        :return:
-        """
-        pass
+        herb = fa.Herbivore(weight=60, age=20)
+        assert herb.check_birth(1) is False
+        assert herb.check_birth(6) is True
+        assert isinstance(herb.check_birth(40), bool)
 
     def test_herbivore(self):
         """
