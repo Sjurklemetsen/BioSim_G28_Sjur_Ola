@@ -84,8 +84,8 @@ class Jungle(Geography):
     Fodder replenish each year to f_max.
     """
 
-    def __init__(self, f_max = 800):
-        self.f_max = f_max
+    def __init__(self):
+        self.f_max = 800
         self.fodder = self.f_max
 
     def add_animal(self):
