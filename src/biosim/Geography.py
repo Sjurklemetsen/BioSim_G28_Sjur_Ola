@@ -10,12 +10,16 @@ class Geography:
     """
     A class that contain cell with a certain area type and with an animal
     inside it
+    The methods in this class and subclass describe how the animals inside a
+    cell eat, migrate and mate. There are also methods for how fodder grows in
+    a cell.
     """
 
     def __init__(self):
         self.herbivores = []
         self.carnivores = []
-        self.f_max = None
+        self.fodder = 0
+
 
 
 class Ocean(Geography):
@@ -63,11 +67,15 @@ class Savannah(Geography):
         self.f_max = 300
         self.alpha = 0.3
 
+    def get_fodder(self):
+
+
     def fodder_growth(self):
         """
         Fodder growth for savannah
         :return:
         """
+        if get_fodder <=
 
 
 class Jungle(Geography):
@@ -76,8 +84,8 @@ class Jungle(Geography):
     Fodder replenish each year to f_max.
     """
 
-    def __init__(self, fodder):
-        self.f_max = 800
+    def __init__(self, f_max = 800):
+        self.f_max = f_max
         self.fodder = self.f_max
 
     def add_animal(self):
@@ -101,13 +109,13 @@ class Jungle(Geography):
     def fodder_amount(self):
         return self.fodder
 
-    def check_herb_pop(self):
+    def herbivore_pop(self):
         """
         Check how many animals that currently are residing in this jungle cell
         """
         return len(self.herbivores)
 
-    def check_carn_pop(self):
+    def carnivore_pop(self):
         return len(self.carnivores)
 
     def remove_animals(self):
