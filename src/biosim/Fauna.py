@@ -31,17 +31,13 @@ class Fauna:
         'DeltaPhiMax': None
     }
 
-    def __init__(self, age=None, weight=None):
+    def __init__(self, age=0, weight=None):
         self.age = age
         self.weight = weight
-        self.fitness = 0
-        self.update_fitness()
-
-        if age is None:
-            self.age = 0
         if weight is None:
             self.weight = np.random.normal(self.p['w_birth'],
                                            self.p['sigma_birth'])
+        self.update_fitness()
 
     def aging(self):
         """
@@ -84,9 +80,9 @@ class Fauna:
         Function that checks if the animal is dead or not
         :return: Boolean expression
         """
-        if self.fitness == 0:
+        if self.update_fitness() == 0:
             return True
-        elif rd.random() < self.p['omega'] * (1 - self.fitness):
+        elif rd.random() < self.p['omega'] * (1 - self.update_fitness()):
             return True
         else:
             return False
@@ -96,7 +92,7 @@ class Fauna:
         Method that check if the animal is ready to move to another cell
         :return: Boolean expression
         """
-        prob_move = self.p['mu'] * self.fitness
+        prob_move = self.p['mu'] * self.update_fitness()
         return rd.random() < prob_move
 
     def check_birth(self, n_animals):
@@ -105,11 +101,13 @@ class Fauna:
         :param n_animals:
         :return: Boolean expression
         """
-        probability = min(1, self.p['gamma'] * self.fitness * (n_animals - 1))
+        probability = min(1, self.p['gamma'] * self.update_fitness() *
+                          (n_animals - 1))
 
-        if self.weight < self.p['zeta'] * (self.p['w_birth'] + self.p['sigma_birth']):
+        if self.weight < self.p['zeta'] * (self.p['w_birth'] +
+                                           self.p['sigma_birth']):
             return False
-        if rd.random() <= probability:
+        elif rd.random() <= probability:
             return True
         else:
             return False
@@ -134,8 +132,8 @@ class Herbivore(Fauna):
         "F": 10.0,
     }
 
-    def __init__(self, age, weight):
-        super().__init__(age, weight)
+    def __init__(self, age=0, weight=None):
+        super().__init__(age=age, weight=weight)
 
     def eat(self, fodder):
         """
@@ -178,3 +176,23 @@ class Carnivore(Fauna):
         :return:
         """
         pass
+
+
+if __name__ == "__main__":
+    herb = Herbivore(weight=60, age=20)
+    print(herb.check_migration())
+
+    """n_animals = 60
+    p = min(1, 0.2 * herb.update_fitness() * (n_animals - 1))
+    print(p)
+    print(herb.check_birth(6))
+    print(herb.aging())
+    print(herb.age)
+    print(herb.weight)
+    print(herb.update_fitness())
+    print(herb.check_death())
+    print(herb.check_migration())
+    print(rd.random())"""
+
+
+

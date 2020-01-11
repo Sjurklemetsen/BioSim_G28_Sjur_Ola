@@ -129,3 +129,9 @@ class Jungle(Geography):
         for animal in self.carnivores:
             if animal.check_death():
                 self.carnivores.pop(animal)
+
+
+if __name__ == "__main__":
+    geo = Geography()
+    geo.add_animal(population=[Herbivore(), Herbivore()])
+    print(geo.add_animal(population=[]))
