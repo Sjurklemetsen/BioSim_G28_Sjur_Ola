@@ -75,7 +75,7 @@ class Savannah(Geography):
         Fodder growth for savannah
         :return:
         """
-        if get_fodder <=
+        pass
 
 
 class Jungle(Geography):
