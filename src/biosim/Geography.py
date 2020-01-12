@@ -16,18 +16,17 @@ class Geography:
     """
     geo_p = {'f_max': None, 'alpha': None}
 
-    def set_parameter(self, new_parameters):
-        """
-        This method let you set new parameters instead of the default ones
-        :param new_parameters: dictionary with new parameters
-        """
+    @classmethod
+    def set_parameter(cls, new_parameters):
+        """This method let you set new parameters instead of the default ones
+        :param new_parameters: dictionary with new parameters"""
         for key in new_parameters:
-            self.geo_p[key] = new_parameters
+            cls.geo_p[key] = new_parameters[key]
 
     def __init__(self):
         self.pop_herbivores = []
         self.pop_carnivores = []
-        self.fodder = 0
+        self.fodder = self.geo_p['f_max']
 
     def add_animal(self, animal):
         """
@@ -46,10 +45,10 @@ class Geography:
         """
         for animal in self.pop_herbivores:
             if animal.check_death():
-                self.pop_herbivores.pop(animal)
+                self.pop_herbivores.remove(animal)
         for animal in self.pop_carnivores:
             if animal.check_death():
-                self.pop_carnivores.pop(animal)
+                self.pop_carnivores.remove(animal)
 
     def herbivore_pop(self):
         """
@@ -111,10 +110,11 @@ class Geography:
         self.sorted_herbivores()
         for animal in self.pop_carnivores:
             elf.sorted_herbivores()
-            animal.eat(weight killed animal) # Carnivore eat and gain weight
+            #animal.eat(weight_killed_animal) # Carnivore eat and gain weight
             self.sorted_herbivores()
             self.herbivore_pop().pop[-1] # Herbivore with worst fitness die
         pass
+
 
 class Jungle(Geography):
     """
@@ -125,14 +125,13 @@ class Jungle(Geography):
 
     def __init__(self):
         super().__init__()
-        self.fodder = self.geo_p['f_max']
 
     def fodder_growth(self):
         """
         Replenishes fodder each year
         :return:
         """
-        self.fodder = self.f_max
+        self.fodder = self.geo_p['f_max']
         pass
 
     def fodder_eaten(self, fodder_eaten):
@@ -141,8 +140,7 @@ class Jungle(Geography):
         :return:
         """
         self.fodder -= fodder_eaten
-    pass
-
+        pass
 
 
 class Savannah(Geography):
@@ -152,7 +150,7 @@ class Savannah(Geography):
     geo_p = {'f_max': 300, 'alpha': 0.3}
 
     def __init__(self):
-        super().__init__(self)
+        super().__init__()
 
     def get_fodder(self):
         pass
@@ -200,9 +198,22 @@ class Mountain:
     pass
 
 
-
-
 if __name__ == "__main__":
-    geo = Geography()
-    g = geo.add_animal(Herbivore())
-    print(geo.herbivores)
+    jung = Jungle()
+    jung.add_animal(Herbivore(weight=0))
+    jung.add_animal(Herbivore())
+    print(len(jung.pop_herbivores))
+    jung.remove_animals()
+    print(len(jung.pop_herbivores))
+    herb = Herbivore(age=20, weight=50)
+    print(herb.check_death())
+
+
+    #new = {'f_max': 1000, 'alpha': 500}
+    #jung.set_parameter(new)
+    #print(jung.geo_p['f_max'])
+    #print(jung.fodder)
+    #jung.add_animal(Herbivore())
+    #print(len(jung.pop_herbivores))
+    #g = geo.add_animal(Herbivore())
+    #print(geo.herbivores)
