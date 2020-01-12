@@ -3,14 +3,29 @@
 __author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
 __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
-from biosim.Geography import *
+from src.biosim import Geography as geo
 
 
-class GeographyTest:
+class TestGeography:
     """
     Tests for the geography class where we work with the different
     landscapes.
     """
+    def test_constructor_default(self):
+        jung = geo.Jungle()
+        sava = geo.Savannah()
+        assert isinstance(jung, geo.Jungle)
+        assert isinstance(sava, geo.Savannah)
+        #assert jung.fodder == 800
+        #assert sava.fodder == 300
+        #assert isinstance(jung.pop_herbivores, list)
+
+    def test_set_parameter(self):
+        new_parameters = {'f_max': 1000, 'alpha': 500}
+
+    def test_add_animal(self):
+        jung = geo.Jungle()
+
 
     def test_ocean(self):
         """
@@ -39,6 +54,7 @@ class GeographyTest:
         assert issubclass(Desert, Geography)
         assert isinstance(d, Desert)
         assert "default param" f_max == 0
+        pass
 
 
     def test_savannah(self):
@@ -52,6 +68,7 @@ class GeographyTest:
         assert isinstance(s, Savannah)
         assert "default param" f_max == 200
         assert "test if fodder grows to formula each year"
+        pass
 
     def test_jungle(self):
         """
@@ -66,3 +83,4 @@ class GeographyTest:
         assert isinstance(j, Jungle)
         assert "default param" f_max == 800
         assert j_fodder == "defaut param" f_max
+        pass

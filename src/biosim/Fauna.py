@@ -173,8 +173,8 @@ class Carnivore(Fauna):
         "DeltaPhiMax": 10.0
     }
 
-    def __init__(self, age, weight):
-        super().__init__(self, age, weight)
+    def __init__(self, age=0, weight=None):
+        super().__init__(self, age=age, weight=weight)
 
     def prob_eating(self, n_herb):
         """
@@ -183,7 +183,7 @@ class Carnivore(Fauna):
         """
         pass
 
-    def eat(self, weight killed animal):
+    def eat(self, weight_killed_animal):
         """
         The weight of the animal increase every time the animal eat
         The amount of herbivores decrease if a carnivore eats
