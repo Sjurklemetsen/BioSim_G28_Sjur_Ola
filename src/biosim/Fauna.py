@@ -31,6 +31,14 @@ class Fauna:
         'DeltaPhiMax': None
     }
 
+    def set_parameter(self, new_p):
+        """
+        This method let you set new parameters instead of the default ones
+        :param new_p: dictionary with new parameters
+        """
+        for key in new_p:
+            self.p[key] = new_p
+
     def __init__(self, age=0, weight=None):
         self.age = age
         self.weight = weight
@@ -135,13 +143,14 @@ class Herbivore(Fauna):
     def __init__(self, age=0, weight=None):
         super().__init__(age=age, weight=weight)
 
-    def eat(self, fodder):
+    def eat(self):
         """
         The herbivore has a weight increase if it eats fodder in a jungle or
         a savannah cell
         :return:
         """
-        self.weight += fodder * self.p['beta']
+        self.weight += self.p['F'] * self.p['beta']
+        self.update_fitness()
 
 
 class Carnivore(Fauna):
@@ -167,7 +176,14 @@ class Carnivore(Fauna):
     def __init__(self, age, weight):
         super().__init__(self, age, weight)
 
-    def eat(self):
+    def prob_eating(self, n_herb):
+        """
+        Chances for a carnivore to eat
+        :return: Boolean expression
+        """
+        pass
+
+    def eat(self, weight killed animal):
         """
         The weight of the animal increase every time the animal eat
         The amount of herbivores decrease if a carnivore eats
@@ -175,7 +191,8 @@ class Carnivore(Fauna):
         update fitness
         :return:
         """
-        pass
+        if prob_eating is True:
+            ## Carnivore eat and gain weight and fitness
 
 
 if __name__ == "__main__":
