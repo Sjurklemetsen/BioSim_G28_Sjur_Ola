@@ -68,7 +68,7 @@ class Geography:
         """
         return len(self.pop_herbivores) + len(self.pop_carnivores)
 
-    def remove_fodder(self):
+    def fodder_eaten(self):
         """
         A method that removes the fodder that gets eaten by the animals
         :return: appetite - How much fodder the animal eat
@@ -90,9 +90,9 @@ class Geography:
         All the herbivores in the cell eat fodder
         :return:
         """
+        self.sort_animal_fitness(self.pop_herbivores)
         for animal in self.pop_herbivores:
-            animal.eat()
-            self.remove_fodder()
+            animal.eat(self.fodder_eaten())
 
     def sort_animal_fitness(self, population):
         """
@@ -109,7 +109,7 @@ class Geography:
         self.sort_animal_finess(self.pop_carnivores)
         self.sorted_herbivores()
         for animal in self.pop_carnivores:
-            elf.sorted_herbivores()
+            self.sorted_herbivores()
             #animal.eat(weight_killed_animal) # Carnivore eat and gain weight
             self.sorted_herbivores()
             self.herbivore_pop().pop[-1] # Herbivore with worst fitness die

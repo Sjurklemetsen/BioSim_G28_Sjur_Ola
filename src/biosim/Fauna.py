@@ -3,7 +3,6 @@
 __author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
 __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
-import math
 import random as rd
 import numpy as np
 
@@ -45,7 +44,7 @@ class Fauna:
         if weight is None:
             self.weight = np.random.normal(self.p['w_birth'],
                                            self.p['sigma_birth'])
-        self.update_fitness()
+        self.fitness = self.update_fitness()
 
     def aging(self):
         """
@@ -143,13 +142,13 @@ class Herbivore(Fauna):
     def __init__(self, age=0, weight=None):
         super().__init__(age=age, weight=weight)
 
-    def eat(self):
+    def eat(self, appetite):
         """
         The herbivore has a weight increase if it eats fodder in a jungle or
         a savannah cell
         :return:
         """
-        self.weight += self.p['F'] * self.p['beta']
+        self.weight += appetite * self.p['beta']
         self.update_fitness()
 
 
