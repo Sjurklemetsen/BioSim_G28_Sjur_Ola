@@ -174,7 +174,7 @@ class Carnivore(Fauna):
     }
 
     def __init__(self, age=0, weight=None):
-        super().__init__(self, age=age, weight=weight)
+        super().__init__(age=0, weight=weight)
 
     def prob_eating(self, n_herb):
         """
@@ -191,7 +191,7 @@ class Carnivore(Fauna):
         update fitness
         :return:
         """
-        if prob_eating is True:
+        #if prob_eating is True:
             ## Carnivore eat and gain weight and fitness
 
 
