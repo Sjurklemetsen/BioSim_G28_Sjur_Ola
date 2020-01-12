@@ -51,6 +51,20 @@ class TestGeography:
         assert len(jung.pop_herbivores) == 0
         assert len(jung.pop_carnivores) == 0
 
+    def test_pop_methods(self):
+        """
+        Test if the population methods return the correct amount of animals in
+        in the cell
+        """
+        jung = geo.Jungle()
+        jung.add_animal(geo.Herbivore())
+        jung.add_animal(geo.Herbivore())
+        jung.add_animal(geo.Carnivore())
+        assert jung.herbivore_pop() == 2
+        assert jung.carnivore_pop() == 1
+        assert jung.total_pop() == 3
+
+
     def test_remove_fodder(self):
         pass
 
