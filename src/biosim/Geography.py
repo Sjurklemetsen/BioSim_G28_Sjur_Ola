@@ -19,7 +19,8 @@ class Geography:
     @classmethod
     def set_parameter(cls, new_parameters):
         """This method let you set new parameters instead of the default ones
-        :param new_parameters: dictionary with new parameters"""
+        :param new_parameters: dictionary with new parameters
+        """
         for key in new_parameters:
             cls.geo_p[key] = new_parameters[key]
 
@@ -68,9 +69,18 @@ class Geography:
         """
         return len(self.pop_herbivores) + len(self.pop_carnivores)
 
+    @staticmethod
+    def sort_animal_fitness(population):
+        """
+        Sort the herbivores and carnivores in the cell after their fitness
+        :return:
+        """
+        return population.sort(key=lambda animal: animal.fitness, reverse=True)
+
     def fodder_eaten(self):
         """
         A method that removes the fodder that gets eaten by the animals
+        fodder: How much foddere there is in the cell
         :return: appetite - How much fodder the animal eat
         """
         appetite = Herbivore.p['F']
@@ -79,8 +89,8 @@ class Geography:
             self.fodder -= appetite
             return appetite
         elif 0 < self.fodder < appetite:
-            self.fodder = 0
             appetite = self.fodder
+            self.fodder = 0
             return appetite
         else:
             return 0
@@ -94,13 +104,6 @@ class Geography:
         for animal in self.pop_herbivores:
             animal.eat(self.fodder_eaten())
 
-    def sort_animal_fitness(self, population):
-        """
-        Sort the herbivores in the cell after their fitness
-        :return:
-        """
-        pass
-
     def carnivore_eat(self):
         """
         Carnivore eat
@@ -110,9 +113,9 @@ class Geography:
         self.sorted_herbivores()
         for animal in self.pop_carnivores:
             self.sorted_herbivores()
-            #animal.eat(weight_killed_animal) # Carnivore eat and gain weight
+            # animal.eat(weight_killed_animal) # Carnivore eat and gain weight
             self.sorted_herbivores()
-            self.herbivore_pop().pop[-1] # Herbivore with worst fitness die
+            self.herbivore_pop().pop[-1]  # Herbivore with worst fitness die
         pass
 
 
@@ -132,15 +135,6 @@ class Jungle(Geography):
         :return:
         """
         self.fodder = self.geo_p['f_max']
-        pass
-
-    def fodder_eaten(self, fodder_eaten):
-        """
-        A method that removes the fodder that gets eaten by the animals
-        :return:
-        """
-        self.fodder -= fodder_eaten
-        pass
 
 
 class Savannah(Geography):
@@ -152,15 +146,13 @@ class Savannah(Geography):
     def __init__(self):
         super().__init__()
 
-    def get_fodder(self):
-        pass
-
     def fodder_growth(self):
         """
         Fodder growth for savannah
         :return:
         """
-        pass
+        self.fodder += self.geo_p['alpha'] * (self.geo_p['f_max']
+                                              - self.fodder)
 
 
 class Desert(Geography):
@@ -171,6 +163,7 @@ class Desert(Geography):
     def __init__(self):
         super().__init__(self)
         pass
+
     pass
 
 
@@ -182,6 +175,7 @@ class Ocean(Geography):
 
     def __init__(self):
         super().__init__(self)
+
     pass
 
 
@@ -195,25 +189,50 @@ class Mountain:
     def __init__(self):
         super().__init__(self)
         pass
+
     pass
 
 
 if __name__ == "__main__":
-    jung = Jungle()
+    j = Jungle()
+    j.add_animal(Herbivore(weight=10))
+    j.add_animal(Herbivore(weight=5))
+    print(j.fodder)
+    print(j.pop_herbivores[0].get_weight())
+    print(j.pop_herbivores[1].get_weight())
+    j.herbivore_eat()
+    print(j.fodder)
+    print(j.pop_herbivores[0].get_weight())
+    print(j.pop_herbivores[1].get_weight())
+
+
+
+
+
+
+
+
+
+
+    """jung = Jungle()
     jung.add_animal(Herbivore(weight=0))
     jung.add_animal(Herbivore())
     print(len(jung.pop_herbivores))
     jung.remove_animals()
     print(len(jung.pop_herbivores))
     herb = Herbivore(age=20, weight=50)
-    print(herb.check_death())
+    print(herb.check_death())"""
 
-
-    #new = {'f_max': 1000, 'alpha': 500}
-    #jung.set_parameter(new)
-    #print(jung.geo_p['f_max'])
-    #print(jung.fodder)
-    #jung.add_animal(Herbivore())
-    #print(len(jung.pop_herbivores))
-    #g = geo.add_animal(Herbivore())
-    #print(geo.herbivores)
+    # new = {'f_max': 1000, 'alpha': 500}
+    # jung.set_parameter(new)
+    # print(jung.geo_p['f_max'])
+    # print(jung.fodder)
+    # jung.add_animal(Herbivore())
+    # print(len(jung.pop_herbivores))
+    # g = geo.add_animal(Herbivore())
+    # print(geo.herbivores)
+    """jung = Jungle()
+    herb = [Herbivore(), Herbivore(weight=0), Herbivore()]
+    print(herb)
+    jung.sort_animal_fitness(herb)
+    print(herb)"""
