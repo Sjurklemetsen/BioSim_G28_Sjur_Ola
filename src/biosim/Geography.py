@@ -89,9 +89,9 @@ class Geography:
             self.fodder -= appetite
             return appetite
         elif 0 < self.fodder < appetite:
-            appetite = self.fodder
+            ate = self.fodder
             self.fodder = 0
-            return appetite
+            return ate
         else:
             return 0
 
@@ -195,6 +195,22 @@ class Mountain:
 
 if __name__ == "__main__":
     j = Jungle()
+    for animal in range(9):
+        j.add_animal(Herbivore())
+
+    print(len(j.pop_herbivores))
+
+
+    """j = Jungle()
+    j.fodder = 5
+    print(j.fodder)
+    print(j.fodder_eaten())
+    j.fodder_eaten()
+    print(j.fodder)
+    print(j.fodder_eaten())"""
+
+    """
+    j = Jungle()
     j.add_animal(Herbivore(weight=10))
     j.add_animal(Herbivore(weight=5))
     print(j.fodder)
@@ -204,8 +220,7 @@ if __name__ == "__main__":
     print(j.fodder)
     print(j.pop_herbivores[0].get_weight())
     print(j.pop_herbivores[1].get_weight())
-
-
+"""
 
 
 

@@ -64,15 +64,50 @@ class TestGeography:
         assert jung.carnivore_pop() == 1
         assert jung.total_pop() == 3
 
+    def test_sort_animal_fitness(self):
+        """
+        Tests if herbivore pop list remains the same when fitness is already
+        sorted right.
+        trengs mer...
+        :return:
+        """
+        j = geo.Jungle()
+        j.add_animal(geo.Herbivore(age=20, weight=40))
+        j.add_animal(geo.Herbivore(weight=20))
+        j.add_animal(geo.Herbivore(weight=0))
+        pop = j.pop_herbivores
+        j.sort_animal_fitness(pop)
+        assert j.pop_herbivores == pop
 
-    def test_remove_fodder(self):
-        pass
+    def test_fodder_eaten(self):
+        """
+        Tests that method returns fodder and fodder eaten when there's
+        bountiful of food.
+        Tests that method returns fodder and fodder eaten when animal has a
+        bigger appetite than the cell offers
+        Tests that fodder eaten is 0 when there's no fodder left to eat
+        """
+        j = geo.Jungle()
+        j.add_animal(geo.Herbivore(weight=10))
+        jung = j.fodder_eaten()
+        assert isinstance(jung, (int, float))
+        assert j.fodder == 790 and j.fodder_eaten() == 10
+        j.fodder = 5
+        assert j.fodder_eaten() == 5
+        assert j.fodder == 0
+        assert j.fodder_eaten() == 0
 
     def test_herbivore_eat(self):
         """
 
-        :return:
         """
+        j = geo.Jungle()
+        j.add_animal(geo.Herbivore(weight=0))
+        for animal in range(9):
+            j.add_animal(geo.Herbivore())
+        j.herbivore_eat()
+        assert j.fodder == 700
+        assert j.pop_herbivores[-1].get_weight() == 9
 
     def test_ocean(self):
         """
