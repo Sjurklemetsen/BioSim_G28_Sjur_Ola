@@ -75,7 +75,8 @@ class Geography:
         Sort the herbivores and carnivores in the cell after their fitness
         :return:
         """
-        return population.sort(key=lambda animal: animal.fitness, reverse=True)
+        population.sort(key=lambda animal: animal.fitness, reverse=True)
+        return population
 
     def fodder_eaten(self):
         """
@@ -110,18 +111,18 @@ class Geography:
         :return: 
         """
         self.sort_animal_fitness(self.pop_carnivores)
-        herbie = self.sort_animal_fitness(self.pop_herbivores)
-
+        self.sort_animal_fitness(self.pop_herbivores)
         f = Carnivore.p['F']
         for carnivore in self.pop_carnivores:
             w_killed_herb = 0
-            while f > w_killed_herb or len(herbie) == 0:
-                if carnivore.prob_eating(herbie[-1]) > rd.random():
-                    carnivore.eat(herbie[-1].weight)
-                    w_killed_herb += herbie[-1].weight
-                    herbie.remove(herbie[-1])
-                else:
-                    herbie.remove(herbie[-1])
+            while f > w_killed_herb and len(self.pop_herbivores) > 0:
+                for herb in self.pop_herbivores[::-1]:
+                    if carnivore.prob_eating(herb) > rd.random():
+                        carnivore.eat(herb.weight)
+                        w_killed_herb += herb.weight
+                        self.pop_herbivores.remove(herb)
+                    else:
+                        continue
 
 
 class Jungle(Geography):
@@ -201,21 +202,18 @@ class Mountain:
 if __name__ == "__main__":
     j = Jungle()
     for animal in range(10):
-        j.add_animal(Herbivore())
+        j.add_animal(Herbivore(weight=10))
     j.add_animal(Carnivore(age=4, weight=40))
-    j.add_animal(Carnivore(age=7, weight=20))
-    #j.carnivore_eat()
     print(len(j.pop_herbivores))
     print(len(j.pop_carnivores))
-    print(j.pop_herbivores[0].fitness)
     print((j.pop_carnivores[0].fitness - j.pop_herbivores[0].fitness) / 10)
+    print(j.pop_carnivores[0].weight)
+    j.sort_animal_fitness(j.pop_herbivores)
+    print(len(j.pop_herbivores))
+    j.carnivore_eat()
+    print(j.pop_carnivores[0].weight)
+    print(len(j.pop_herbivores))
 
-    print(j.pop_carnivores[0].fitness)
-
-    if 0 < j.pop_carnivores[0].fitness - j.pop_herbivores[0].fitness < j.p['DeltaPhiMax']:
-        a = (j.pop_carnivores[0].fitness - j.pop_herbivores[0].fitness) / self.p['DeltaPhiMax']
-
-    print(a)
 
 
 

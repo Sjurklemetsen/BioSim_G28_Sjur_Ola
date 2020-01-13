@@ -42,6 +42,11 @@ class TestGeography:
         assert isinstance(jung.pop_herbivores[0], geo.Fauna)
 
     def test_remove_animals(self):
+        """
+        test if an animal with weight zero dies
+        test
+        :return:
+        """
         jung = geo.Jungle()
         jung.add_animal(geo.Herbivore(weight=0))
         jung.add_animal(geo.Carnivore(weight=0))

@@ -188,7 +188,6 @@ class Carnivore(Fauna):
         else:
             return 1
 
-
     def eat(self, herb_w):
         """
         The weight of the animal increase every time the animal eat
@@ -202,8 +201,20 @@ class Carnivore(Fauna):
 
 
 if __name__ == "__main__":
-    herb = Herbivore(weight=60, age=20)
-    print(herb.check_migration())
+    herb = Herbivore(weight=10, age=4)
+    print(herb.fitness)
+    #print(herb.check_migration())
+    carn = Carnivore(weight=60, age=10)
+
+    print(carn.fitness)
+
+    if carn.fitness <= herb.fitness:
+        print(0)
+    elif 0 < carn.fitness - herb.fitness < carn.p['DeltaPhiMax']:
+        print((carn.fitness - herb.fitness)/carn.p['DeltaPhiMax'])
+    else:
+        print(1)
+
 
     """n_animals = 60
     p = min(1, 0.2 * herb.update_fitness() * (n_animals - 1))
