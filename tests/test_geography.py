@@ -4,7 +4,6 @@ __author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
 __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
 from src.biosim import Geography as geo
-from src.biosim import Fauna as fa
 
 
 class TestGeography:
@@ -108,6 +107,15 @@ class TestGeography:
         j.herbivore_eat()
         assert j.fodder == 700
         assert j.pop_herbivores[-1].get_weight() == 9
+
+    def test_carnivore_eat(self):
+        j = geo.Jungle()
+        for n in range(5):
+            j.add_animal(geo.Herbivore(weight=50))
+        j.add_animal(geo.Carnivore())
+        j.carnivore_eat()
+        assert len(j.pop_herbivores) == 4
+
 
     def test_ocean(self):
         """

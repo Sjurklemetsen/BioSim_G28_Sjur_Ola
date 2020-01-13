@@ -115,7 +115,7 @@ class Geography:
             self.sorted_herbivores()
             # animal.eat(weight_killed_animal) # Carnivore eat and gain weight
             self.sorted_herbivores()
-            self.herbivore_pop().pop[-1]  # Herbivore with worst fitness die
+            self.herbivore_pop().remove[-1]  # Herbivore with worst fitness die
         pass
 
 
