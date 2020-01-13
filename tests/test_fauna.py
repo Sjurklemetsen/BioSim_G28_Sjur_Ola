@@ -73,8 +73,9 @@ class TestFauna:
         Test if method works and returns a boolean expression (True for ready
         to move and False will not move)
         """
-        herb = fa.Herbivore(age=10)
-        assert isinstance(herb.check_migration(), bool)
+        herb = fa.Herbivore()
+        a = herb.check_migration()
+        assert isinstance(a, bool)
 
     def test_birth(self):
         """
@@ -88,16 +89,36 @@ class TestFauna:
         assert herb.check_birth(6) is True
         assert isinstance(herb.check_birth(40), bool)
 
-    def test_herbivore(self):
+    def test_herbivore_eat(self):
         """
-        Test the characteristics unique for herbivores such as feeding
+        Test that weight increases with 9 when appetite*beta = 9
         :return:
         """
-        pass
+        herb = fa.Herbivore(weight=1)
+        herb.eat(10)
+        assert herb.weight == 10
 
-    def test_carnivore(self):
+    def test_carnivore_prob_eating(self):
         """
-        Test the characteristics unique for carnivores
-        :return:
+        Tests that method returns 0 when fitness of carnivore is less or equal
+        to herbivores fitness
+        Test
         """
-        pass
+        c = fa.Carnivore(age=60, weight=0)
+        herb = fa.Herbivore(age=10, weight=60)
+        c2 = fa.Carnivore(age=10, weight=60)
+        assert c.prob_eating(herb) == 0
+        assert isinstance(c.prob_eating(herb), (int, float))
+        assert 0 < c2.prob_eating(herb) < 1
+
+    def test_carnivore_eat(self):
+        """
+        Tests that the weight increases when a carnivore eats a herbivore
+        """
+        c = fa.Carnivore(weight=5)
+        herb = fa.Herbivore(weight=10)
+        c.eat(herb.weight)
+        assert c.weight == 12.5
+
+
+

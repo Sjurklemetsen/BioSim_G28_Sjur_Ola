@@ -114,13 +114,33 @@ class TestGeography:
         assert j.pop_herbivores[-1].get_weight() == 9
 
     def test_carnivore_eat(self):
+        """
+        Tests if the carnivore eats the least fittest herbivore
+        Tests if population decreases when carnivore eats
+        Tests if weight increases according to formula when carnivore eats
+        Tests that fitness updates after every herbivore eaten
+        """
         j = geo.Jungle()
-        for n in range(5):
-            j.add_animal(geo.Herbivore(weight=50))
-        j.add_animal(geo.Carnivore())
+        for n in range(10):
+            j.add_animal(geo.Herbivore(age=60, weight=10))
+        j.add_animal(geo.Carnivore(age=10, weight=60))
         j.carnivore_eat()
-        assert len(j.pop_herbivores) == 4
+        assert 0 < len(j.pop_herbivores) == 5
+        #assert j.pop_carnivores[0].weight == 97.5
+        print(j.pop_carnivores[0].weight)
 
+    def test_multiple_carnivores_eat(self):
+        """
+        Tests that carnivore that eats next increases weight and fitness
+        """
+        j = geo.Jungle()
+        j.add_animal(geo.Carnivore(weight=60, age=10))
+        j.add_animal(geo.Carnivore(age=60, weight=10))
+        for n in range(20):
+            j.add_animal(geo.Herbivore(weight=10, age=50))
+
+        j.carnivore_eat()
+        assert j.pop_carnivores[1].weight > 10
 
     def test_ocean(self):
         """

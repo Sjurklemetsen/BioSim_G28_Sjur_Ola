@@ -112,17 +112,13 @@ class Geography:
         """
         self.sort_animal_fitness(self.pop_carnivores)
         self.sort_animal_fitness(self.pop_herbivores)
-        f = Carnivore.p['F']
-        for carnivore in self.pop_carnivores:
-            w_killed_herb = 0
-            while f > w_killed_herb and len(self.pop_herbivores) > 0:
-                for herb in self.pop_herbivores[::-1]:
-                    if carnivore.prob_eating(herb) > rd.random():
-                        carnivore.eat(herb.weight)
-                        w_killed_herb += herb.weight
-                        self.pop_herbivores.remove(herb)
-                    else:
-                        continue
+
+        carns = self.pop_carnivores
+
+        for carnivore in carns:
+            self.pop_herbivores.replace(carnivore.eat())
+
+
 
 
 class Jungle(Geography):
@@ -206,9 +202,9 @@ if __name__ == "__main__":
     j.add_animal(Carnivore(age=4, weight=40))
     print(len(j.pop_herbivores))
     print(len(j.pop_carnivores))
-    print((j.pop_carnivores[0].fitness - j.pop_herbivores[0].fitness) / 10)
-    print(j.pop_carnivores[0].weight)
-    j.sort_animal_fitness(j.pop_herbivores)
+    #print((j.pop_carnivores[0].fitness - j.pop_herbivores[0].fitness) / 10)
+    #print(j.pop_carnivores[0].weight)
+    #j.sort_animal_fitness(j.pop_herbivores)
     print(len(j.pop_herbivores))
     j.carnivore_eat()
     print(j.pop_carnivores[0].weight)

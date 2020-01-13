@@ -48,16 +48,14 @@ class Fauna:
 
     def aging(self):
         """
-        Age og the animals increase by one for each year
-        :return:
+        Age of the animals increase by one each year
         """
         self.age += 1
         self.update_fitness()
 
     def weight_decrease(self):
         """
-        The weight of the animal decrease for each year
-        :return:
+        The weight of the animal decrease each year
         """
         self.weight -= self.p['eta'] * self.weight
         self.update_fitness()
@@ -70,7 +68,7 @@ class Fauna:
 
     def update_fitness(self):
         """
-        Update the fitness of the animal based on the new age and weight
+        Update the fitness of the animal based on age and weight
         :return: New updated value: float
         """
         if self.weight <= 0:
@@ -188,7 +186,7 @@ class Carnivore(Fauna):
         else:
             return 1
 
-    def eat(self, herb_w):
+    def eat(self, pop_herb):
         """
         The weight of the animal increase every time the animal eat
         The amount of herbivores decrease if a carnivore eats
@@ -196,24 +194,32 @@ class Carnivore(Fauna):
         update fitness
         :return:
         """
-        self.weight += herb_w * self.p['beta']
-        self.update_fitness()
+        new_pop = []
+        w_herb_killed = 0
+
+        for herb in pop_herb[::-1]:
+            if w_herb_killed < self.p['F'] \
+                    and rd.random() < self.prob_eating(herb):
+                self.weight += herb.weight * self.p['beta']
+                self.update_fitness()
+                w_herb_killed += herb.weight
+                pop_herb.remove(herb)
+            else:
+                new_pop.append(herb)
+        # carni spiser ikke mer enn F!
+        return new_pop
 
 
 if __name__ == "__main__":
-    herb = Herbivore(weight=10, age=4)
-    print(herb.fitness)
-    #print(herb.check_migration())
-    carn = Carnivore(weight=60, age=10)
 
-    print(carn.fitness)
+    c = Carnivore(age=10, weight=70)
+    pop_herb = []
+    for n in range(10):
+        pop_herb.append(Herbivore())
+    print(pop_herb)
+    print(c.eat(pop_herb))
+    print(len(pop_herb))
 
-    if carn.fitness <= herb.fitness:
-        print(0)
-    elif 0 < carn.fitness - herb.fitness < carn.p['DeltaPhiMax']:
-        print((carn.fitness - herb.fitness)/carn.p['DeltaPhiMax'])
-    else:
-        print(1)
 
 
     """n_animals = 60
