@@ -173,16 +173,23 @@ class Carnivore(Fauna):
     }
 
     def __init__(self, age=0, weight=None):
-        super().__init__(age=0, weight=weight)
+        super().__init__(age=age, weight=weight)
 
-    def prob_eating(self, n_herb):
+    def prob_eating(self, herb):
         """
-        Chances for a carnivore to eat
+        Chances for a carnivore to eat a herbivore
+        :input: A list of herbivores with sorted fitness.
         :return: Boolean expression
         """
-        pass
+        if self.fitness <= herb.fitness:
+            return 0
+        elif 0 < self.fitness - herb.fitness < self.p['DeltaPhiMax']:
+            return (self.fitness - herb.fitness) / self.p['DeltaPhiMax']
+        else:
+            return 1
 
-    def eat(self, weight_killed_animal):
+
+    def eat(self, herb_w):
         """
         The weight of the animal increase every time the animal eat
         The amount of herbivores decrease if a carnivore eats
@@ -190,8 +197,8 @@ class Carnivore(Fauna):
         update fitness
         :return:
         """
-        #if prob_eating is True:
-            ## Carnivore eat and gain weight and fitness
+        self.weight += herb_w * self.p['beta']
+        self.update_fitness()
 
 
 if __name__ == "__main__":

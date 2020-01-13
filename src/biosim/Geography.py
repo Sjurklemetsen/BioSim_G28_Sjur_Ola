@@ -106,17 +106,22 @@ class Geography:
 
     def carnivore_eat(self):
         """
-        Carnivore eat
+        All the carnivores in the cell tries to eat
         :return: 
         """
-        self.sort_animal_finess(self.pop_carnivores)
-        self.sorted_herbivores()
-        for animal in self.pop_carnivores:
-            self.sorted_herbivores()
-            # animal.eat(weight_killed_animal) # Carnivore eat and gain weight
-            self.sorted_herbivores()
-            self.herbivore_pop().remove[-1]  # Herbivore with worst fitness die
-        pass
+        self.sort_animal_fitness(self.pop_carnivores)
+        herbie = self.sort_animal_fitness(self.pop_herbivores)
+
+        f = Carnivore.p['F']
+        for carnivore in self.pop_carnivores:
+            w_killed_herb = 0
+            while f > w_killed_herb or len(herbie) == 0:
+                if carnivore.prob_eating(herbie[-1]) > rd.random():
+                    carnivore.eat(herbie[-1].weight)
+                    w_killed_herb += herbie[-1].weight
+                    herbie.remove(herbie[-1])
+                else:
+                    herbie.remove(herbie[-1])
 
 
 class Jungle(Geography):
@@ -195,10 +200,25 @@ class Mountain:
 
 if __name__ == "__main__":
     j = Jungle()
-    for animal in range(9):
+    for animal in range(10):
         j.add_animal(Herbivore())
-
+    j.add_animal(Carnivore(age=4, weight=40))
+    j.add_animal(Carnivore(age=7, weight=20))
+    #j.carnivore_eat()
     print(len(j.pop_herbivores))
+    print(len(j.pop_carnivores))
+    print(j.pop_herbivores[0].fitness)
+    print((j.pop_carnivores[0].fitness - j.pop_herbivores[0].fitness) / 10)
+
+    print(j.pop_carnivores[0].fitness)
+
+    if 0 < j.pop_carnivores[0].fitness - j.pop_herbivores[0].fitness < j.p['DeltaPhiMax']:
+        a = (j.pop_carnivores[0].fitness - j.pop_herbivores[0].fitness) / self.p['DeltaPhiMax']
+
+    print(a)
+
+
+
 
 
     """j = Jungle()
@@ -221,12 +241,6 @@ if __name__ == "__main__":
     print(j.pop_herbivores[0].get_weight())
     print(j.pop_herbivores[1].get_weight())
 """
-
-
-
-
-
-
 
 
     """jung = Jungle()
