@@ -48,16 +48,14 @@ class Fauna:
 
     def aging(self):
         """
-        Age og the animals increase by one for each year
-        :return:
+        Age of the animals increase by one each year
         """
         self.age += 1
         self.update_fitness()
 
     def weight_decrease(self):
         """
-        The weight of the animal decrease for each year
-        :return:
+        The weight of the animal decrease each year
         """
         self.weight -= self.p['eta'] * self.weight
         self.update_fitness()
@@ -70,7 +68,7 @@ class Fauna:
 
     def update_fitness(self):
         """
-        Update the fitness of the animal based on the new age and weight
+        Update the fitness of the animal based on age and weight
         :return: New updated value: float
         """
         if self.weight <= 0:
