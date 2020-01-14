@@ -114,7 +114,7 @@ class Geography:
         self.sort_animal_fitness(self.pop_herbivores)
 
         for carnivore in self.pop_carnivores:
-            carnivore.eat(self.pop_herbivores)
+            self.pop_herbivores = carnivore.eat(self.pop_herbivores)
 
 
     def animal_mate(self):
@@ -219,13 +219,15 @@ class Mountain:
 if __name__ == "__main__":
     j = Jungle()
     for animal in range(10):
-        j.add_animal(Herbivore(age=5, weight=40))
-    j.add_animal(Carnivore(age=4, weight=40))
+        j.add_animal(Herbivore(age=60, weight=10))
+    j.add_animal(Carnivore(age=4, weight=80))
     j.add_animal(Carnivore(age=5, weight=40))
-
+    j.carnivore_eat()
     print(len(j.pop_herbivores))
-    j.animal_mate()
-    print(len(j.pop_herbivores))
+    print(j.pop_carnivores[0].weight)
+    print(j.pop_carnivores[1].weight)
+    #j.animal_mate()
+    #print(len(j.pop_herbivores))
 
 
 
