@@ -7,7 +7,7 @@ import random as rd
 import numpy as np
 
 
-class Fauna:
+class BaseFauna:
     """
     Class for an animal in the fauna
     """
@@ -123,7 +123,7 @@ class Fauna:
             return False
 
 
-class Herbivore(Fauna):
+class Herbivore(BaseFauna):
     p = {
         "w_birth": 8.0,
         "sigma_birth": 1.5,
@@ -155,7 +155,7 @@ class Herbivore(Fauna):
         self.update_fitness()
 
 
-class Carnivore(Fauna):
+class Carnivore(BaseFauna):
     p = {
         "w_birth": 6.0,
         "sigma_birth": 1.0,
