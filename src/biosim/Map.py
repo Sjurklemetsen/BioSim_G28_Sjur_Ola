@@ -46,8 +46,6 @@ class Map:
             self.map_dict[coordinates[i]] = area_list[i]
         return self.map_dict
 
-
-
     def populate_map(self, population):
         """
         A method that populate the map with animals in each cell
