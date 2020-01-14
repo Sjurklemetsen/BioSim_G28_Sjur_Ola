@@ -30,13 +30,14 @@ class Fauna:
         'DeltaPhiMax': None
     }
 
-    def set_parameter(self, new_p):
+    @classmethod
+    def set_parameter(cls, new_p):
         """
         This method let you set new parameters instead of the default ones
         :param new_p: dictionary with new parameters
         """
         for key in new_p:
-            self.p[key] = new_p
+            cls.p[key] = new_p
 
     def __init__(self, age=0, weight=None):
         self.age = age
@@ -187,7 +188,6 @@ class Carnivore(Fauna):
             return prob > rd.random()
         else:
             return True
-
 
     def eat(self, pop_herb):
         """
