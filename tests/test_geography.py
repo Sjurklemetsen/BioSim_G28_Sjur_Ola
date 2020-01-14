@@ -103,7 +103,7 @@ class TestGeography:
 
     def test_herbivore_eat(self):
         """
-
+        Test if the herbivore eat method works as it should
         """
         j = geo.Jungle()
         j.add_animal(geo.Herbivore(weight=0))
