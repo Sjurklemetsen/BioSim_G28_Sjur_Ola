@@ -113,11 +113,8 @@ class Geography:
         self.sort_animal_fitness(self.pop_carnivores)
         self.sort_animal_fitness(self.pop_herbivores)
 
-        carns = self.pop_carnivores
-
-        for carnivore in carns:
-            self.pop_herbivores.replace(carnivore.eat())
-
+        for carnivore in self.pop_carnivores:
+            carnivore.eat(self.pop_herbivores)
 
 
     def animal_mate(self):

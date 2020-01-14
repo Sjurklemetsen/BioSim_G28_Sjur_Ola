@@ -118,7 +118,7 @@ class TestFauna:
         c = fa.Carnivore(weight=5)
         herb = fa.Herbivore(weight=10)
         c.eat(herb.weight)
-        assert c.weight == 12.5
+        assert c.weight <
 
 
 
