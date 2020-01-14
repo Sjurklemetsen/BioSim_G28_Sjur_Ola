@@ -85,7 +85,7 @@ class Map:
 
 
 if __name__ == "__main__":
-    map_string = """\
+    map_string = """
                   OOOOOOOOOOOOOOOOOOOOO
                   OOOOOOOOSMMMMJJJJJJJO 
                   OSSSSSJJJJMMJJJJJJJOO
@@ -98,7 +98,7 @@ if __name__ == "__main__":
                   OSSSSJJJJDDJJJJOOOOOO
                   OOSSSSJJJJJJJJOOOOOOO
                   OOOSSSSJJJJJJJOOOOOOO
-                  OOOOOOOOOOOOOOOOOOOOO"""
+                  OOOOOOOOOOOOOOOOOOOOO
+                  """
 
     test_map = Map(map_string)
-    #print(test_map.create_map())
