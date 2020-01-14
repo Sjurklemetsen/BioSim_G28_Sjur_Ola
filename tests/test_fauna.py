@@ -116,9 +116,11 @@ class TestFauna:
         Tests that the weight increases when a carnivore eats a herbivore
         """
         c = fa.Carnivore(weight=5)
-        herb = fa.Herbivore(weight=10)
+        w = c.weight
+        for n in range(20):
+            [fa.Herbivore(age=10, weight=10)]
         c.eat(herb.weight)
-        assert c.weight <
+        assert c.weight > w
 
 
 

@@ -201,13 +201,13 @@ class Carnivore(Fauna):
         F = 0
 
         for herb in pop_herb[::-1]:
-            if self.prob_eating():
+            if self.prob_eating(herb):
                 F += herb.weight
                 if F > self.p['F']:
-                    self.weight += F - self.p['F']
+                    self.weight += (F - self.p['F'])*self.p['beta']
                     self.update_fitness()
                 elif F <= self.p['F']:
-                    self.weight += herb.weight
+                    self.weight += herb.weight*self.p['beta']
                     self.update_fitness()
 
             else:
@@ -231,23 +231,8 @@ class Carnivore(Fauna):
 if __name__ == "__main__":
 
     c = Carnivore(age=10, weight=70)
-    pop_herb = []
-    F = 0
-    for n in range(10):
-        pop_herb.append(Herbivore())
-
-    for herb in pop_herb[::1]:
-        if True: #Carnivore.prob_eating()
-            F += herb.weight
-            if F > self.p['F']:
-                self.weight +=
-                pop_herb.remove(herb)
-            # spiser bare litt av herben
-            elif F <= self.p['F']:
-                self.weight += herb.weight
-                self.update_fitness()
-    print(pop_herb)
-    print(c.eat(pop_herb))
+    pop_herb = [Herbivore(), Herbivore(), Herbivore(), Herbivore()]
+    print(len(c.eat(pop_herb)))
     print(len(pop_herb))
 
 
