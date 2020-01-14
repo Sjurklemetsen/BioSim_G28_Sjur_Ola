@@ -73,21 +73,26 @@ class TestFauna:
         Test if method works and returns a boolean expression (True for ready
         to move and False will not move)
         """
-        herb = fa.Herbivore()
+        herb = fa.Herbivore(age=20, weight=10)
+        print(herb.fitness)
         a = herb.check_migration()
+        print(herb.check_migration())
         assert isinstance(a, bool)
 
     def test_birth(self):
         """
         When there is only one animal, test that no birth occurs.
-        Test that animals cannot give birth if their weight is too low
+        Test that animals cannot give birth if their weight is too low, too low
+        would be 33.25 with default parameters.
         test that method works and returns True or False
-        :return:
+        Tests that a herbivore with less than required weight can give birth
         """
         herb = fa.Herbivore(weight=60, age=20)
+        herb2 = fa.Herbivore(weight=33.24, age=2)
         assert herb.check_birth(1) is False
         assert herb.check_birth(6) is True
         assert isinstance(herb.check_birth(40), bool)
+        assert herb2.check_birth(100) is False
 
     def test_herbivore_eat(self):
         """
@@ -107,20 +112,27 @@ class TestFauna:
         c = fa.Carnivore(age=60, weight=0)
         herb = fa.Herbivore(age=10, weight=60)
         c2 = fa.Carnivore(age=10, weight=60)
-        assert c.prob_eating(herb) == 0
-        assert isinstance(c.prob_eating(herb), (int, float))
-        assert 0 < c2.prob_eating(herb) < 1
+        c2.p['DeltaPhiMax'] = 0.001
+        assert c.prob_eating(herb) is False
+        assert isinstance(c.prob_eating(herb), bool)
+        assert c2.prob_eating(herb) is True
 
     def test_carnivore_eat(self):
         """
-        Tests that the weight increases when a carnivore eats a herbivore
+        Tests that the weight increases according to formula when a carnivore
+        eats a herbivore.
+        Tests that the population decreases when carnivore eats
         """
-        c = fa.Carnivore(weight=5)
+        c = fa.Carnivore(weight=40)
+        c2 = fa.Carnivore(weight=40)
+        c2.p['DeltaPhiMax'] = 0.001
         w = c.weight
-        for n in range(20):
-            [fa.Herbivore(age=10, weight=10)]
-        c.eat(herb.weight)
-        assert c.weight > w
+        herb = [fa.Herbivore(weight=10)]
+        herbs = [fa.Herbivore(age=10, weight=10) for n in range(1000)]
+        assert len(c.eat(herbs)) == 995
+        assert 0 < (c.weight-w) <= 45
+        assert len(c2.eat(herb)) == 0
+        assert c2.weight == 47.5
 
 
 

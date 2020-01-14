@@ -116,7 +116,7 @@ class Geography:
         for carnivore in self.pop_carnivores:
             self.pop_herbivores = carnivore.eat(self.pop_herbivores)
 
-    def animal_mate(self):
+    def animal_mating(self):
         """
         All the animals in the cell try to mate.
         :return:
@@ -192,12 +192,7 @@ class Desert(Geography):
     geo_p = {'f_max': 0}
 
     def __init__(self):
-<<<<<<< Updated upstream
-        super().__init__(self)
-        self.fodder = 0
-=======
         super().__init__()
->>>>>>> Stashed changes
 
 
 class Ocean(Geography):
@@ -207,12 +202,7 @@ class Ocean(Geography):
     """
 
     def __init__(self):
-<<<<<<< Updated upstream
-        super().__init__(self)
-        self.fodder = 0
-=======
         super().__init__()
->>>>>>> Stashed changes
 
 
 class Mountain(Geography):
@@ -222,9 +212,7 @@ class Mountain(Geography):
     """
 
     def __init__(self):
-<<<<<<< Updated upstream
-        super().__init__(self)
-        self.fodder = 0
+        super().__init__()
 
 
 if __name__ == "__main__":
@@ -244,18 +232,12 @@ if __name__ == "__main__":
     j.animal_mate()
     print(j.herbivore_pop())
     print(j.carnivore_pop())
-=======
-        super().__init__()
 
 
 if __name__ == "__main__":
 
-    m = Mountain()
-    print(m.geo_p['f_max'])
-
-
-    """j = Jungle()
-    for animal in range(10):
+    j = Jungle()
+    for animal in range(100):
         j.add_animal(Herbivore(age=60, weight=10))
     j.add_animal(Carnivore(age=4, weight=80))
     j.add_animal(Carnivore(age=5, weight=40))
@@ -265,7 +247,6 @@ if __name__ == "__main__":
     print(j.pop_carnivores[1].weight)
     #j.animal_mate()
     #print(len(j.pop_herbivores))"""
->>>>>>> Stashed changes
 
 
 
