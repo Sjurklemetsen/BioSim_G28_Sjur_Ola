@@ -7,7 +7,7 @@ import random as rd
 import numpy as np
 
 
-class Fauna:
+class BaseFauna:
     """
     Class for an animal in the fauna
     """
@@ -123,7 +123,7 @@ class Fauna:
             return False
 
 
-class Herbivore(Fauna):
+class Herbivore(BaseFauna):
     p = {
         "w_birth": 8.0,
         "sigma_birth": 1.5,
@@ -155,7 +155,7 @@ class Herbivore(Fauna):
         self.update_fitness()
 
 
-class Carnivore(Fauna):
+class Carnivore(BaseFauna):
     p = {
         "w_birth": 6.0,
         "sigma_birth": 1.0,
@@ -219,19 +219,6 @@ class Carnivore(Fauna):
             else:
                 continue
         return pop_herb
-
-
-        """for herb in pop_herb[::-1]:
-            if w_herb_killed < self.p['F'] \
-                    and rd.random() < self.prob_eating(herb):
-                self.weight += herb.weight * self.p['beta']
-                self.update_fitness()
-                w_herb_killed += herb.weight
-                pop_herb.remove(herb)
-            else:
-                new_pop.append(herb)
-        # carni spiser ikke mer enn F!
-        return new_pop"""
 
 
 if __name__ == "__main__":
