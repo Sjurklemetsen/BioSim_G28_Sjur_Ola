@@ -179,12 +179,15 @@ class Carnivore(Fauna):
         :input: A list of herbivores with sorted fitness.
         :return: Boolean expression
         """
+        prob = (self.fitness - herb.fitness) / self.p['DeltaPhiMax']
+
         if self.fitness <= herb.fitness:
-            return 0
+            return False
         elif 0 < self.fitness - herb.fitness < self.p['DeltaPhiMax']:
-            return (self.fitness - herb.fitness) / self.p['DeltaPhiMax']
+            return prob > rd.random()
         else:
-            return 1
+            return True
+
 
     def eat(self, pop_herb):
         """
@@ -194,10 +197,25 @@ class Carnivore(Fauna):
         update fitness
         :return:
         """
-        new_pop = []
-        w_herb_killed = 0
+        survivors = []
+        F = 0
 
         for herb in pop_herb[::-1]:
+            if self.prob_eating():
+                F += herb.weight
+                if F > self.p['F']:
+                    self.weight += F - self.p['F']
+                    self.update_fitness()
+                elif F <= self.p['F']:
+                    self.weight += herb.weight
+                    self.update_fitness()
+
+            else:
+                survivors.append(herb)
+        return survivors
+
+
+        """for herb in pop_herb[::-1]:
             if w_herb_killed < self.p['F'] \
                     and rd.random() < self.prob_eating(herb):
                 self.weight += herb.weight * self.p['beta']
@@ -207,15 +225,27 @@ class Carnivore(Fauna):
             else:
                 new_pop.append(herb)
         # carni spiser ikke mer enn F!
-        return new_pop
+        return new_pop"""
 
 
 if __name__ == "__main__":
 
     c = Carnivore(age=10, weight=70)
     pop_herb = []
+    F = 0
     for n in range(10):
         pop_herb.append(Herbivore())
+
+    for herb in pop_herb[::1]:
+        if True: #Carnivore.prob_eating()
+            F += herb.weight
+            if F > self.p['F']:
+                self.weight +=
+                pop_herb.remove(herb)
+            # spiser bare litt av herben
+            elif F <= self.p['F']:
+                self.weight += herb.weight
+                self.update_fitness()
     print(pop_herb)
     print(c.eat(pop_herb))
     print(len(pop_herb))
