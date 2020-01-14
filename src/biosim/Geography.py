@@ -120,6 +120,30 @@ class Geography:
 
 
 
+    def animal_mate(self):
+        herb_born = []
+        carn_born = []
+
+        for animal in self.pop_herbivores:
+            if animal.check_birth(len(self.pop_herbivores)):
+                potential_herb = Herbivore()
+                if animal.p['xi'] * potential_herb.weight > animal.weight:
+                    continue
+                else:
+                    herb_born.append(potential_herb)
+                    animal.weight -= animal.p['xi'] * potential_herb.weight
+
+        for animal in self.pop_carnivores:
+            if animal.check_birth(len(self.pop_carnivores)):
+                potential_carn = Carnivore()
+                if animal.p['xi'] * potential_carn.weight > animal.weight:
+                    continue
+                else:
+                    carn_born.append(potential_carn)
+                    animal.weight -= animal.p['xi'] * potential_carn.weight
+        self.pop_herbivores.extend(herb_born)
+        self.pop_carnivores.extend(carn_born)
+
 
 class Jungle(Geography):
     """
@@ -198,6 +222,20 @@ class Mountain:
 if __name__ == "__main__":
     j = Jungle()
     for animal in range(10):
+        j.add_animal(Herbivore(age=5, weight=40))
+    j.add_animal(Carnivore(age=4, weight=40))
+    j.add_animal(Carnivore(age=5, weight=40))
+
+    print(len(j.pop_herbivores))
+    j.animal_mate()
+    print(len(j.pop_herbivores))
+
+
+
+
+    """
+    j = Jungle()
+    for animal in range(10):
         j.add_animal(Herbivore(weight=10))
     j.add_animal(Carnivore(age=4, weight=40))
     print(len(j.pop_herbivores))
@@ -209,11 +247,7 @@ if __name__ == "__main__":
     j.carnivore_eat()
     print(j.pop_carnivores[0].weight)
     print(len(j.pop_herbivores))
-
-
-
-
-
+    """
 
     """j = Jungle()
     j.fodder = 5
@@ -235,7 +269,6 @@ if __name__ == "__main__":
     print(j.pop_herbivores[0].get_weight())
     print(j.pop_herbivores[1].get_weight())
 """
-
 
     """jung = Jungle()
     jung.add_animal(Herbivore(weight=0))
