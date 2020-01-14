@@ -188,8 +188,8 @@ class Carnivore(BaseFauna):
 
         if self.fitness <= herb.fitness:
             return False
-        elif 0 < self.fitness - herb.fitness < self.p['DeltaPhiMax']:
-            return prob > rd.random()
+        elif 0 < self.fitness - herb.fitness < self.p['DeltaPhiMax'] and prob < rd.random():
+            return True
         else:
             return True
 
@@ -222,6 +222,8 @@ class Carnivore(BaseFauna):
 
 
 if __name__ == "__main__":
+    rd.seed(11)
+    print(rd.random()) # 0.827
 
     c = Carnivore(age=10, weight=70)
     pop_herb = [Herbivore() for n in range(100)]

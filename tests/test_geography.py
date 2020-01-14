@@ -11,38 +11,54 @@ class TestGeography:
     Tests for the geography class where we work with the different
     landscapes.
     """
+
     def test_constructor_default(self):
         jung = geo.Jungle()
-        #sava = geo.Savannah()
-        #ocean = geo.Ocean()
+        # sava = geo.Savannah()
+        # ocean = geo.Ocean()
         assert isinstance(jung, geo.Jungle)
-        #assert isinstance(sava, geo.Savannah)
-        #assert isinstance(ocean, geo.Ocean)
-        #assert jung.fodder == 800
-        #assert sava.fodder == 300 and sava.geo_p['alpha'] == 0.3
+        # assert isinstance(sava, geo.Savannah)
+        # assert isinstance(ocean, geo.Ocean)
+        # assert jung.fodder == 800
+        # assert sava.fodder == 300 and sava.geo_p['alpha'] == 0.3
         assert isinstance(jung.pop_herbivores and jung.pop_carnivores, list)
 
     def test_set_parameter(self):
         new_parameters = {'f_max': 1000, 'alpha': 500}
         jung = geo.Jungle()
-        #jung.set_parameter(new_parameters)
-        #assert jung.geo_p['f_max'] == 1000
-        #assert jung.fodder == 1000
+        # jung.set_parameter(new_parameters)
+        # assert jung.geo_p['f_max'] == 1000
+        # assert jung.fodder == 1000
 
-    def test_add_animal(self):
+    def test_populate_cell(self):
         """
+        Tests that herbivores and carnivores population is increased with
+        method and that list contains instances of the animal
+        """
+        j = geo.Jungle()
+        herbs = [geo.Herbivore() for _ in range(10)]
+        carns = [geo.Carnivore() for _ in range(5)]
+        j.populate_cell(herbs)
+        j.populate_cell(carns)
+        print(j.pop_herbivores)
+        assert isinstance(j.pop_herbivores[0], geo.Herbivore)
+        assert len(j.pop_herbivores) == 10
+        assert len(j.pop_carnivores) == 5
+
+    """def test_add_animal(self):
+    
         Tests that herbivore and carnivore population lists expands with the
         method.
         Tests that the list contains an instance fauna
         :return:
-        """
+        
         jung = geo.Jungle()
-        jung.add_animal(geo.Herbivore(age=5, weight=20))
-        jung.add_animal(geo.Herbivore())
-        jung.add_animal(geo.Carnivore())
+        jung.populate_cell([geo.Herbivore(age=5, weight=20)])
+        jung.populate_cell([geo.Herbivore()])
+        jung.populate_cell([geo.Carnivore()])
         assert len(jung.pop_carnivores) == 1
         assert len(jung.pop_herbivores) == 2
-        assert isinstance(jung.pop_herbivores[0], geo.Fauna)
+        assert isinstance(jung.pop_herbivores[0], geo.Herbivore)"""
 
     def test_remove_animals(self):
         """
@@ -51,9 +67,10 @@ class TestGeography:
         :return:
         """
         jung = geo.Jungle()
-        jung.add_animal(geo.Herbivore(weight=0))
-        jung.add_animal(geo.Carnivore(weight=0))
-        assert len(jung.pop_herbivores) == 1
+        herbs = [geo.Herbivore(weight=0), geo.Herbivore(weight=0)]
+        carns = [geo.Carnivore(weight=0)]
+        jung.populate_cell(herbs)
+        jung.populate_cell(carns)
         jung.remove_animals()
         assert len(jung.pop_herbivores) == 0
         assert len(jung.pop_carnivores) == 0
@@ -64,9 +81,7 @@ class TestGeography:
         in the cell
         """
         jung = geo.Jungle()
-        jung.add_animal(geo.Herbivore())
-        jung.add_animal(geo.Herbivore())
-        jung.add_animal(geo.Carnivore())
+        jung.populate_cell([geo.Herbivore(), geo.Herbivore(), geo.Carnivore()])
         assert jung.herbivore_pop() == 2
         assert jung.carnivore_pop() == 1
         assert jung.total_pop() == 3
@@ -76,15 +91,19 @@ class TestGeography:
         Tests if herbivore pop list remains the same when fitness is already
         sorted right.
         trengs mer...
-        :return:
         """
         j = geo.Jungle()
-        j.add_animal(geo.Herbivore(age=20, weight=40))
-        j.add_animal(geo.Herbivore(weight=20))
-        j.add_animal(geo.Herbivore(weight=0))
-        pop = j.pop_herbivores
-        j.sort_animal_fitness(pop)
-        assert j.pop_herbivores == pop
+        s = geo.Savannah()
+        miks = [geo.Herbivore(age=20, weight=40), geo.Herbivore(weight=20),
+                geo.Herbivore(weight=0)]
+        miks2 = [geo.Herbivore(age=20, weight=0), geo.Herbivore(weight=20),
+                 geo.Herbivore(weight=50)]
+        j.populate_cell(miks)
+        s.populate_cell(miks2)
+        j.sort_animal_fitness(miks)
+        s.sort_animal_fitness(miks2)
+        assert j.pop_herbivores == miks
+        assert s.pop_herbivores != miks2
 
     def test_fodder_eaten(self):
         """
@@ -95,7 +114,7 @@ class TestGeography:
         Tests that fodder eaten is 0 when there's no fodder left to eat
         """
         j = geo.Jungle()
-        j.add_animal(geo.Herbivore(weight=10))
+        j.populate_cell([geo.Herbivore(weight=10)])
         jung = j.fodder_eaten()
         assert isinstance(jung, (int, float))
         assert j.fodder == 790 and j.fodder_eaten() == 10
@@ -109,9 +128,8 @@ class TestGeography:
         Test if the herbivore eat method works as it should
         """
         j = geo.Jungle()
-        j.add_animal(geo.Herbivore(weight=0))
-        for animal in range(9):
-            j.add_animal(geo.Herbivore())
+        j.populate_cell([geo.Herbivore(weight=0),
+                         j.populate_cell(geo.Herbivore() for _ in range(9))])
         j.herbivore_eat()
         assert j.fodder == 700
         assert j.pop_herbivores[-1].get_weight() == 9
@@ -126,10 +144,10 @@ class TestGeography:
         Tests that when carni
         """
         j = geo.Jungle()
-        for n in range(1000):
-            j.add_animal(geo.Herbivore(age=60, weight=10))
-        j.add_animal(geo.Carnivore(age=10, weight=60))
-        j.add_animal(geo.Carnivore(weight=30))
+        j.populate_cell([j.populate_cell(geo.Herbivore(age=60, weight=10)
+                                         for _ in range(1000))])
+        j.populate_cell([geo.Carnivore(age=10, weight=60),
+                         geo.Carnivore(weight=30)])
         j.carnivore_eat()
         assert 0 < len(j.pop_herbivores) < 1000
         assert 30 < j.pop_carnivores[1].weight <= 60
@@ -141,11 +159,12 @@ class TestGeography:
         animal of the same species is 100%
         """
         j = geo.Jungle()
-        j.add_animal(geo.Carnivore(age=1, weight=100))
-        j.add_animal(geo.Herbivore(age=1, weight=100))
-        for n in range(7):
-            j.add_animal(geo.Herbivore(age=10, weight=10))
-            j.add_animal(geo.Carnivore(weight=10, age=60))
+        j.populate_cell([geo.Carnivore(age=1, weight=100),
+                         geo.Herbivore(age=1, weight=100)])
+        # j.populate_cell(geo.Carnivore(age=1, weight=100))
+        # j.add_animal(geo.Herbivore(age=1, weight=100))
+        j.populate_cell([geo.Herbivore(age=10, weight=10) for _ in range(7)])
+        j.populate_cell([geo.Carnivore(age=60, weight=10) for _ in range(7)])
         j.animal_mating()
         assert len(j.pop_herbivores) == 9
         assert isinstance(j.pop_herbivores[-1], geo.Herbivore)
