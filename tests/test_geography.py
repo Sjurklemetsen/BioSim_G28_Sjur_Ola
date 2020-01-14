@@ -147,29 +147,28 @@ class TestGeography:
         Tests if ocean is an instance
         :return:
         """
-        o = Ocean()
-        assert issubclass(Ocean, Geography)
-        assert isinstance(o, Ocean)
+        o = geo.Ocean()
+        assert isinstance(o, geo.Ocean)
+        assert o.geo_p['f_max'] is None
 
     def test_mountain(self):
         """
         Test if mountain is an instance
         :return:
         """
-        m = Mountain()
-        assert issubclass(Mountain, Geography)
-        assert isinstance(m, Mountain)
+        m = geo.Mountain()
+        assert isinstance(m, geo.Mountain)
+        assert m.geo_p['f_max'] is None
 
     def test_desert(self):
         """
         Test if the fodder equals zero
         :return:
         """
-        d = Desert()
-        assert issubclass(Desert, Geography)
-        assert isinstance(d, Desert)
-        #assert "default param" f_max == 0
-        pass
+        d = geo.Desert()
+        assert isinstance(d, geo.Desert)
+        assert d.geo_p['f_max'] == 0
+        assert d.fodder == 0
 
     def test_savannah(self):
         """
@@ -177,12 +176,10 @@ class TestGeography:
         Test if fodders in the jungle is updated for each cycle
         :return:
         """
-        s = Savannah()
-        assert issubclass(Savannah, Geography)
-        assert isinstance(s, Savannah)
-        #assert "default param" f_max == 200
-        assert "test if fodder grows to formula each year"
-        pass
+        s = geo.Savannah()
+        assert isinstance(s, geo.Savannah)
+        assert s.geo_p['f_max'] == 300
+        assert s.geo_p['alpha'] == 0.3
 
     def test_jungle(self):
         """

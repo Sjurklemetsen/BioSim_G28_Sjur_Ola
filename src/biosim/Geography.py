@@ -189,10 +189,15 @@ class Desert(Geography):
     """
     Area type that holds no fodder, but animals can inhabit the cells
     """
+    geo_p = {'f_max': 0}
 
     def __init__(self):
+<<<<<<< Updated upstream
         super().__init__(self)
         self.fodder = 0
+=======
+        super().__init__()
+>>>>>>> Stashed changes
 
 
 class Ocean(Geography):
@@ -202,17 +207,22 @@ class Ocean(Geography):
     """
 
     def __init__(self):
+<<<<<<< Updated upstream
         super().__init__(self)
         self.fodder = 0
+=======
+        super().__init__()
+>>>>>>> Stashed changes
 
 
-class Mountain:
+class Mountain(Geography):
     """
     A Mountain cell. No fodder and no animals are allowed to move here
     Mountain cell types are passive in this simulation
     """
 
     def __init__(self):
+<<<<<<< Updated upstream
         super().__init__(self)
         self.fodder = 0
 
@@ -234,6 +244,28 @@ if __name__ == "__main__":
     j.animal_mate()
     print(j.herbivore_pop())
     print(j.carnivore_pop())
+=======
+        super().__init__()
+
+
+if __name__ == "__main__":
+
+    m = Mountain()
+    print(m.geo_p['f_max'])
+
+
+    """j = Jungle()
+    for animal in range(10):
+        j.add_animal(Herbivore(age=60, weight=10))
+    j.add_animal(Carnivore(age=4, weight=80))
+    j.add_animal(Carnivore(age=5, weight=40))
+    j.carnivore_eat()
+    print(len(j.pop_herbivores))
+    print(j.pop_carnivores[0].weight)
+    print(j.pop_carnivores[1].weight)
+    #j.animal_mate()
+    #print(len(j.pop_herbivores))"""
+>>>>>>> Stashed changes
 
 
 
