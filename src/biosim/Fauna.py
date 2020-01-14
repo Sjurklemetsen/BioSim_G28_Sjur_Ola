@@ -99,7 +99,11 @@ class Fauna:
         :return: Boolean expression
         """
         prob_move = self.p['mu'] * self.update_fitness()
-        return rd.random() < prob_move
+
+        if rd.random() < prob_move:
+            return True
+        else:
+            return False
 
     def check_birth(self, n_animals):
         """
@@ -197,22 +201,24 @@ class Carnivore(Fauna):
         update fitness
         :return:
         """
-        survivors = []
         F = 0
 
         for herb in pop_herb[::-1]:
             if self.prob_eating(herb):
                 F += herb.weight
-                if F > self.p['F']:
+                if F >= self.p['F']:
                     self.weight += (F - self.p['F'])*self.p['beta']
                     self.update_fitness()
-                elif F <= self.p['F']:
+                    pop_herb.remove(herb)
+                    break
+                elif F < self.p['F']:
                     self.weight += herb.weight*self.p['beta']
                     self.update_fitness()
+                    pop_herb.remove(herb)
 
             else:
-                survivors.append(herb)
-        return survivors
+                continue
+        return pop_herb
 
 
         """for herb in pop_herb[::-1]:
@@ -231,8 +237,7 @@ class Carnivore(Fauna):
 if __name__ == "__main__":
 
     c = Carnivore(age=10, weight=70)
-    pop_herb = [Herbivore(), Herbivore(), Herbivore(), Herbivore()]
-    print(len(c.eat(pop_herb)))
+    pop_herb = [Herbivore() for n in range(100)]
     print(len(pop_herb))
 
 
