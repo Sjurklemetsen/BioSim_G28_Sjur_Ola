@@ -182,7 +182,6 @@ class Jungle(BaseGeography):
     def __init__(self):
         super().__init__()
 
-
     def fodder_growth(self):
         """
         Replenishes fodder each year
@@ -199,7 +198,6 @@ class Savannah(BaseGeography):
 
     def __init__(self):
         super().__init__()
-
 
     def fodder_growth(self):
         """
@@ -225,34 +223,20 @@ class Ocean(BaseGeography):
     A Ocean. No fodder and no animals are allowed to move here
     Ocean cell types are passive in this simulation
     """
-
     def __init__(self):
-<<<<<<< Updated upstream
         super().__init__()
-
-
-class Mountain(Geography):
-=======
-        super().__init__(self)
-        self.fodder = 0
         self.animals_here = False
 
 
 class Mountain(BaseGeography):
->>>>>>> Stashed changes
     """
     A Mountain cell. No fodder and no animals are allowed to move here
     Mountain cell types are passive in this simulation
     """
 
     def __init__(self):
-<<<<<<< Updated upstream
         super().__init__()
-=======
-        super().__init__(self)
-        self.fodder = 0
         self.animals_here = False
->>>>>>> Stashed changes
 
 
 if __name__ == "__main__":
