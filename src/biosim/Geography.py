@@ -75,7 +75,8 @@ class Geography:
         Sort the herbivores and carnivores in the cell after their fitness
         :return:
         """
-        return population.sort(key=lambda animal: animal.fitness, reverse=True)
+        population.sort(key=lambda animal: animal.fitness, reverse=True)
+        return population
 
     def fodder_eaten(self):
         """
@@ -89,9 +90,9 @@ class Geography:
             self.fodder -= appetite
             return appetite
         elif 0 < self.fodder < appetite:
-            appetite = self.fodder
+            ate = self.fodder
             self.fodder = 0
-            return appetite
+            return ate
         else:
             return 0
 
@@ -106,17 +107,39 @@ class Geography:
 
     def carnivore_eat(self):
         """
-        Carnivore eat
+        All the carnivores in the cell tries to eat
         :return: 
         """
-        self.sort_animal_finess(self.pop_carnivores)
-        self.sorted_herbivores()
+        self.sort_animal_fitness(self.pop_carnivores)
+        self.sort_animal_fitness(self.pop_herbivores)
+
+        for carnivore in self.pop_carnivores:
+            self.pop_herbivores = carnivore.eat(self.pop_herbivores)
+
+
+    def animal_mate(self):
+        herb_born = []
+        carn_born = []
+
+        for animal in self.pop_herbivores:
+            if animal.check_birth(len(self.pop_herbivores)):
+                potential_herb = Herbivore()
+                if animal.p['xi'] * potential_herb.weight > animal.weight:
+                    continue
+                else:
+                    herb_born.append(potential_herb)
+                    animal.weight -= animal.p['xi'] * potential_herb.weight
+
         for animal in self.pop_carnivores:
-            self.sorted_herbivores()
-            # animal.eat(weight_killed_animal) # Carnivore eat and gain weight
-            self.sorted_herbivores()
-            self.herbivore_pop().pop[-1]  # Herbivore with worst fitness die
-        pass
+            if animal.check_birth(len(self.pop_carnivores)):
+                potential_carn = Carnivore()
+                if animal.p['xi'] * potential_carn.weight > animal.weight:
+                    continue
+                else:
+                    carn_born.append(potential_carn)
+                    animal.weight -= animal.p['xi'] * potential_carn.weight
+        self.pop_herbivores.extend(herb_born)
+        self.pop_carnivores.extend(carn_born)
 
 
 class Jungle(Geography):
@@ -195,6 +218,46 @@ class Mountain:
 
 if __name__ == "__main__":
     j = Jungle()
+    for animal in range(10):
+        j.add_animal(Herbivore(age=60, weight=10))
+    j.add_animal(Carnivore(age=4, weight=80))
+    j.add_animal(Carnivore(age=5, weight=40))
+    j.carnivore_eat()
+    print(len(j.pop_herbivores))
+    print(j.pop_carnivores[0].weight)
+    print(j.pop_carnivores[1].weight)
+    #j.animal_mate()
+    #print(len(j.pop_herbivores))
+
+
+
+
+    """
+    j = Jungle()
+    for animal in range(10):
+        j.add_animal(Herbivore(weight=10))
+    j.add_animal(Carnivore(age=4, weight=40))
+    print(len(j.pop_herbivores))
+    print(len(j.pop_carnivores))
+    #print((j.pop_carnivores[0].fitness - j.pop_herbivores[0].fitness) / 10)
+    #print(j.pop_carnivores[0].weight)
+    #j.sort_animal_fitness(j.pop_herbivores)
+    print(len(j.pop_herbivores))
+    j.carnivore_eat()
+    print(j.pop_carnivores[0].weight)
+    print(len(j.pop_herbivores))
+    """
+
+    """j = Jungle()
+    j.fodder = 5
+    print(j.fodder)
+    print(j.fodder_eaten())
+    j.fodder_eaten()
+    print(j.fodder)
+    print(j.fodder_eaten())"""
+
+    """
+    j = Jungle()
     j.add_animal(Herbivore(weight=10))
     j.add_animal(Herbivore(weight=5))
     print(j.fodder)
@@ -204,15 +267,7 @@ if __name__ == "__main__":
     print(j.fodder)
     print(j.pop_herbivores[0].get_weight())
     print(j.pop_herbivores[1].get_weight())
-
-
-
-
-
-
-
-
-
+"""
 
     """jung = Jungle()
     jung.add_animal(Herbivore(weight=0))

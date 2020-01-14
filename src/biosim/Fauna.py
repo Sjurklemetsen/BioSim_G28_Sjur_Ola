@@ -48,16 +48,14 @@ class Fauna:
 
     def aging(self):
         """
-        Age og the animals increase by one for each year
-        :return:
+        Age of the animals increase by one each year
         """
         self.age += 1
         self.update_fitness()
 
     def weight_decrease(self):
         """
-        The weight of the animal decrease for each year
-        :return:
+        The weight of the animal decrease each year
         """
         self.weight -= self.p['eta'] * self.weight
         self.update_fitness()
@@ -70,7 +68,7 @@ class Fauna:
 
     def update_fitness(self):
         """
-        Update the fitness of the animal based on the new age and weight
+        Update the fitness of the animal based on age and weight
         :return: New updated value: float
         """
         if self.weight <= 0:
@@ -173,16 +171,25 @@ class Carnivore(Fauna):
     }
 
     def __init__(self, age=0, weight=None):
-        super().__init__(age=0, weight=weight)
+        super().__init__(age=age, weight=weight)
 
-    def prob_eating(self, n_herb):
+    def prob_eating(self, herb):
         """
-        Chances for a carnivore to eat
+        Chances for a carnivore to eat a herbivore
+        :input: A list of herbivores with sorted fitness.
         :return: Boolean expression
         """
-        pass
+        prob = (self.fitness - herb.fitness) / self.p['DeltaPhiMax']
 
-    def eat(self, weight_killed_animal):
+        if self.fitness <= herb.fitness:
+            return False
+        elif 0 < self.fitness - herb.fitness < self.p['DeltaPhiMax']:
+            return prob > rd.random()
+        else:
+            return True
+
+
+    def eat(self, pop_herb):
         """
         The weight of the animal increase every time the animal eat
         The amount of herbivores decrease if a carnivore eats
@@ -190,13 +197,45 @@ class Carnivore(Fauna):
         update fitness
         :return:
         """
-        #if prob_eating is True:
-            ## Carnivore eat and gain weight and fitness
+        survivors = []
+        F = 0
+
+        for herb in pop_herb[::-1]:
+            if self.prob_eating(herb):
+                F += herb.weight
+                if F > self.p['F']:
+                    self.weight += (F - self.p['F'])*self.p['beta']
+                    self.update_fitness()
+                elif F <= self.p['F']:
+                    self.weight += herb.weight*self.p['beta']
+                    self.update_fitness()
+
+            else:
+                survivors.append(herb)
+        return survivors
+
+
+        """for herb in pop_herb[::-1]:
+            if w_herb_killed < self.p['F'] \
+                    and rd.random() < self.prob_eating(herb):
+                self.weight += herb.weight * self.p['beta']
+                self.update_fitness()
+                w_herb_killed += herb.weight
+                pop_herb.remove(herb)
+            else:
+                new_pop.append(herb)
+        # carni spiser ikke mer enn F!
+        return new_pop"""
 
 
 if __name__ == "__main__":
-    herb = Herbivore(weight=60, age=20)
-    print(herb.check_migration())
+
+    c = Carnivore(age=10, weight=70)
+    pop_herb = [Herbivore(), Herbivore(), Herbivore(), Herbivore()]
+    print(len(c.eat(pop_herb)))
+    print(len(pop_herb))
+
+
 
     """n_animals = 60
     p = min(1, 0.2 * herb.update_fitness() * (n_animals - 1))
