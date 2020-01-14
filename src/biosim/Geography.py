@@ -116,28 +116,35 @@ class Geography:
         for carnivore in self.pop_carnivores:
             self.pop_herbivores = carnivore.eat(self.pop_herbivores)
 
-
     def animal_mate(self):
+        """
+        All the animals in the cell try to mate.
+        :return:
+        """
         herb_born = []
         carn_born = []
 
         for animal in self.pop_herbivores:
-            if animal.check_birth(len(self.pop_herbivores)):
+            if animal.check_birth(self.herbivore_pop()):
                 potential_herb = Herbivore()
                 if animal.p['xi'] * potential_herb.weight > animal.weight:
                     continue
                 else:
                     herb_born.append(potential_herb)
                     animal.weight -= animal.p['xi'] * potential_herb.weight
-
+            else:
+                continue
         for animal in self.pop_carnivores:
-            if animal.check_birth(len(self.pop_carnivores)):
+            if animal.check_birth(self.carnivore_pop()):
                 potential_carn = Carnivore()
                 if animal.p['xi'] * potential_carn.weight > animal.weight:
                     continue
                 else:
                     carn_born.append(potential_carn)
                     animal.weight -= animal.p['xi'] * potential_carn.weight
+            else:
+                continue
+
         self.pop_herbivores.extend(herb_born)
         self.pop_carnivores.extend(carn_born)
 
@@ -185,9 +192,7 @@ class Desert(Geography):
 
     def __init__(self):
         super().__init__(self)
-        pass
-
-    pass
+        self.fodder = 0
 
 
 class Ocean(Geography):
@@ -198,8 +203,7 @@ class Ocean(Geography):
 
     def __init__(self):
         super().__init__(self)
-
-    pass
+        self.fodder = 0
 
 
 class Mountain:
@@ -207,27 +211,29 @@ class Mountain:
     A Mountain cell. No fodder and no animals are allowed to move here
     Mountain cell types are passive in this simulation
     """
-    f_max = None
 
     def __init__(self):
         super().__init__(self)
-        pass
-
-    pass
+        self.fodder = 0
 
 
 if __name__ == "__main__":
     j = Jungle()
-    for animal in range(10):
-        j.add_animal(Herbivore(age=60, weight=10))
-    j.add_animal(Carnivore(age=4, weight=80))
+    j.add_animal(Herbivore(age=0, weight=40))
+    j.add_animal(Herbivore(age=5, weight=27))
+    j.add_animal(Herbivore(age=50, weight=83))
+    j.add_animal(Herbivore(age=25, weight=35))
+    j.add_animal(Herbivore(age=18, weight=60))
+    j.add_animal(Herbivore(age=10, weight=45))
+
     j.add_animal(Carnivore(age=5, weight=40))
-    j.carnivore_eat()
-    print(len(j.pop_herbivores))
-    print(j.pop_carnivores[0].weight)
-    print(j.pop_carnivores[1].weight)
-    #j.animal_mate()
-    #print(len(j.pop_herbivores))
+    j.add_animal(Carnivore(age=5, weight=40))
+
+    print(j.herbivore_pop())
+    print(j.carnivore_pop())
+    j.animal_mate()
+    print(j.herbivore_pop())
+    print(j.carnivore_pop())
 
 
 
