@@ -30,6 +30,7 @@ class BaseGeography:
         self.fodder = self.geo_p['f_max']
         self.animals_here = True
 
+    # I tilfelle vi trenger:
     #def add_animal(self, animal):
         """
         Add an instance of the animal class to the list of herbivores or
@@ -45,25 +46,23 @@ class BaseGeography:
         """
         Populate the cell with animals
         :param population_list: A list with animal instances
-        :return:
         """
-
         for animal in population_list:
             if type(animal).__name__ == 'Herbivore':
                 self.pop_herbivores.append(animal)
-            else:
+            elif type(animal).__name__ == 'Carnivore':
                 self.pop_carnivores.append(animal)
 
     def remove_animals(self):
         """
         This method removes the dead animals from a cell
         """
-        for animal in self.pop_herbivores:
-            if animal.check_death():
-                self.pop_herbivores.remove(animal)
-        for animal in self.pop_carnivores:
-            if animal.check_death():
-                self.pop_carnivores.remove(animal)
+        for herb in self.pop_herbivores[::-1]:
+            if herb.check_death():
+                self.pop_herbivores.remove(herb)
+        for carn in self.pop_carnivores[::-1]:
+            if carn.check_death():
+                self.pop_carnivores.remove(carn)
 
     def herbivore_pop(self):
         """
@@ -240,6 +239,8 @@ class Mountain(BaseGeography):
 
 
 if __name__ == "__main__":
+    a = rd.random(1111)
+    print(a)
     j = Jungle()
     l = [Herbivore(), Herbivore(), Carnivore(), Herbivore(), Carnivore()]
     j.populate_cell(l)
