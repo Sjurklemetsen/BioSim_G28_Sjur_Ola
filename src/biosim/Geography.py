@@ -27,6 +27,7 @@ class BaseGeography:
     def __init__(self):
         self.pop_herbivores = []
         self.pop_carnivores = []
+        self.pop_total = []
         self.fodder = self.geo_p['f_max']
         self.animals_here = True
 
@@ -53,7 +54,7 @@ class BaseGeography:
             elif type(animal).__name__ == 'Carnivore':
                 self.pop_carnivores.append(animal)
 
-    def remove_animals(self):
+    def animal_die(self):
         """
         This method removes the dead animals from a cell
         """
@@ -91,6 +92,28 @@ class BaseGeography:
         population.sort(key=lambda animal: animal.fitness, reverse=True)
         return population
 
+
+    def add_animal(self):
+        """
+        Add an animal to the cell
+        :return:
+        """
+        pass
+
+    def remove_animal(self):
+        """
+        Remove an animal from the cell
+        :return:
+        """
+        pass
+
+    def propensity(self):
+        """
+        Find the propensity for the cell
+        :return:
+        """
+        pass
+        
     def fodder_eaten(self):
         """
         A method that removes the fodder that gets eaten by the animals
@@ -129,6 +152,16 @@ class BaseGeography:
         for carnivore in self.pop_carnivores:
             self.pop_herbivores = carnivore.eat(self.pop_herbivores)
 
+    def get_herb_weight(self):
+        """
+        Method to get the combined weight of all the herbivores in the cell
+        :return: int
+        """
+        herb_weight = 0
+        for herb in self.pop_herbivores:
+            herb_weight += herb.weight
+        return herb_weight
+
     def animal_mating(self):
         """
         All the animals in the cell try to mate.
@@ -160,15 +193,6 @@ class BaseGeography:
 
         self.pop_herbivores.extend(herb_born)
         self.pop_carnivores.extend(carn_born)
-
-    def animals_migrate(self, population, cell):
-        """
-        A method to find which animals are going to migrate to another cell
-        :return:
-        """
-        migrating_animals = []
-        for animal in population:
-            pass
 
 
 class Jungle(BaseGeography):
