@@ -18,11 +18,11 @@ class Map:
 
     def create_map(self, area_type):
         string = area_type.replace('\n', '')
+        string.replace(' ', '')
         area_list = list(string)
         rows = len(area_type.split('\n'))
         cols = int(len(area_list) / rows)
         coordinates = [(x, y) for x in range(rows) for y in range(cols)]
-        print(area_list)
 
         for ind, val in enumerate(area_list):
             if val == 'O':
@@ -40,14 +40,14 @@ class Map:
             self.map_dict[coordinates[ind]] = area_list[ind]
         return self.map_dict
 
-    def check_string(self):
+    def check_string(self, string):
         """
         Check if the string input is one of the allowed categories
         Check if the edges at the map is ocean
         Check if the map is a square
         """
         accepted_landscape = ["J", "S", "D", "M", "O"]
-        for row in self.area_type:
+        for row in string:
             for cell in row:
                 if cell not in accepted_landscape:
                     raise ValueError(' That is an invalid landscape')
@@ -104,5 +104,4 @@ OSSSSJJJJDDJJJJOOOOOO
 OOSSSSJJJJJJJJOOOOOOO
 OOOSSSSJJJJJJJOOOOOOO
 OOOOOOOOOOOOOOOOOOOOO'''
-
     print(Map().create_map(area_type))
