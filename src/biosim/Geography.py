@@ -161,12 +161,12 @@ class BaseGeography:
         self.pop_herbivores.extend(herb_born)
         self.pop_carnivores.extend(carn_born)
 
-    def animals_migrate(self, population, cells):
+    def animals_migrate(self, population, cell):
         """
         A method to find which animals are going to migrate to another cell
         :return:
         """
-        migrating_animals= []
+        migrating_animals = []
         for animal in population:
             pass
 
