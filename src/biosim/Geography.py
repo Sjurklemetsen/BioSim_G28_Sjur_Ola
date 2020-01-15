@@ -4,6 +4,7 @@ __author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
 __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
 from src.biosim.Fauna import *
+import math
 
 
 class BaseGeography:
@@ -92,28 +93,37 @@ class BaseGeography:
         population.sort(key=lambda animal: animal.fitness, reverse=True)
         return population
 
-
-    def add_animal(self):
+    def add_animal(self, animal):
         """
         Add an animal to the cell
         :return:
         """
-        pass
+        if type(animal).__name__ == 'Herbivore':
+            self.pop_herbivores.append(animal)
+        else:
+            self.pop_carnivores.append(animal)
 
-    def remove_animal(self):
+    def remove_animal(self, animal):
         """
         Remove an animal from the cell
         :return:
         """
-        pass
+        if type(animal).__name__ == 'Herbivore':
+            self.pop_herbivores.remove(animal)
+        else:
+            self.pop_carnivores.remove(animal)
 
     def propensity(self):
         """
         Find the propensity for the cell
         :return:
         """
-        pass
-        
+        if isinstance(self, Ocean) or isinstance(self, Mountain):
+            return 0
+        else:
+            e_k = self.fodder/(self.herbivore_pop() + 1) / self.fodder
+            return math.exp(self.herbivore_pop[0].p['F']*e_k)
+
     def fodder_eaten(self):
         """
         A method that removes the fodder that gets eaten by the animals
@@ -193,6 +203,11 @@ class BaseGeography:
 
         self.pop_herbivores.extend(herb_born)
         self.pop_carnivores.extend(carn_born)
+
+    def age_weightloss(self):
+        for animal in (self.pop_carnivores + self.pop_herbivores):
+            animal.aging()
+            animal.weight_decrease()
 
 
 class Jungle(BaseGeography):
