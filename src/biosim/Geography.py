@@ -6,7 +6,7 @@ __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 from src.biosim.Fauna import *
 
 
-class Geography:
+class BaseGeography:
     """
     A class that contain cell with a certain area type and with an animal
     inside it
@@ -28,28 +28,41 @@ class Geography:
         self.pop_herbivores = []
         self.pop_carnivores = []
         self.fodder = self.geo_p['f_max']
+        self.animals_here = True
 
-    def add_animal(self, animal):
+    # I tilfelle vi trenger:
+    #def add_animal(self, animal):
         """
         Add an instance of the animal class to the list of herbivores or
         carnivores.
         :param animal: An instance of the Fauna subclasses
         """
-        if type(animal).__name__ == 'Herbivore':
-            self.pop_herbivores.append(animal)
-        elif type(animal).__name__ == 'Carnivore':
-            self.pop_carnivores.append(animal)
+        #if type(animal).__name__ == 'Herbivore':
+            #self.pop_herbivores.append(animal)
+        #elif type(animal).__name__ == 'Carnivore':
+            #self.pop_carnivores.append(animal)
+
+    def populate_cell(self, population_list):
+        """
+        Populate the cell with animals
+        :param population_list: A list with animal instances
+        """
+        for animal in population_list:
+            if type(animal).__name__ == 'Herbivore':
+                self.pop_herbivores.append(animal)
+            elif type(animal).__name__ == 'Carnivore':
+                self.pop_carnivores.append(animal)
 
     def remove_animals(self):
         """
         This method removes the dead animals from a cell
         """
-        for animal in self.pop_herbivores:
-            if animal.check_death():
-                self.pop_herbivores.remove(animal)
-        for animal in self.pop_carnivores:
-            if animal.check_death():
-                self.pop_carnivores.remove(animal)
+        for herb in self.pop_herbivores[::-1]:
+            if herb.check_death():
+                self.pop_herbivores.remove(herb)
+        for carn in self.pop_carnivores[::-1]:
+            if carn.check_death():
+                self.pop_carnivores.remove(carn)
 
     def herbivore_pop(self):
         """
@@ -116,33 +129,49 @@ class Geography:
         for carnivore in self.pop_carnivores:
             self.pop_herbivores = carnivore.eat(self.pop_herbivores)
 
-
-    def animal_mate(self):
+    def animal_mating(self):
+        """
+        All the animals in the cell try to mate.
+        :return:
+        """
         herb_born = []
         carn_born = []
 
         for animal in self.pop_herbivores:
-            if animal.check_birth(len(self.pop_herbivores)):
+            if animal.check_birth(self.herbivore_pop()):
                 potential_herb = Herbivore()
                 if animal.p['xi'] * potential_herb.weight > animal.weight:
                     continue
                 else:
                     herb_born.append(potential_herb)
                     animal.weight -= animal.p['xi'] * potential_herb.weight
-
+            else:
+                continue
         for animal in self.pop_carnivores:
-            if animal.check_birth(len(self.pop_carnivores)):
+            if animal.check_birth(self.carnivore_pop()):
                 potential_carn = Carnivore()
                 if animal.p['xi'] * potential_carn.weight > animal.weight:
                     continue
                 else:
                     carn_born.append(potential_carn)
                     animal.weight -= animal.p['xi'] * potential_carn.weight
+            else:
+                continue
+
         self.pop_herbivores.extend(herb_born)
         self.pop_carnivores.extend(carn_born)
 
+    def animals_migrate(self, population, cell):
+        """
+        A method to find which animals are going to migrate to another cell
+        :return:
+        """
+        migrating_animals = []
+        for animal in population:
+            pass
 
-class Jungle(Geography):
+
+class Jungle(BaseGeography):
     """
     A jungle cell where carnivore can hunt herbivore and herbivore can eat food
     Fodder replenish each year to f_max.
@@ -160,7 +189,7 @@ class Jungle(Geography):
         self.fodder = self.geo_p['f_max']
 
 
-class Savannah(Geography):
+class Savannah(BaseGeography):
     """
     A savannah cell that holds fodder, but can suffer overgrazing
     """
@@ -178,47 +207,70 @@ class Savannah(Geography):
                                               - self.fodder)
 
 
-class Desert(Geography):
+class Desert(BaseGeography):
     """
     Area type that holds no fodder, but animals can inhabit the cells
     """
+    geo_p = {'f_max': 0}
 
     def __init__(self):
-        super().__init__(self)
-        pass
-
-    pass
+        super().__init__()
 
 
-class Ocean(Geography):
+class Ocean(BaseGeography):
     """
     A Ocean. No fodder and no animals are allowed to move here
     Ocean cell types are passive in this simulation
     """
-
     def __init__(self):
-        super().__init__(self)
+        super().__init__()
+        self.animals_here = False
 
-    pass
 
-
-class Mountain:
+class Mountain(BaseGeography):
     """
     A Mountain cell. No fodder and no animals are allowed to move here
     Mountain cell types are passive in this simulation
     """
-    f_max = None
 
     def __init__(self):
-        super().__init__(self)
-        pass
-
-    pass
+        super().__init__()
+        self.animals_here = False
 
 
 if __name__ == "__main__":
+    a = rd.random(1111)
+    print(a)
     j = Jungle()
-    for animal in range(10):
+    l = [Herbivore(), Herbivore(), Carnivore(), Herbivore(), Carnivore()]
+    j.populate_cell(l)
+    print(j.herbivore_pop())
+    print(j.carnivore_pop())
+
+    """
+    j = Jungle()
+    j.add_animal(Herbivore(age=0, weight=40))
+    j.add_animal(Herbivore(age=5, weight=27))
+    j.add_animal(Herbivore(age=50, weight=83))
+    j.add_animal(Herbivore(age=25, weight=35))
+    j.add_animal(Herbivore(age=18, weight=60))
+    j.add_animal(Herbivore(age=10, weight=45))
+
+    j.add_animal(Carnivore(age=5, weight=40))
+    j.add_animal(Carnivore(age=5, weight=40))
+
+    print(j.herbivore_pop())
+    print(j.carnivore_pop())
+    j.animal_mate()
+    print(j.herbivore_pop())
+    print(j.carnivore_pop())
+    """
+
+
+if __name__ == "__main__":
+
+    j = Jungle()
+    for animal in range(100):
         j.add_animal(Herbivore(age=60, weight=10))
     j.add_animal(Carnivore(age=4, weight=80))
     j.add_animal(Carnivore(age=5, weight=40))
@@ -227,7 +279,7 @@ if __name__ == "__main__":
     print(j.pop_carnivores[0].weight)
     print(j.pop_carnivores[1].weight)
     #j.animal_mate()
-    #print(len(j.pop_herbivores))
+    #print(len(j.pop_herbivores))"""
 
 
 

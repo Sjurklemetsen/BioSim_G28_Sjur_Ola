@@ -7,7 +7,7 @@ import random as rd
 import numpy as np
 
 
-class Fauna:
+class BaseFauna:
     """
     Class for an animal in the fauna
     """
@@ -30,13 +30,14 @@ class Fauna:
         'DeltaPhiMax': None
     }
 
-    def set_parameter(self, new_p):
+    @classmethod
+    def set_parameter(cls, new_p):
         """
         This method let you set new parameters instead of the default ones
         :param new_p: dictionary with new parameters
         """
         for key in new_p:
-            self.p[key] = new_p
+            cls.p[key] = new_p
 
     def __init__(self, age=0, weight=None):
         self.age = age
@@ -98,7 +99,11 @@ class Fauna:
         :return: Boolean expression
         """
         prob_move = self.p['mu'] * self.update_fitness()
-        return rd.random() < prob_move
+
+        if rd.random() < prob_move:
+            return True
+        else:
+            return False
 
     def check_birth(self, n_animals):
         """
@@ -118,7 +123,7 @@ class Fauna:
             return False
 
 
-class Herbivore(Fauna):
+class Herbivore(BaseFauna):
     p = {
         "w_birth": 8.0,
         "sigma_birth": 1.5,
@@ -150,7 +155,7 @@ class Herbivore(Fauna):
         self.update_fitness()
 
 
-class Carnivore(Fauna):
+class Carnivore(BaseFauna):
     p = {
         "w_birth": 6.0,
         "sigma_birth": 1.0,
@@ -183,11 +188,10 @@ class Carnivore(Fauna):
 
         if self.fitness <= herb.fitness:
             return False
-        elif 0 < self.fitness - herb.fitness < self.p['DeltaPhiMax']:
-            return prob > rd.random()
+        elif 0 < self.fitness - herb.fitness < self.p['DeltaPhiMax'] and prob < rd.random():
+            return True
         else:
             return True
-
 
     def eat(self, pop_herb):
         """
@@ -197,42 +201,32 @@ class Carnivore(Fauna):
         update fitness
         :return:
         """
-        survivors = []
         F = 0
 
         for herb in pop_herb[::-1]:
             if self.prob_eating(herb):
                 F += herb.weight
-                if F > self.p['F']:
+                if F >= self.p['F']:
                     self.weight += (F - self.p['F'])*self.p['beta']
                     self.update_fitness()
-                elif F <= self.p['F']:
+                    pop_herb.remove(herb)
+                    break
+                elif F < self.p['F']:
                     self.weight += herb.weight*self.p['beta']
                     self.update_fitness()
+                    pop_herb.remove(herb)
 
             else:
-                survivors.append(herb)
-        return survivors
-
-
-        """for herb in pop_herb[::-1]:
-            if w_herb_killed < self.p['F'] \
-                    and rd.random() < self.prob_eating(herb):
-                self.weight += herb.weight * self.p['beta']
-                self.update_fitness()
-                w_herb_killed += herb.weight
-                pop_herb.remove(herb)
-            else:
-                new_pop.append(herb)
-        # carni spiser ikke mer enn F!
-        return new_pop"""
+                continue
+        return pop_herb
 
 
 if __name__ == "__main__":
+    rd.seed(11)
+    print(rd.random()) # 0.827
 
     c = Carnivore(age=10, weight=70)
-    pop_herb = [Herbivore(), Herbivore(), Herbivore(), Herbivore()]
-    print(len(c.eat(pop_herb)))
+    pop_herb = [Herbivore() for n in range(100)]
     print(len(pop_herb))
 
 
