@@ -69,22 +69,6 @@ class Map:
         """
         pass
 
-    def migrating_animals(self, position):
-        """
-        Move the animals to a different cell
-        # test at de summeres til 1
-        :return:
-        """
-        prob = []
-        pro = self.neighbour_propensity()
-        direction = ['South', 'North', 'East', 'West']
-        for i in range(4):
-            prob.append(pro[i]/sum(pro))  # S N Ø V
-        if sum(prob) == 0:
-            return False
-        else:
-            return random.choices(direction, prob)
-
     def move(self):
         """
         The animal moves from one cell to another
@@ -103,23 +87,35 @@ class Map:
                       (position[0], position[1] - 1)]  # V
         return neighbours
 
-    def neighbour_propensity(self, position, type_fodder):
-        """ Calculates propensity of cells neighbours
-        :param position: tuple
-        :param type_fodder: int
-        :return: list
+    def migrate_to(self, position):
         """
+        Calculates which neighbour cell animal migrates to
+        :return: tuple
+        """
+        neigh = self.find_neighbor_cells(position)
         propensity = []
-        for neighbour in self.find_neighbor_cells(position):
-            land = self.map_dict[neighbour]
-            if isinstance(land, Ocean) or isinstance(land, Mountain):
-                propensity.append(0)
-            else:
-                e_k = type_fodder/((land.pop_herbivores + land.pop_carnivores)
-                                   + 1)*land.p['F']
-                prop = math.exp(land.p['landa']*e_k)
-                propensity.append(prop)
-        return propensity
+        p = []
+        for cell in neigh:
+            propensity.append(self.map_dict[cell].items())
+        for prop in propensity:
+            p.append(propensity[prop]/sum(propensity))
+
+        coord_prob = []
+        for x, y in zip(neigh, p):
+            coord_prob.append((x, y))
+
+        prob = sorted(coord_prob, key=lambda pro: pro[1])
+        if a <= prob[0][1]:
+            return prob[0][0]
+        elif prob[0][1] < a <= prob[1][1]:
+            return prob[1][0]
+        elif prob[1][1] < a <= prob[2][1]:
+            return prob[2][0]
+        else:
+            return prob[3][0]
+
+    def move(self):
+        for cell in self.map_dict:
 
     def annual_cycle(self):
         """
@@ -134,7 +130,16 @@ class Map:
         7) Death
         :return:
         """
-        pass
+        for coord, land in self.map_dict.items():
+            land.fodder_growth()
+            land.herbivore_eat()
+            land.carnivore_eat()
+            land.animal_mating()
+            land.move() # Trenger en move her
+            land.animal_ages()
+            land.age_weightloss()
+            land.animal_die()
+
 
 
 if __name__ == "__main__":
