@@ -252,7 +252,14 @@ class TestGeography:
         assert isinstance(j.pop_carnivores[-1], geo.Carnivore)
 
     def test_age_weightloss(self):
-        
+        d = geo.Desert()
+        d.populate_cell([geo.Herbivore(age=1, weight=5),
+                         geo.Carnivore(weight=10)])
+        d.age_weightloss()
+        herb = d.pop_herbivores[0]
+        assert herb.age == 2 and herb.weight == 4.75
+        carn = d.pop_carnivores[0]
+        assert carn.age == 1 and carn.weight == 8.75
 
     def test_jungle(self):
         """
