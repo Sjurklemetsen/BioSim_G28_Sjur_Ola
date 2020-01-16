@@ -78,7 +78,7 @@ class BaseGeography:
                 self.pop_carnivores.remove(animal)
         self.pop_total = self.pop_herbivores + self.pop_carnivores
 
-    def animal_die(self):
+    def animals_die(self):
         """
         This method removes the dead animals from a cell
         """
@@ -116,7 +116,7 @@ class BaseGeography:
         population.sort(key=lambda animal: animal.fitness, reverse=True)
         return population
 
-    def propensity_herbivore(self):
+    def propensity_herb(self):
         """
         Find the propensity in the cell for a herbivore
         :return: int
@@ -128,7 +128,7 @@ class BaseGeography:
                                  Herbivore().p['F'])
             return math.exp(Herbivore().p['landa'] * e_k)
 
-    def propensity_carnivore(self):
+    def propensity_carn(self):
         """
         Find the propensity in the cell for a carnivore
         :return: int
@@ -269,7 +269,6 @@ class Savannah(BaseGeography):
     def __init__(self):
         super().__init__()
 
-
     def fodder_growth(self):
         """
         Fodder growth for savannah
@@ -287,7 +286,6 @@ class Desert(BaseGeography):
 
     def __init__(self):
         super().__init__()
-
 
 
 class Ocean(BaseGeography):

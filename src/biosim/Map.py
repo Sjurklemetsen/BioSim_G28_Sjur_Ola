@@ -53,7 +53,17 @@ class Map:
             for cell in row:
                 if cell not in accepted_landscape:
                     raise ValueError(' That is an invalid landscape')
-        pass
+
+        bot_right = max(self.map_dict.keys())
+
+        for coord, cell in self.map_dict.items():
+            
+                if type(cell).__name__ != "Ocean":
+                    raise ValueError('The border of the map cannot be ocean')
+            while coord[0] == bot_right[0] and coord[1] == bot_right[1]:
+                if type(cell).__name__ != "Ocean":
+                    raise ValueError('The border of the map cannot be ocean')
+
 
     def populate_map(self, coordinates, population):
         """
@@ -92,9 +102,10 @@ class Map:
         p = []
         for cell in neigh:
             propensity_list.append(self.map_dict[cell].propensity())
+        if sum(propensity_list) == 0:
+            return position
         for prop in propensity_list:
-            p.append(propensity_list[prop]/sum(propensity_list))
-
+            p.append(propensity_list[prop] / sum(propensity_list))
         coord_prob = []
         for x, y in zip(neigh, p):
             coord_prob.append((x, y))
@@ -115,28 +126,21 @@ class Map:
         The animals move from one cell to another
         :return:
         """
-        for cell in self.map_dict:
-            moving_animals = self.map_dict[cell].check_migration()
-            for animal in moving_animals:
-                if animal.animal_moved is not True:
-                    new_cell = self.migrate_to(cell)
-                    self.map_dict[new_cell].add_animal(animal)
-                    animal.animal_moved = True
-            self.map_dict[cell].remove_animals(moving_animals)
+        for loc, cell in self.map_dict.items():
+            if cell.animals_here:
+                moving_animals = cell.check_migration()
+                for animal in moving_animals:
+                    if animal.animal_moved is not True:
+                        new_cell = self.migrate_to(loc)
+                        self.map_dict[new_cell].add_animal(animal)
+                        animal.animal_moved = True
+                cell.remove_animals(moving_animals)
+            else:
+                continue
 
-        for cell in self.map_dict:
-            for i in self.map_dict[cell].pop_total:
-                i.animal_moved = False
-
-#new_cell = (0,1)
-#pos = (0,0)
-#moving_animals = [Herb(), Carn(), Herb()]
-
-
-
-# cell er den gamle posisjonen
-# new_cell er den nye posisjonen
-# moving animals er en liste med dyr som skal migrere til den nye cellen
+        for loc, cell in self.map_dict.items():
+            for animal in cell.pop_total:
+                animal.animal_moved = False
 
     def annual_cycle(self):
         """
@@ -156,11 +160,9 @@ class Map:
             land.herbivore_eat()
             land.carnivore_eat()
             land.animal_mating()
-            land.move() # Trenger en move her
+            land.move()
             land.age_weightloss()
             land.animal_die()
-
-
 
 
 if __name__ == "__main__":
