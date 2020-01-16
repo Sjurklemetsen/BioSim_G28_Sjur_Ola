@@ -32,17 +32,17 @@ class BaseGeography:
         self.fodder = self.geo_p['f_max']
         self.animals_here = True
 
-    # I tilfelle vi trenger:
-    #def add_animal(self, animal):
+        # I tilfelle vi trenger:
+        # def add_animal(self, animal):
         """
         Add an instance of the animal class to the list of herbivores or
         carnivores.
         :param animal: An instance of the Fauna subclasses
         """
-        #if type(animal).__name__ == 'Herbivore':
-            #self.pop_herbivores.append(animal)
-        #elif type(animal).__name__ == 'Carnivore':
-            #self.pop_carnivores.append(animal)
+        # if type(animal).__name__ == 'Herbivore':
+        # self.pop_herbivores.append(animal)
+        # elif type(animal).__name__ == 'Carnivore':
+        # self.pop_carnivores.append(animal)
 
     def populate_cell(self, population_list):
         """
@@ -54,6 +54,19 @@ class BaseGeography:
                 self.pop_herbivores.append(animal)
             elif type(animal).__name__ == 'Carnivore':
                 self.pop_carnivores.append(animal)
+        self.pop_total = self.pop_herbivores + self.pop_carnivores
+
+    def remove_animals(self, population_list):
+        """
+        Remove an animal from the cell
+        :return:
+        """
+        for animal in population_list:
+            if type(animal).__name__ == 'Herbivore':
+                self.pop_herbivores.remove(animal)
+            elif type(animal).__name__ == 'Carnivore':
+                self.pop_carnivores.remove(animal)
+        self.pop_total = self.pop_herbivores + self.pop_carnivores
 
     def animal_die(self):
         """
@@ -82,7 +95,7 @@ class BaseGeography:
         """
         :return: Total population in a cell
         """
-        return len(self.pop_herbivores) + len(self.pop_carnivores)
+        return len(self.pop_total)
 
     @staticmethod
     def sort_animal_fitness(population):
@@ -113,16 +126,44 @@ class BaseGeography:
         else:
             self.pop_carnivores.remove(animal)
 
-    def propensity(self):
+    def propensity_herbivore(self):
         """
-        Find the propensity for the cell
-        :return:
+        Find the propensity in the cell for a herbivore
+        :return: int
         """
         if isinstance(self, Ocean) or isinstance(self, Mountain):
             return 0
         else:
-            e_k = self.fodder/(self.herbivore_pop() + 1) / self.fodder
-            return math.exp(self.herbivore_pop[0].p['F']*e_k)
+            e_k = self.fodder / ((self.herbivore_pop() + 1) *
+                                 Herbivore().p['F'])
+            return math.exp(Herbivore().p['landa'] * e_k)
+
+    def propensity_carnivore(self):
+        """
+        Find the propensity in the cell for a carnivore
+        :return: int
+        """
+        if isinstance(self, Ocean) or isinstance(self, Mountain):
+            return 0
+        else:
+            e_k = self.get_herb_weight() / ((self.herbivore_pop() + 1) *
+                                            Herbivore().p['F'])
+            return math.exp(Herbivore().p['landa'] * e_k)
+
+    def check_migration(self):
+        """
+        Method that check what animals in the cell that is ready to migrate
+        to another cell.
+        :return: list
+        """
+        migrating_animals = []
+        for animal in self.pop_total:
+            prob_move = animal.p['mu'] * animal.update_fitness()
+            if rd.random() < prob_move:
+                migrating_animals.append(animal)
+            else:
+                continue
+        return migrating_animals
 
     def fodder_eaten(self):
         """
@@ -261,6 +302,7 @@ class Ocean(BaseGeography):
     A Ocean. No fodder and no animals are allowed to move here
     Ocean cell types are passive in this simulation
     """
+
     def __init__(self):
         super().__init__()
         self.animals_here = False
@@ -305,7 +347,6 @@ if __name__ == "__main__":
     print(j.carnivore_pop())
     """
 
-
 if __name__ == "__main__":
 
     j = Jungle()
@@ -317,11 +358,8 @@ if __name__ == "__main__":
     print(len(j.pop_herbivores))
     print(j.pop_carnivores[0].weight)
     print(j.pop_carnivores[1].weight)
-    #j.animal_mate()
-    #print(len(j.pop_herbivores))"""
-
-
-
+    # j.animal_mate()
+    # print(len(j.pop_herbivores))"""
 
     """
     j = Jungle()
