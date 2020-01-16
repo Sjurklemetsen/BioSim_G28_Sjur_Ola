@@ -54,6 +54,19 @@ class BaseGeography:
                 self.pop_herbivores.append(animal)
             elif type(animal).__name__ == 'Carnivore':
                 self.pop_carnivores.append(animal)
+        self.pop_total = self.pop_herbivores + self.pop_carnivores
+
+    def remove_animals(self, population_list):
+        """
+        Remove an animal from the cell
+        :return:
+        """
+        for animal in population_list:
+            if type(animal).__name__ == 'Herbivore':
+                self.pop_herbivores.remove(animal)
+            elif type(animal).__name__ == 'Carnivore':
+                self.pop_carnivores.remove(animal)
+        self.pop_total = self.pop_herbivores + self.pop_carnivores
 
     def animal_die(self):
         """
@@ -82,8 +95,7 @@ class BaseGeography:
         """
         :return: Total population in a cell
         """
-        self.pop_total = self.pop_herbivores + self.pop_carnivores
-        return len(self.pop_herbivores) + len(self.pop_carnivores)
+        return len(self.pop_total)
 
     @staticmethod
     def sort_animal_fitness(population):
@@ -138,11 +150,20 @@ class BaseGeography:
                                             Herbivore().p['F'])
             return math.exp(Herbivore().p['landa'] * e_k)
 
-    def animals_ready_to_migrate(self):
+    def check_migration(self):
         """
-        Method to find all the animals in the cell that are
-        :return:
+        Method that check what animals in the cell that is ready to migrate
+        to another cell.
+        :return: list
         """
+        migrating_animals = []
+        for animal in self.pop_total:
+            prob_move = animal.p['mu'] * animal.update_fitness()
+            if rd.random() < prob_move:
+                migrating_animals.append(animal)
+            else:
+                continue
+        return migrating_animals
 
     def fodder_eaten(self):
         """
