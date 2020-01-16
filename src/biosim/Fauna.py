@@ -190,21 +190,20 @@ class Carnivore(BaseFauna):
         update fitness
         :return:
         """
-        F = 0
+        herb_eaten = 0
 
         for herb in pop_herb[::-1]:
             if self.prob_eating(herb):
-                F += herb.weight
-                if F >= self.p['F']:
-                    self.weight += (F - self.p['F'])*self.p['beta']
+                herb_eaten += herb.weight
+                if herb_eaten >= self.p['F']:
+                    self.weight += (herb_eaten - self.p['F'])*self.p['beta']
                     self.update_fitness()
                     pop_herb.remove(herb)
                     break
-                elif F < self.p['F']:
+                elif herb_eaten < self.p['F']:
                     self.weight += herb.weight*self.p['beta']
                     self.update_fitness()
                     pop_herb.remove(herb)
-
             else:
                 continue
         return pop_herb
