@@ -82,6 +82,7 @@ class BaseGeography:
         """
         :return: Total population in a cell
         """
+        self.pop_total = self.pop_herbivores + self.pop_carnivores
         return len(self.pop_herbivores) + len(self.pop_carnivores)
 
     @staticmethod
