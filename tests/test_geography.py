@@ -4,6 +4,7 @@ __author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
 __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
 from src.biosim import Geography as geo
+import random as rd
 
 
 class TestGeography:
@@ -72,9 +73,20 @@ class TestGeography:
 
     def test_animal_die(self):
         """
-        Tests that animals dies when checked for death in cells
+        Tests that animals in a cell dies when checked for death is True and
+        survives when False
         """
-        
+        jung = geo.Jungle()
+        a = geo.Herbivore(age=10, weight=20)
+        herbs = [geo.Herbivore(weight=0), a]
+        carns = [geo.Carnivore(weight=0)]
+        jung.populate_cell(herbs)
+        jung.populate_cell(carns)
+        rd.seed(51)  # p = 0.24
+        jung.animal_die()
+        assert len(jung.pop_herbivores) == 1
+        assert len(jung.pop_carnivores) == 0
+        assert a == jung.pop_herbivores[0]
 
     def test_pop_methods(self):
         """
@@ -105,6 +117,12 @@ class TestGeography:
         s.sort_animal_fitness(miks2)
         assert j.pop_herbivores == miks
         assert s.pop_herbivores != miks2
+
+    def test_propensity_herbivore(self):
+        """
+        Tests propensity for herbivores in cell
+        """
+
 
     def test_fodder_eaten(self):
         """
