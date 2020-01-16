@@ -55,7 +55,6 @@ class BaseGeography:
             self.pop_carnivores.append(animal)
         self.pop_total = self.pop_herbivores + self.pop_carnivores
 
-
     def remove_animals(self, population_list):
         """
         Remove a list of animals from the cell
