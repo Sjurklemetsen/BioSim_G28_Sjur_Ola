@@ -71,17 +71,6 @@ class TestFauna:
         assert herb.check_death() is True
         assert isinstance(herb1.check_death(), bool)
 
-    def test_check_migration(self):
-        """
-        Test if method works and returns a boolean expression (True for ready
-        to move and False will not move)
-        """
-        rd.seed(11)
-        herb = fa.Herbivore(age=10, weight=50)
-        print(herb.fitness*herb.p['mu'])
-        assert herb.check_migration() is False
-        assert isinstance(herb.check_migration(), bool)
-
     def test_check_birth(self):
         """
         When there is only one animal, test that no birth occurs.

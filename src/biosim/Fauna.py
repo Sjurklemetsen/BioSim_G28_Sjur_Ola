@@ -94,19 +94,6 @@ class BaseFauna:
         else:
             return False
 
-    def check_migration(self):
-        """
-        Method that check if the animal is ready to move to another cell
-        :return: Boolean expression
-
-        prob_move = self.p['mu'] * self.update_fitness()
-
-        if rd.random() < prob_move:
-            return True
-        else:
-            return False
-        """
-
     def check_birth(self, n_animals):
         """
         A Method that check if an animal is ready to give birth or not
@@ -136,7 +123,7 @@ class Herbivore(BaseFauna):
         "w_half": 10.0,
         "phi_weight": 0.1,
         "mu": 0.25,
-        "lambda": 1.0,
+        "landa": 1.0,
         "gamma": 0.2,
         "zeta": 3.5,
         "xi": 1.2,
@@ -168,7 +155,7 @@ class Carnivore(BaseFauna):
         "w_half": 4.0,
         "phi_weight": 0.4,
         "mu": 0.4,
-        "lambda": 1.0,
+        "landa": 1.0,
         "gamma": 0.8,
         "zeta": 3.5,
         "xi": 1.1,

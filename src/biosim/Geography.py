@@ -53,6 +53,8 @@ class BaseGeography:
             self.pop_herbivores.append(animal)
         else:
             self.pop_carnivores.append(animal)
+        self.pop_total = self.pop_herbivores + self.pop_carnivores
+
 
     def remove_animals(self, population_list):
         """
@@ -124,7 +126,7 @@ class BaseGeography:
         if isinstance(self, Ocean) or isinstance(self, Mountain):
             return 0
         else:
-            e_k = self.get_herb_weight() / ((self.herbivore_pop() + 1) *
+            e_k = self.get_herb_weight() / ((self.carnivore_pop() + 1) *
                                             Carnivore().p['F'])
             return math.exp(Herbivore().p['landa'] * e_k)
 

@@ -5,6 +5,7 @@ __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
 from src.biosim import Geography as geo
 import random as rd
+import pytest
 
 
 class TestGeography:
@@ -120,9 +121,61 @@ class TestGeography:
 
     def test_propensity_herbivore(self):
         """
-        Tests propensity for herbivores in cell
+        Tests propensity for herbivores in different kind of cells and that
+        propensity is different when population is added
         """
+        j = geo.Jungle()
+        s = geo.Savannah()
+        m = geo.Mountain()
+        o = geo.Ocean()
+        d = geo.Desert()
+        assert j.propensity_herbivore() == pytest.approx(5.54*10**34, 0.001)
+        print(s.propensity_herbivore())
+        assert s.propensity_herbivore() == pytest.approx(10.68*10**12, 0.001)
+        assert m.propensity_herbivore() == 0
+        assert o.propensity_herbivore() == 0
+        assert d.propensity_herbivore() == 1
+        j.populate_cell([geo.Herbivore() for _ in range(100)])
+        assert j.propensity_herbivore() == pytest.approx(2.2, 0.01)
 
+    def test_propensity_carnivore(self):
+        """
+        Tests propensity in cell for carnivores
+        """
+        j = geo.Jungle()
+        s = geo.Savannah()
+        m = geo.Mountain()
+        o = geo.Ocean()
+        d = geo.Desert()
+        herbs = [geo.Herbivore(weight=10)for _ in range(5)]
+        j.populate_cell(herbs)
+        o.populate_cell([geo.Herbivore() for _ in range(10)])
+        d.populate_cell(herbs)
+        print(j.propensity_carnivore())
+        assert j.propensity_carnivore() == pytest.approx(2.7, 0.01)
+        assert s.propensity_carnivore() == 1
+        assert m.propensity_carnivore() == 0 and o.propensity_carnivore() == 0
+        assert d.propensity_carnivore() == j.propensity_carnivore()
+
+    def test_check_migration(self):
+        """
+        Test if method returns a list with animals ready to migrate and that
+        it is the same animal.
+        """
+        j = geo.Jungle()
+        s = geo.Savannah()
+        c = geo.Carnivore(age=10, weight=50)  # prob = 0.399
+        s.populate_cell([geo.Herbivore(age=10, weight=39),
+                         geo.Carnivore(weight=10), geo.Carnivore(weight=10),
+                         geo.Carnivore(weight=100)])  # prob = 0.236
+        j.add_animal(c)
+        rd.seed(21)  # 0.164 then 0.68
+        a = j.check_migration()
+        rd.seed(10)  # prob 4 iterering = 0.20
+        b = s.check_migration()
+        assert len(a) == 1 and a[0] == c
+        assert isinstance(a, list)
+        assert len(b) == 1
 
     def test_fodder_eaten(self):
         """
@@ -171,6 +224,14 @@ class TestGeography:
         assert 0 < len(j.pop_herbivores) < 1000
         assert 30 < j.pop_carnivores[1].weight <= 60
 
+    def test_get_herb_weight(self):
+        """
+        Tests that method returns combined weight of herbivores in cell
+        """
+        d = geo.Desert()
+        d.populate_cell([geo.Herbivore(weight=10) for _ in range(10)])
+        assert d.get_herb_weight() == 100
+
     def test_animal_mating(self):
         """
         Tests that babies born is an instance of its species
@@ -189,6 +250,9 @@ class TestGeography:
         assert isinstance(j.pop_herbivores[-1], geo.Herbivore)
         assert len(j.pop_carnivores) == 9
         assert isinstance(j.pop_carnivores[-1], geo.Carnivore)
+
+    def test_age_weightloss(self):
+        
 
     def test_jungle(self):
         """
