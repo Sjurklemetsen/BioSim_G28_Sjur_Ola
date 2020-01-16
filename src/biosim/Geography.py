@@ -46,7 +46,7 @@ class BaseGeography:
 
     def populate_cell(self, population_list):
         """
-        Populate the cell with animals
+        Populate the cell with a list of animals
         :param population_list: A list with animal instances
         """
         for animal in population_list:
@@ -56,9 +56,19 @@ class BaseGeography:
                 self.pop_carnivores.append(animal)
         self.pop_total = self.pop_herbivores + self.pop_carnivores
 
+    def add_animal(self, animal):
+        """
+        Add a single animal to the cell
+        :return:
+        """
+        if type(animal).__name__ == 'Herbivore':
+            self.pop_herbivores.append(animal)
+        else:
+            self.pop_carnivores.append(animal)
+
     def remove_animals(self, population_list):
         """
-        Remove an animal from the cell
+        Remove a list of animals from the cell
         :return:
         """
         for animal in population_list:
@@ -105,26 +115,6 @@ class BaseGeography:
         """
         population.sort(key=lambda animal: animal.fitness, reverse=True)
         return population
-
-    def add_animal(self, animal):
-        """
-        Add an animal to the cell
-        :return:
-        """
-        if type(animal).__name__ == 'Herbivore':
-            self.pop_herbivores.append(animal)
-        else:
-            self.pop_carnivores.append(animal)
-
-    def remove_animal(self, animal):
-        """
-        Remove an animal from the cell
-        :return:
-        """
-        if type(animal).__name__ == 'Herbivore':
-            self.pop_herbivores.remove(animal)
-        else:
-            self.pop_carnivores.remove(animal)
 
     def propensity_herbivore(self):
         """
@@ -261,6 +251,7 @@ class Jungle(BaseGeography):
     def __init__(self):
         super().__init__()
 
+
     def fodder_growth(self):
         """
         Replenishes fodder each year
@@ -277,6 +268,7 @@ class Savannah(BaseGeography):
 
     def __init__(self):
         super().__init__()
+
 
     def fodder_growth(self):
         """
@@ -295,6 +287,7 @@ class Desert(BaseGeography):
 
     def __init__(self):
         super().__init__()
+
 
 
 class Ocean(BaseGeography):
