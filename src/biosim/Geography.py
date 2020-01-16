@@ -32,17 +32,17 @@ class BaseGeography:
         self.fodder = self.geo_p['f_max']
         self.animals_here = True
 
-    # I tilfelle vi trenger:
-    #def add_animal(self, animal):
+        # I tilfelle vi trenger:
+        # def add_animal(self, animal):
         """
         Add an instance of the animal class to the list of herbivores or
         carnivores.
         :param animal: An instance of the Fauna subclasses
         """
-        #if type(animal).__name__ == 'Herbivore':
-            #self.pop_herbivores.append(animal)
-        #elif type(animal).__name__ == 'Carnivore':
-            #self.pop_carnivores.append(animal)
+        # if type(animal).__name__ == 'Herbivore':
+        # self.pop_herbivores.append(animal)
+        # elif type(animal).__name__ == 'Carnivore':
+        # self.pop_carnivores.append(animal)
 
     def populate_cell(self, population_list):
         """
@@ -114,16 +114,35 @@ class BaseGeography:
         else:
             self.pop_carnivores.remove(animal)
 
-    def propensity(self):
+    def propensity_herbivore(self):
         """
-        Find the propensity for the cell
-        :return:
+        Find the propensity in the cell for a herbivore
+        :return: int
         """
         if isinstance(self, Ocean) or isinstance(self, Mountain):
             return 0
         else:
-            e_k = self.fodder/(self.herbivore_pop() + 1) / self.fodder
-            return math.exp(self.herbivore_pop[0].p['F']*e_k)
+            e_k = self.fodder / ((self.herbivore_pop() + 1) *
+                                 Herbivore().p['F'])
+            return math.exp(Herbivore().p['landa'] * e_k)
+
+    def propensity_carnivore(self):
+        """
+        Find the propensity in the cell for a carnivore
+        :return: int
+        """
+        if isinstance(self, Ocean) or isinstance(self, Mountain):
+            return 0
+        else:
+            e_k = self.get_herb_weight() / ((self.herbivore_pop() + 1) *
+                                            Herbivore().p['F'])
+            return math.exp(Herbivore().p['landa'] * e_k)
+
+    def animals_ready_to_migrate(self):
+        """
+        Method to find all the animals in the cell that are
+        :return:
+        """
 
     def fodder_eaten(self):
         """
@@ -262,6 +281,7 @@ class Ocean(BaseGeography):
     A Ocean. No fodder and no animals are allowed to move here
     Ocean cell types are passive in this simulation
     """
+
     def __init__(self):
         super().__init__()
         self.animals_here = False
@@ -306,7 +326,6 @@ if __name__ == "__main__":
     print(j.carnivore_pop())
     """
 
-
 if __name__ == "__main__":
 
     j = Jungle()
@@ -318,11 +337,8 @@ if __name__ == "__main__":
     print(len(j.pop_herbivores))
     print(j.pop_carnivores[0].weight)
     print(j.pop_carnivores[1].weight)
-    #j.animal_mate()
-    #print(len(j.pop_herbivores))"""
-
-
-
+    # j.animal_mate()
+    # print(len(j.pop_herbivores))"""
 
     """
     j = Jungle()
