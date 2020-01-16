@@ -97,13 +97,14 @@ class BaseFauna:
         """
         Method that check if the animal is ready to move to another cell
         :return: Boolean expression
-        """
+
         prob_move = self.p['mu'] * self.update_fitness()
 
         if rd.random() < prob_move:
             return True
         else:
             return False
+        """
 
     def check_birth(self, n_animals):
         """
