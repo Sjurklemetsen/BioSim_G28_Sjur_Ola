@@ -110,16 +110,23 @@ class Map:
         else:
             return prob[3][0]
 
-
-
     def move(self):
+        """
+        The animals move from one cell to another
+        :return:
+        """
         for cell in self.map_dict:
-            moving_animals =  self.map_dict[cell].check_migration()
-
-            new_cell = self.migrate_to(cell)
-            self.map_dict[new_cell].populate_cell(moving_animals)
+            moving_animals = self.map_dict[cell].check_migration()
+            for animal in moving_animals:
+                if animal.animal_moved is not True:
+                    new_cell = self.migrate_to(cell)
+                    self.map_dict[new_cell].add_animal(animal)
+                    animal.animal_moved = True
             self.map_dict[cell].remove_animals(moving_animals)
 
+        for cell in self.map_dict:
+            for i in self.map_dict[cell].pop_total:
+                i.animal_moved = False
 
 #new_cell = (0,1)
 #pos = (0,0)
