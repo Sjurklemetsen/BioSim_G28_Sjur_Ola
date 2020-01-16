@@ -147,7 +147,7 @@ class BaseGeography:
             return 0
         else:
             e_k = self.get_herb_weight() / ((self.herbivore_pop() + 1) *
-                                            Herbivore().p['F'])
+                                            Carnivore().p['F'])
             return math.exp(Herbivore().p['landa'] * e_k)
 
     def check_migration(self):
@@ -320,7 +320,9 @@ class Mountain(BaseGeography):
 
 
 if __name__ == "__main__":
-    a = rd.random(1111)
+    print(Carnivore().p['F'])
+
+    """
     print(a)
     j = Jungle()
     l = [Herbivore(), Herbivore(), Carnivore(), Herbivore(), Carnivore()]
@@ -328,7 +330,7 @@ if __name__ == "__main__":
     print(j.herbivore_pop())
     print(j.carnivore_pop())
 
-    """
+    
     j = Jungle()
     j.add_animal(Herbivore(age=0, weight=40))
     j.add_animal(Herbivore(age=5, weight=27))
@@ -345,10 +347,8 @@ if __name__ == "__main__":
     j.animal_mate()
     print(j.herbivore_pop())
     print(j.carnivore_pop())
-    """
 
-if __name__ == "__main__":
-
+    print(Herbivore().p['F'])
     j = Jungle()
     for animal in range(100):
         j.add_animal(Herbivore(age=60, weight=10))
@@ -359,9 +359,8 @@ if __name__ == "__main__":
     print(j.pop_carnivores[0].weight)
     print(j.pop_carnivores[1].weight)
     # j.animal_mate()
-    # print(len(j.pop_herbivores))"""
+    # print(len(j.pop_herbivores))
 
-    """
     j = Jungle()
     for animal in range(10):
         j.add_animal(Herbivore(weight=10))

@@ -5,7 +5,7 @@ __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
 from src.biosim.Geography import *
 import math
-import random
+import random as rd
 
 
 class Map:
@@ -55,12 +55,12 @@ class Map:
                     raise ValueError(' That is an invalid landscape')
         pass
 
-    def populate_map(self, population):
+    def populate_map(self, coordinates, population):
         """
         A method that populate the map with animals in each cell
         :return:
         """
-        pass
+        self.map_dict[coordinates].populate_cell(population)
 
     def find_cell(self, cell_to_find):
         """
@@ -121,16 +121,15 @@ class Map:
             self.map_dict[cell].remove_animals(moving_animals)
 
 
-new_cell = (0,1)
-pos = (0,0)
-moving_animals = [Herb(), Carn(), Herb()]
+#new_cell = (0,1)
+#pos = (0,0)
+#moving_animals = [Herb(), Carn(), Herb()]
 
 
 
 # cell er den gamle posisjonen
 # new_cell er den nye posisjonen
 # moving animals er en liste med dyr som skal migrere til den nye cellen
-
 
     def annual_cycle(self):
         """
@@ -153,6 +152,7 @@ moving_animals = [Herb(), Carn(), Herb()]
             land.move() # Trenger en move her
             land.age_weightloss()
             land.animal_die()
+
 
 
 
