@@ -74,8 +74,8 @@ class Map:
         The animal moves from one cell to another
         :return:
         """
-
-    def find_neighbor_cells(self, position):
+    @staticmethod
+    def find_neighbor_cells(position):
         """
         Method to find the neighbouring cells of a position
         :param position: Tuple
@@ -93,18 +93,19 @@ class Map:
         :return: tuple
         """
         neigh = self.find_neighbor_cells(position)
-        propensity = []
+        propensity_list = []
         p = []
         for cell in neigh:
-            propensity.append(self.map_dict[cell].items())
-        for prop in propensity:
-            p.append(propensity[prop]/sum(propensity))
+            propensity_list.append(self.map_dict[cell].propensity())
+        for prop in propensity_list:
+            p.append(propensity_list[prop]/sum(propensity_list))
 
         coord_prob = []
         for x, y in zip(neigh, p):
             coord_prob.append((x, y))
 
         prob = sorted(coord_prob, key=lambda pro: pro[1])
+        a = rd.random()
         if a <= prob[0][1]:
             return prob[0][0]
         elif prob[0][1] < a <= prob[1][1]:
@@ -116,6 +117,7 @@ class Map:
 
     def move(self):
         for cell in self.map_dict:
+            self.map_dict[cell]
 
     def annual_cycle(self):
         """
