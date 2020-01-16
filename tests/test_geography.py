@@ -23,13 +23,6 @@ class TestGeography:
         # assert sava.fodder == 300 and sava.geo_p['alpha'] == 0.3
         assert isinstance(jung.pop_herbivores and jung.pop_carnivores, list)
 
-    def test_set_parameter(self):
-        new_parameters = {'f_max': 1000, 'alpha': 500}
-        jung = geo.Jungle()
-        # jung.set_parameter(new_parameters)
-        # assert jung.geo_p['f_max'] == 1000
-        # assert jung.fodder == 1000
-
     def test_populate_cell(self):
         """
         Tests that herbivores and carnivores population is increased with
@@ -227,3 +220,10 @@ class TestGeography:
         m = geo.Mountain()
         assert isinstance(m, geo.Mountain)
         assert m.geo_p['f_max'] is None
+
+    def test_set_parameter(self):
+        new_parameters = {'f_max': 1000, 'alpha': 500}
+        geo.Jungle.set_parameter(new_parameters)
+        jung = geo.Jungle()
+        assert jung.geo_p['f_max'] == 1000
+        assert jung.fodder == 1000
