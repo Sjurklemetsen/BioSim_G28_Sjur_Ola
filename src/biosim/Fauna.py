@@ -42,6 +42,7 @@ class BaseFauna:
     def __init__(self, age=0, weight=None):
         self.age = age
         self.weight = weight
+        self.animal_moved = False
         if weight is None:
             self.weight = np.random.normal(self.p['w_birth'],
                                            self.p['sigma_birth'])
