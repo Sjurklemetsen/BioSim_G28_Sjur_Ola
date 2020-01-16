@@ -69,11 +69,6 @@ class Map:
         """
         pass
 
-    def move(self):
-        """
-        The animal moves from one cell to another
-        :return:
-        """
     @staticmethod
     def find_neighbor_cells(position):
         """
@@ -115,9 +110,27 @@ class Map:
         else:
             return prob[3][0]
 
+
+
     def move(self):
         for cell in self.map_dict:
-            self.map_dict[cell]
+            moving_animals =  self.map_dict[cell].check_migration()
+
+            new_cell = self.migrate_to(cell)
+            self.map_dict[new_cell].populate_cell(moving_animals)
+            self.map_dict[cell].remove_animals(moving_animals)
+
+
+new_cell = (0,1)
+pos = (0,0)
+moving_animals = [Herb(), Carn(), Herb()]
+
+
+
+# cell er den gamle posisjonen
+# new_cell er den nye posisjonen
+# moving animals er en liste med dyr som skal migrere til den nye cellen
+
 
     def annual_cycle(self):
         """
