@@ -136,7 +136,6 @@ class Map:
             land.carnivore_eat()
             land.animal_mating()
             land.move() # Trenger en move her
-            land.animal_ages()
             land.age_weightloss()
             land.animal_die()
 
