@@ -26,11 +26,10 @@ class TestMap:
                  OSDO
                  OOOO"""
         map = textwrap.dedent(map)
-        print(map)
         m = ma.Map()
-        print(m.create_map(map))
+        m.create_map(map)
 
-    def test_check_string(self):
+    def test_check_map_string(self):
         """
         Tests that input for map creation is valid
         """
@@ -45,8 +44,6 @@ class TestMap:
                          OSDO
                          OOOO"""
         map = textwrap.dedent(map)
-        m = ma.Map()
-        print(m.find_neighbor_cells((0, 0)))
         assert isinstance(m.find_neighbor_cells((2, 3)), list)
 
     def test_migrate_to(self):
@@ -55,12 +52,16 @@ class TestMap:
         Tests that it returns a coordinate tuple
         """
         map = """
-                OOOOO
-                OSDJO
-                OOOOO"""
+                         OOOO
+                         OSDO
+                         OOOO"""
+        map = textwrap.dedent(map)
         m = ma.Map()
-        m.create_map()
+        m.create_map(map)
+
         pos = (1, 2)
+        pop = [ma.Herbivore()for _ in range(20)]
+        m.populate_map(pos, pop)
         assert isinstance(m.migrate_to(pos), tuple)
 
     def test_move(self):

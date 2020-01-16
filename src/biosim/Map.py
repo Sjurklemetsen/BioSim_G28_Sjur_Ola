@@ -42,12 +42,12 @@ class Map:
             self.map_dict[coordinates[ind]] = area_list[ind]
         return self.map_dict
 
-    def check_string(self, string):
-        """
+    """def check_string(self, string):
+
         Check if the string input is one of the allowed categories
         Check if the edges at the map is ocean
         Check if the map is a square
-        """
+
         accepted_landscape = ["J", "S", "D", "M", "O"]
         for row in string:
             for cell in row:
@@ -63,7 +63,7 @@ class Map:
             while coord[0] == bot_right[0] and coord[1] == bot_right[1]:
                 if type(cell).__name__ != "Ocean":
                     raise ValueError('The border of the map cannot be ocean')
-
+"""
 
     def populate_map(self, coordinates, population):
         """
@@ -99,18 +99,26 @@ class Map:
         """
         neigh = self.find_neighbor_cells(position)
         propensity_list = []
-        p = []
         for cell in neigh:
-            propensity_list.append(self.map_dict[cell].propensity())
+            propensity_list.append(self.map_dict[cell].propensity_herb())
         if sum(propensity_list) == 0:
             return position
+
+        print(propensity_list)
+        sum_propen = sum(propensity_list)
+        print(sum_propen)
+        p = []
         for prop in propensity_list:
-            p.append(propensity_list[prop] / sum(propensity_list))
+            p.append(prop / sum_propen)
+
+        print(p)
+
         coord_prob = []
         for x, y in zip(neigh, p):
             coord_prob.append((x, y))
 
         prob = sorted(coord_prob, key=lambda pro: pro[1])
+        print(prob)
         a = rd.random()
         if a <= prob[0][1]:
             return prob[0][0]
@@ -120,6 +128,8 @@ class Map:
             return prob[2][0]
         else:
             return prob[3][0]
+
+        # Noe feil med sannsynlighets testen
 
     def move(self):
         """
@@ -179,4 +189,12 @@ OSSSSJJJJDDJJJJOOOOOO
 OOSSSSJJJJJJJJOOOOOOO
 OOOSSSSJJJJJJJOOOOOOO
 OOOOOOOOOOOOOOOOOOOOO'''
-    print(Map().create_map(area_type))
+
+    pos = (2, 6)
+    m = Map()
+    m.create_map(area_type)
+    m.populate_map((2, 7), [Herbivore()for _ in range(5)])
+    print(m.find_neighbor_cells(pos))
+    print(m.migrate_to(pos))
+    m.move
+
