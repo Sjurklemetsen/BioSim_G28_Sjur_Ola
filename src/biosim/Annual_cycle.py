@@ -5,6 +5,7 @@ __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
 from src.biosim.Geography import *
 
+
 class AnnualCycle:
     """
     Annual cycle on Rossumøya
