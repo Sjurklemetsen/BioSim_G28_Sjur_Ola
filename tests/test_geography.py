@@ -38,20 +38,22 @@ class TestGeography:
         assert len(j.pop_herbivores) == 10
         assert len(j.pop_carnivores) == 5
 
-    """def test_add_animal(self):
-    
+    def test_add_animal(self):
+        """
         Tests that herbivore and carnivore population lists expands with the
         method.
         Tests that the list contains an instance fauna
         :return:
-        
+        """
         jung = geo.Jungle()
-        jung.populate_cell([geo.Herbivore(age=5, weight=20)])
-        jung.populate_cell([geo.Herbivore()])
-        jung.populate_cell([geo.Carnivore()])
+        jung.add_animal(geo.Herbivore(age=5, weight=20))
+        jung.add_animal(geo.Herbivore())
+        a = geo.Carnivore()
+        jung.add_animal(a)
         assert len(jung.pop_carnivores) == 1
         assert len(jung.pop_herbivores) == 2
-        assert isinstance(jung.pop_herbivores[0], geo.Herbivore)"""
+        assert isinstance(jung.pop_herbivores[0], geo.Herbivore)
+        assert jung.pop_carnivores[0] == a
 
     def test_remove_animals(self):
         """
@@ -64,9 +66,15 @@ class TestGeography:
         carns = [geo.Carnivore(weight=0)]
         jung.populate_cell(herbs)
         jung.populate_cell(carns)
-        jung.remove_animals()
+        jung.remove_animals(jung.pop_herbivores + jung.pop_carnivores)
         assert len(jung.pop_herbivores) == 0
         assert len(jung.pop_carnivores) == 0
+
+    def test_animal_die(self):
+        """
+        Tests that animals dies when checked for death in cells
+        """
+        
 
     def test_pop_methods(self):
         """

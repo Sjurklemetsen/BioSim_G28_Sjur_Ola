@@ -32,18 +32,6 @@ class BaseGeography:
         self.fodder = self.geo_p['f_max']
         self.animals_here = True
 
-        # I tilfelle vi trenger:
-        # def add_animal(self, animal):
-        """
-        Add an instance of the animal class to the list of herbivores or
-        carnivores.
-        :param animal: An instance of the Fauna subclasses
-        """
-        # if type(animal).__name__ == 'Herbivore':
-        # self.pop_herbivores.append(animal)
-        # elif type(animal).__name__ == 'Carnivore':
-        # self.pop_carnivores.append(animal)
-
     def populate_cell(self, population_list):
         """
         Populate the cell with a list of animals
