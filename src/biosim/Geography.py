@@ -229,6 +229,19 @@ class BaseGeography:
             animal.aging()
             animal.weight_decrease()
 
+    def fodder_growth(self):
+        """
+        Replenishes fodder each year
+        :return:
+        """
+        if isinstance(self, Jungle):
+            self.fodder = self.geo_p['f_max']
+        elif isinstance(self, Savannah):
+            self.fodder += self.geo_p['alpha'] * (self.geo_p['f_max']
+                                                  - self.fodder)
+        else:
+            self.fodder = 0
+
 
 class Jungle(BaseGeography):
     """
@@ -240,13 +253,12 @@ class Jungle(BaseGeography):
     def __init__(self):
         super().__init__()
 
-
-    def fodder_growth(self):
-        """
+    """def fodder_growth(self):
+        
         Replenishes fodder each year
         :return:
-        """
-        self.fodder = self.geo_p['f_max']
+
+        self.fodder = self.geo_p['f_max']"""
 
 
 class Savannah(BaseGeography):
@@ -258,13 +270,13 @@ class Savannah(BaseGeography):
     def __init__(self):
         super().__init__()
 
-    def fodder_growth(self):
+    #def fodder_growth(self):
         """
         Fodder growth for savannah
         :return:
         """
-        self.fodder += self.geo_p['alpha'] * (self.geo_p['f_max']
-                                              - self.fodder)
+     #   self.fodder += self.geo_p['alpha'] * (self.geo_p['f_max']
+      #                                        - self.fodder)
 
 
 class Desert(BaseGeography):

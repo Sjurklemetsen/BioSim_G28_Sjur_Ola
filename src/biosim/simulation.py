@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
-"""
-"""
+__author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
+__email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
-__author__ = ""
-__email__ = ""
-
+from src.biosim import Fauna as fa
+from 
 
 class BioSim:
     def __init__(
@@ -49,6 +48,8 @@ class BioSim:
         :param species: String, name of animal species
         :param params: Dict with valid parameter specification for species
         """
+        if species ==
+            Herbivore.set_parameter
 
     def set_landscape_parameters(self, landscape, params):
         """
@@ -75,6 +76,8 @@ class BioSim:
 
         :param population: List of dictionaries specifying population
         """
+
+
 
     @property
     def year(self):

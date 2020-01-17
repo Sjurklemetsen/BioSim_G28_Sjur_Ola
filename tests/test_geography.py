@@ -84,7 +84,7 @@ class TestGeography:
         jung.populate_cell(herbs)
         jung.populate_cell(carns)
         rd.seed(51)  # p = 0.24
-        jung.animal_die()
+        jung.animals_die()
         assert len(jung.pop_herbivores) == 1
         assert len(jung.pop_carnivores) == 0
         assert a == jung.pop_herbivores[0]
@@ -129,14 +129,14 @@ class TestGeography:
         m = geo.Mountain()
         o = geo.Ocean()
         d = geo.Desert()
-        assert j.propensity_herbivore() == pytest.approx(5.54*10**34, 0.001)
-        print(s.propensity_herbivore())
-        assert s.propensity_herbivore() == pytest.approx(10.68*10**12, 0.001)
-        assert m.propensity_herbivore() == 0
-        assert o.propensity_herbivore() == 0
-        assert d.propensity_herbivore() == 1
+        assert j.propensity_herb() == pytest.approx(5.54*10**34, 0.001)
+        print(s.propensity_herb())
+        assert s.propensity_herb() == pytest.approx(10.68*10**12, 0.001)
+        assert m.propensity_herb() == 0
+        assert o.propensity_herb() == 0
+        assert d.propensity_herb() == 1
         j.populate_cell([geo.Herbivore() for _ in range(100)])
-        assert j.propensity_herbivore() == pytest.approx(2.2, 0.01)
+        assert j.propensity_herb() == pytest.approx(2.2, 0.01)
 
     def test_propensity_carnivore(self):
         """
@@ -151,11 +151,11 @@ class TestGeography:
         j.populate_cell(herbs)
         o.populate_cell([geo.Herbivore() for _ in range(10)])
         d.populate_cell(herbs)
-        print(j.propensity_carnivore())
-        assert j.propensity_carnivore() == pytest.approx(2.7, 0.01)
-        assert s.propensity_carnivore() == 1
-        assert m.propensity_carnivore() == 0 and o.propensity_carnivore() == 0
-        assert d.propensity_carnivore() == j.propensity_carnivore()
+        print(j.propensity_carn())
+        assert j.propensity_carn() == pytest.approx(2.7, 0.01)
+        assert s.propensity_carn() == 1
+        assert m.propensity_carn() == 0 and o.propensity_carn() == 0
+        assert d.propensity_carn() == j.propensity_carn()
 
     def test_check_migration(self):
         """
@@ -261,6 +261,19 @@ class TestGeography:
         carn = d.pop_carnivores[0]
         assert carn.age == 1 and carn.weight == 8.75
 
+    def test_fodder_growth(self):
+        o = geo.Ocean()
+        s = geo.Savannah()
+        s.fodder = 100
+        j = geo.Jungle()
+        j.fodder = 200
+        o.fodder_growth()
+        s.fodder_growth()
+        j.fodder_growth()
+        assert o.fodder == 0
+        assert s.fodder == 160
+        assert j.fodder == 800
+
     def test_jungle(self):
         """
         Test if jungle is a instance
@@ -281,11 +294,7 @@ class TestGeography:
         :return:
         """
         s = geo.Savannah()
-        s.fodder_growth()
         assert s.fodder == 300
-        s.fodder = 100
-        s.fodder_growth()
-        assert s.fodder == 160
         assert isinstance(s, geo.Savannah)
         assert s.geo_p['f_max'] == 300
         assert s.geo_p['alpha'] == 0.3

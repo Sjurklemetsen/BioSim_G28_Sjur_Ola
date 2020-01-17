@@ -6,6 +6,7 @@ __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 from src.biosim.Geography import *
 import math
 import random as rd
+import textwrap
 
 
 class Map:
@@ -18,14 +19,14 @@ class Map:
     def __init__(self):
         self.map_dict = {}
 
-
     def create_map(self, area_type):
-        for line in area_type:
-            line.replace(' ', '')
-            line.replace('\n', '')
-        self.check_string(area_type)
+        #area = area_type.remove('\n', '')
+        area_list = []
+        for i in area_type:
+            area_list.append(i.strip())
+        while '' in area_list:
+            area_list.remove('')
 
-        area_list = list(area_type)
         rows = len(area_type.split('\n'))
         cols = int(len(area_list) / rows)
 
@@ -71,8 +72,6 @@ class Map:
                 if type(cell).__name__ != "Ocean":
 <<<<<<< HEAD
                     raise ValueError('The border of the map cannot be ocean')
-"""
-=======
                     raise ValueError('The border of the map must be ocean')
             else:
                 continue
@@ -80,12 +79,7 @@ class Map:
 
         for row in range(self.rows):
             for line in string
-
-
-
-
-
->>>>>>> Map_branch
+"""
 
     def populate_map(self, coordinates, population):
         """
@@ -126,14 +120,11 @@ class Map:
         if sum(propensity_list) == 0:
             return position
 
-        print(propensity_list)
         sum_propen = sum(propensity_list)
-        print(sum_propen)
+
         p = []
         for prop in propensity_list:
             p.append(prop / sum_propen)
-
-        print(p)
 
         coord_prob = []
         for x, y in zip(neigh, p):
@@ -192,31 +183,35 @@ class Map:
             land.herbivore_eat()
             land.carnivore_eat()
             land.animal_mating()
-            land.move()
+            Map().move()
             land.age_weightloss()
-            land.animal_die()
+            land.animals_die()
 
 
 if __name__ == "__main__":
     area_type = '''OOOOOOOOOOOOOOOOOOOOO
-OOOOOOOOSMMMMJJJJJJJO
-OSSSSSJJJJMMJJJJJJJOO
-OSSSSSSSSSMMJJJJJJOOO
-OSSSSSJJJJJJJJJJJJOOO
-OSSSSSJJJDDJJJSJJJOOO
-OSSJJJJJDDDJJJSSSSOOO
-OOSSSSJJJDDJJJSOOOOOO
-OSSSJJJJJDDJJJJJJJOOO
-OSSSSJJJJDDJJJJOOOOOO
-OOSSSSJJJJJJJJOOOOOOO
-OOOSSSSJJJJJJJOOOOOOO
-OOOOOOOOOOOOOOOOOOOOO'''
+    OOOOOOOOSMMMMJJJJJJJO
+    OSSSSSJJJJMMJJJJJJJOO
+    OSSSSSSSSSMMJJJJJJOOO
+    OSSSSSJJJJJJJJJJJJOOO
+    OSSSSSJJJDDJJJSJJJOOO
+    OSSJJJJJDDDJJJSSSSOOO
+    OOSSSSJJJDDJJJSOOOOOO
+    OSSSJJJJJDDJJJJJJJOOO
+    OSSSSJJJJDDJJJJOOOOOO
+    OOSSSSJJJJJJJJOOOOOOO
+    OOOSSSSJJJJJJJOOOOOOO
+    OOOOOOOOOOOOOOOOOOOOO'''
 
     pos = (2, 6)
+    #area_type = textwrap.dedent(area_type)
     m = Map()
     m.create_map(area_type)
     m.populate_map((2, 7), [Herbivore()for _ in range(5)])
-    print(m.find_neighbor_cells(pos))
+
+    #print(m.find_neighbor_cells(pos))
     print(m.migrate_to(pos))
-    m.move
+    #m.move()
+
+    m.annual_cycle()
 

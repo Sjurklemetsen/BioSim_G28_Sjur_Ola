@@ -44,6 +44,7 @@ class TestMap:
                          OSDO
                          OOOO"""
         map = textwrap.dedent(map)
+        m = ma.Map()
         assert isinstance(m.find_neighbor_cells((2, 3)), list)
 
     def test_migrate_to(self):
