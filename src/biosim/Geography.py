@@ -137,9 +137,10 @@ class BaseGeography:
         """
         migrating_animals = []
         for animal in self.pop_total:
-            prob_move = animal.p['mu'] * animal.update_fitness()
-            if rd.random() < prob_move:
-                migrating_animals.append(animal)
+            if animal.animal_moved is False:
+                prob_move = animal.p['mu'] * animal.update_fitness()
+                if rd.random() < prob_move:
+                    migrating_animals.append(animal)
             else:
                 continue
         return migrating_animals
