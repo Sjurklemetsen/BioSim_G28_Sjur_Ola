@@ -18,12 +18,17 @@ class Map:
     def __init__(self):
         self.map_dict = {}
 
+
     def create_map(self, area_type):
-        string = area_type.replace('\n', '')
-        string.replace(' ', '')
-        area_list = list(string)
+        for line in area_type:
+            line.replace(' ', '')
+            line.replace('\n', '')
+        self.check_string(area_type)
+
+        area_list = list(area_type)
         rows = len(area_type.split('\n'))
         cols = int(len(area_list) / rows)
+
         coordinates = [(x, y) for x in range(rows) for y in range(cols)]
 
         for ind, val in enumerate(area_list):
@@ -54,16 +59,33 @@ class Map:
                 if cell not in accepted_landscape:
                     raise ValueError(' That is an invalid landscape')
 
+
         bot_right = max(self.map_dict.keys())
+        top_left = min(self.map_dict.keys())
 
         for coord, cell in self.map_dict.items():
-            
+            if coord[0] == top_left[0] or coord[1] == top_left[1]
                 if type(cell).__name__ != "Ocean":
-                    raise ValueError('The border of the map cannot be ocean')
-            while coord[0] == bot_right[0] and coord[1] == bot_right[1]:
+                    raise ValueError('The border of the map must be ocean')
+            elif coord[0] == bot_right[0] or coord[1] == bot_right[1]:
                 if type(cell).__name__ != "Ocean":
+<<<<<<< HEAD
                     raise ValueError('The border of the map cannot be ocean')
 """
+=======
+                    raise ValueError('The border of the map must be ocean')
+            else:
+                continue
+
+
+        for row in range(self.rows):
+            for line in string
+
+
+
+
+
+>>>>>>> Map_branch
 
     def populate_map(self, coordinates, population):
         """
