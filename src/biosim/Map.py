@@ -18,7 +18,7 @@ class Map:
 
     def __init__(self, land_string):
         self.map_dict = {}
-        self.m = self.create_map()
+        self.create_map(land_string)
 
     def create_map(self, land_string):
         """
@@ -182,7 +182,7 @@ class Map:
             land.herbivore_eat()
             land.carnivore_eat()
             land.animal_mating()
-            Map().move()
+            self.move()
             land.age_weightloss()
             land.animals_die()
 
@@ -202,15 +202,12 @@ if __name__ == "__main__":
                     OOSSSSJJJJJJJJOOOOOOO
                     OOOSSSSJJJJJJJOOOOOOO
                     OOOOOOOOOOOOOOOOOOOOO'''
-    m = Map()
-    m.create_map(area_type)
+    m = Map(area_type)
 
+    m.populate_map((2, 7), [Herbivore() for _ in range(5)])
     pos = (2, 6)
-    m.populate_map((2, 7), [Herbivore()for _ in range(5)])
-
     print(m.find_neighbor_cells(pos))
     print(m.migrate_to(pos))
     m.move()
-
     m.annual_cycle()
 
