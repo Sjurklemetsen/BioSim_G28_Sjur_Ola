@@ -6,6 +6,7 @@ __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 from src.biosim.Fauna import *
 import math
 
+# bruke property for å oppdatere den totale populasjonen
 
 class BaseGeography:
     """
@@ -28,9 +29,13 @@ class BaseGeography:
     def __init__(self):
         self.pop_herbivores = []
         self.pop_carnivores = []
-        self.pop_total = []
+        #self.pop_total = []
         self.fodder = self.geo_p['f_max']
         self.animals_here = True
+
+    @property
+    def pop_total(self):
+        return self.pop_carnivores + self.pop_herbivores
 
     def populate_cell(self, population_list):
         """
@@ -42,7 +47,7 @@ class BaseGeography:
                 self.pop_herbivores.append(animal)
             elif type(animal).__name__ == 'Carnivore':
                 self.pop_carnivores.append(animal)
-        self.pop_total = self.pop_herbivores + self.pop_carnivores
+        #self.pop_total = self.pop_herbivores + self.pop_carnivores
 
     def add_animal(self, animal):
         """
@@ -53,7 +58,7 @@ class BaseGeography:
             self.pop_herbivores.append(animal)
         else:
             self.pop_carnivores.append(animal)
-        self.pop_total = self.pop_herbivores + self.pop_carnivores
+        #self.pop_total = self.pop_herbivores + self.pop_carnivores
 
     def remove_animals(self, population_list):
         """
@@ -65,7 +70,7 @@ class BaseGeography:
                 self.pop_herbivores.remove(animal)
             elif type(animal).__name__ == 'Carnivore':
                 self.pop_carnivores.remove(animal)
-        self.pop_total = self.pop_herbivores + self.pop_carnivores
+        #self.pop_total = self.pop_herbivores + self.pop_carnivores
 
     def animals_die(self):
         """
@@ -135,6 +140,7 @@ class BaseGeography:
         to another cell.
         :return: list
         """
+        #self.pop_total = self.pop_herbivores + self.pop_carnivores
         migrating_animals = []
         for animal in self.pop_total:
             if animal.animal_moved is False:

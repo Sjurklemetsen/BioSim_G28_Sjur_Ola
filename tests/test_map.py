@@ -53,23 +53,28 @@ class TestMap:
 
     def test_migrate_to(self):
         """
-        Tests that migration works correctly
-        Tests that it returns a coordinate tuple
+        Tests that
+        Tests that it returns a tuple based on propensity
         """
         map = """\
                  OOOOOO
-                 OSDJJO
-                 OSSJOO
+                 OJDJJO
+                 OSJJOO
                  OOOOOO"""
         m = ma.Map(map)
-        rd.seed(2)
+        rd.seed(6)
         pos = (1, 2)
         pop = [ma.Herbivore() for _ in range(20)]
         m.populate_map(pos, pop)
         a = m.migrate_to(pos)
+        b = m.migrate_to(pos)
+        c = m.migrate_to(pos)
+        d = m.migrate_to(pos)
         assert isinstance(a, tuple)
-        print(a)
-        print(rd.random())
+        assert a == (1, 1)
+        assert b == (1, 1)
+        assert c == (1, 3)
+        assert d == (2, 2)
 
     def test_move(self):
         """
