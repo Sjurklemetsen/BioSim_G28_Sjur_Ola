@@ -124,12 +124,17 @@ class Map:
         p = []
         for prop in propensity_list:
             p.append(prop / sum_propen)
+        print(p)
+        prob = 0
+        probability = []
+        for i in p:
+            prob += i
+            probability.append(prob)
 
-        coord_prob = []
-        for x, y in zip(neigh, p):
-            coord_prob.append((x, y))
-
-        prob = sorted(coord_prob, key=lambda pro: pro[1])
+        prob = []
+        for x, y in zip(neigh, probability):
+            prob.append((x, y))
+            
         a = rd.random()
         if a <= prob[0][1]:
             return prob[0][0]
