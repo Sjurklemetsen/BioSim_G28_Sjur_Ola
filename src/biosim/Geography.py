@@ -6,6 +6,7 @@ __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 from src.biosim.Fauna import *
 import math
 
+# bruke property for å oppdatere den totale populasjonen
 
 class BaseGeography:
     """
@@ -135,6 +136,7 @@ class BaseGeography:
         to another cell.
         :return: list
         """
+        self.pop_total = self.pop_herbivores + self.pop_carnivores
         migrating_animals = []
         for animal in self.pop_total:
             if animal.animal_moved is False:

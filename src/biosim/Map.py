@@ -124,7 +124,6 @@ class Map:
         p = []
         for prop in propensity_list:
             p.append(prop / sum_propen)
-        print(p)
         prob = 0
         probability = []
         for i in p:
@@ -134,7 +133,7 @@ class Map:
         prob = []
         for x, y in zip(neigh, probability):
             prob.append((x, y))
-            
+
         a = rd.random()
         if a <= prob[0][1]:
             return prob[0][0]
@@ -183,15 +182,15 @@ class Map:
         7) Death
         :return:
         """
-        #for coord, land in self.island.items():
-            #land.fodder_growth()
-            #land.herbivore_eat()
-            #land.carnivore_eat()
-            #land.animal_mating()
+        for coord, land in self.island.items():
+            land.fodder_growth()
+            land.herbivore_eat()
+            land.carnivore_eat()
+            land.animal_mating()
         self.move()
-        #for coord, land in self.island.items():
-         #   land.age_weightloss()
-            #land.animals_die()
+        for coord, land in self.island.items():
+            land.age_weightloss()
+            land.animals_die()
 
 
 if __name__ == "__main__":
@@ -210,22 +209,25 @@ if __name__ == "__main__":
                     OOOSSSSJJJJJJJOOOOOOO
                     OOOOOOOOOOOOOOOOOOOOO'''
     m = Map(area_type)
-    m.populate_map((1, 8), [Carnivore(age=10, weight=50) for _ in range(100)])
-    m.populate_map((1, 8), [Herbivore(age=15, weight=30) for _ in range(10)])
-    pos1 = (1, 8)
-    pos2 = (2, 8)
-    print(m.find_neighbor_cells(pos1))
-    print(m.migrate_to(pos1))
-    cell1 = m.get_landscape_type(pos1)
-    cell2 = m.get_landscape_type(pos2)
-    print(cell1.total_pop())
-    print(cell2.total_pop())
-    m.annual_cycle()
-    print(cell1.total_pop())
-    print(cell2.total_pop())
+    m.populate_map((2, 8), [Carnivore(age=10, weight=50) for _ in range(1000)])
+    m.populate_map((2, 8), [Herbivore(age=15, weight=30) for _ in range(1000)])
+    print(m.island[1, 8].total_pop())
+    print(m.island[2, 8].total_pop())
     print(m.island[3, 8].total_pop())
     print(m.island[2, 9].total_pop())
     print(m.island[2, 7].total_pop())
+    m.annual_cycle()
+    print('\n')
+    print(m.island[1, 8].total_pop())
+    print(m.island[2, 8].total_pop())
+    print(m.island[3, 8].total_pop())
+    print(m.island[2, 9].total_pop())
+    print(m.island[2, 7].total_pop())
+    print('\n')
+    print(m.island[2, 10].total_pop())
+    print(m.island[2, 6].total_pop())
+    print(m.island[4, 8].total_pop())
+
 
 
 
