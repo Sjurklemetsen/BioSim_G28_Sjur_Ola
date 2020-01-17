@@ -147,15 +147,11 @@ class Map:
         """
         for loc, cell in self.island.items():
             moving_animals = cell.check_migration()
-                # [Herb(), Carn(), Herb()]
             for animal in moving_animals:
-                if animal.animal_moved is not True:
-                    new_cell = self.migrate_to(loc)
-                    self.island[new_cell].add_animal(animal)
-                    animal.animal_moved = True
-                elif animal.animal_moved is True:
-                    moving_animals.remove(animal)
-                cell.remove_animals(moving_animals)
+                new_cell = self.migrate_to(loc)
+                self.island[new_cell].add_animal(animal)
+                animal.animal_moved = True
+            cell.remove_animals(moving_animals)
 
         for loc, cell in self.island.items():
             for animal in cell.pop_total:
@@ -209,8 +205,8 @@ if __name__ == "__main__":
                     OOOSSSSJJJJJJJOOOOOOO
                     OOOOOOOOOOOOOOOOOOOOO'''
     m = Map(area_type)
-    rd.seed(8)
     m.populate_map((1, 8), [Carnivore(age=10, weight=50) for _ in range(100)])
+    m.populate_map((1, 8), [Herbivore(age=15, weight=30) for _ in range(10)])
     pos1 = (1, 8)
     pos2 = (2, 8)
     print(m.find_neighbor_cells(pos1))
