@@ -4,13 +4,14 @@ __author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
 __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
 from src.biosim import Map as ma
-import textwrap
+import random as rd
 
 
 class TestMap:
     """
     Tests for map class
     """
+
     def test_map_constructor_default(self):
         """
         Tests map constructor default
@@ -26,7 +27,7 @@ class TestMap:
                  OSDO
                  OOOO"""
         map = textwrap.dedent(map)
-        m = ma.Map()
+        m = ma.Map(map)
         m.create_map(map)
 
     def test_check_map_string(self):
@@ -39,31 +40,36 @@ class TestMap:
         """
         Tests that function finds the neighbouring cells of the input
         """
-        map = """
-                         OOOO
-                         OSDO
-                         OOOO"""
-        map = textwrap.dedent(map)
-        m = ma.Map()
-        assert isinstance(m.find_neighbor_cells((2, 3)), list)
+        map = """\
+                 OOOO
+                 OSDO
+                 OOOO"""
+        m = ma.Map(map)
+        a = m.find_neighbor_cells((2, 3))
+        b = m.find_neighbor_cells((1, 1))
+        assert isinstance(a, list)
+        assert b == [(2, 1), (0, 1), (1, 2), (1, 0)]
+        assert a == [(3, 3), (1, 3), (2, 4), (2, 2)]
 
     def test_migrate_to(self):
         """
         Tests that migration works correctly
         Tests that it returns a coordinate tuple
         """
-        map = """
-                         OOOO
-                         OSDO
-                         OOOO"""
-        map = textwrap.dedent(map)
-        m = ma.Map()
-        m.create_map(map)
-
+        map = """\
+                 OOOOOO
+                 OSDJJO
+                 OSSJOO
+                 OOOOOO"""
+        m = ma.Map(map)
+        rd.seed(2)
         pos = (1, 2)
-        pop = [ma.Herbivore()for _ in range(20)]
+        pop = [ma.Herbivore() for _ in range(20)]
         m.populate_map(pos, pop)
-        assert isinstance(m.migrate_to(pos), tuple)
+        a = m.migrate_to(pos)
+        assert isinstance(a, tuple)
+        print(a)
+        print(rd.random())
 
     def test_move(self):
         """
