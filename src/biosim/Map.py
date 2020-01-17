@@ -34,7 +34,7 @@ class Map:
             area_list.remove('')
         self.check_string(land_string)
 
-        rows = len(area_type.split('\n'))
+        rows = len(land_string.split('\n'))
         cols = int(len(area_list) / rows)
         coordinates = [(x, y) for x in range(rows) for y in range(cols)]
 
