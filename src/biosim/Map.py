@@ -16,20 +16,26 @@ class Map:
     as values
     """
 
-    def __init__(self):
+    def __init__(self, land_string):
         self.map_dict = {}
+        self.m = self.create_map()
 
-    def create_map(self, area_type):
-        #area = area_type.remove('\n', '')
+    def create_map(self, land_string):
+        """
+        Method that creates a map as a dictionary with coordinates as keys and
+        cell instance as value
+        :param land_string: string
+        :return: dict
+        """
         area_list = []
-        for i in area_type:
+        for i in land_string:
             area_list.append(i.strip())
         while '' in area_list:
             area_list.remove('')
+        self.check_string(land_string)
 
         rows = len(area_type.split('\n'))
         cols = int(len(area_list) / rows)
-
         coordinates = [(x, y) for x in range(rows) for y in range(cols)]
 
         for ind, val in enumerate(area_list):
@@ -48,52 +54,46 @@ class Map:
             self.map_dict[coordinates[ind]] = area_list[ind]
         return self.map_dict
 
-    """def check_string(self, string):
-
-        Check if the string input is one of the allowed categories
+    @staticmethod
+    def check_string(string):
+        """
         Check if the edges at the map is ocean
-        Check if the map is a square
+        Check if the input string is one of the allowed categories
+        Check if all the rows of the map have the same length
+        :return: ValueError or nothing
+        """
+        s = textwrap.dedent(string)
+        rows = s.split('\n')
+        for i in rows[0]:
+            if i is not 'O':
+                raise ValueError('The edges of the map must be ocean')
+        for i in rows[-1]:
+            if i is not 'O':
+                raise ValueError('The edges of the map must be ocean')
 
-        accepted_landscape = ["J", "S", "D", "M", "O"]
-        for row in string:
-            for cell in row:
+        accepted_landscape = ['J', 'S', 'D', 'M', 'O']
+        for string in rows:
+            for cell in string:
                 if cell not in accepted_landscape:
                     raise ValueError(' That is an invalid landscape')
 
+        for i in rows:
+            if i[0] is not 'O':
+                raise ValueError('The of the map must be ocean')
+            elif i[-1] is not 'O':
+                raise ValueError('The edges of the map must be ocean')
 
-        bot_right = max(self.map_dict.keys())
-        top_left = min(self.map_dict.keys())
-
-        for coord, cell in self.map_dict.items():
-            if coord[0] == top_left[0] or coord[1] == top_left[1]
-                if type(cell).__name__ != "Ocean":
-                    raise ValueError('The border of the map must be ocean')
-            elif coord[0] == bot_right[0] or coord[1] == bot_right[1]:
-                if type(cell).__name__ != "Ocean":
-<<<<<<< HEAD
-                    raise ValueError('The border of the map cannot be ocean')
-                    raise ValueError('The border of the map must be ocean')
-            else:
-                continue
-
-
-        for row in range(self.rows):
-            for line in string
-"""
+        n_first_row = len(rows[0])
+        for ind, val in enumerate(rows):
+            if len(rows[ind]) != n_first_row:
+                raise ValueError('All rows must have equal length')
 
     def populate_map(self, coordinates, population):
         """
-        A method that populate the map with animals in each cell
+        A method that populate the map with animals in a cell
         :return:
         """
         self.map_dict[coordinates].populate_cell(population)
-
-    def find_cell(self, cell_to_find):
-        """
-        for cell in map:
-            if cell_to find == cell:
-        """
-        pass
 
     @staticmethod
     def find_neighbor_cells(position):
@@ -104,8 +104,8 @@ class Map:
         """
         neighbours = [(position[0] + 1, position[1]),  # S
                       (position[0] - 1, position[1]),  # N
-                      (position[0], position[1] + 1),  # Ø
-                      (position[0], position[1] - 1)]  # V
+                      (position[0], position[1] + 1),  # E
+                      (position[0], position[1] - 1)]  # W
         return neighbours
 
     def migrate_to(self, position):
@@ -121,7 +121,6 @@ class Map:
             return position
 
         sum_propen = sum(propensity_list)
-
         p = []
         for prop in propensity_list:
             p.append(prop / sum_propen)
@@ -189,29 +188,29 @@ class Map:
 
 
 if __name__ == "__main__":
-    area_type = '''OOOOOOOOOOOOOOOOOOOOO
-    OOOOOOOOSMMMMJJJJJJJO
-    OSSSSSJJJJMMJJJJJJJOO
-    OSSSSSSSSSMMJJJJJJOOO
-    OSSSSSJJJJJJJJJJJJOOO
-    OSSSSSJJJDDJJJSJJJOOO
-    OSSJJJJJDDDJJJSSSSOOO
-    OOSSSSJJJDDJJJSOOOOOO
-    OSSSJJJJJDDJJJJJJJOOO
-    OSSSSJJJJDDJJJJOOOOOO
-    OOSSSSJJJJJJJJOOOOOOO
-    OOOSSSSJJJJJJJOOOOOOO
-    OOOOOOOOOOOOOOOOOOOOO'''
-
-    pos = (2, 6)
-    #area_type = textwrap.dedent(area_type)
+    area_type = '''\
+                    OOOOOOOOOOOOOOOOOOOOO
+                    OOOOOOOOSMMMMJJJJJJJO
+                    OSSSSSJJJJMMJJJJJJJOO
+                    OSSSSSSSSSMMJJJJJJOOO
+                    OSSSSSJJJJJJJJJJJJOOO
+                    OSSSSSJJJDDJJJSJJJOOO
+                    OSSJJJJJDDDJJJSSSSOOO
+                    OOSSSSJJJDDJJJSOOOOOO
+                    OSSSJJJJJDDJJJJJJJOOO
+                    OSSSSJJJJDDJJJJOOOOOO
+                    OOSSSSJJJJJJJJOOOOOOO
+                    OOOSSSSJJJJJJJOOOOOOO
+                    OOOOOOOOOOOOOOOOOOOOO'''
     m = Map()
     m.create_map(area_type)
+
+    pos = (2, 6)
     m.populate_map((2, 7), [Herbivore()for _ in range(5)])
 
-    #print(m.find_neighbor_cells(pos))
+    print(m.find_neighbor_cells(pos))
     print(m.migrate_to(pos))
-    #m.move()
+    m.move()
 
     m.annual_cycle()
 
