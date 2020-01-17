@@ -16,20 +16,26 @@ class Map:
     as values
     """
 
-    def __init__(self):
-        self.map_dict = {}
+    def __init__(self, land_string):
+        self.island = {}
+        self.create_map(land_string)
 
-    def create_map(self, area_type):
-        #area = area_type.remove('\n', '')
+    def create_map(self, land_string):
+        """
+        Method that creates a map as a dictionary with coordinates as keys and
+        cell instance as value
+        :param land_string: string
+        :return: dict
+        """
         area_list = []
-        for i in area_type:
+        for i in land_string:
             area_list.append(i.strip())
         while '' in area_list:
             area_list.remove('')
+        self.check_string(land_string)
 
         rows = len(area_type.split('\n'))
         cols = int(len(area_list) / rows)
-
         coordinates = [(x, y) for x in range(rows) for y in range(cols)]
 
         for ind, val in enumerate(area_list):
@@ -45,55 +51,49 @@ class Map:
                 area_list[ind] = Jungle()
 
         for ind, val in enumerate(area_list):
-            self.map_dict[coordinates[ind]] = area_list[ind]
-        return self.map_dict
+            self.island[coordinates[ind]] = area_list[ind]
+        return self.island
 
-    """def check_string(self, string):
-
-        Check if the string input is one of the allowed categories
+    @staticmethod
+    def check_string(string):
+        """
         Check if the edges at the map is ocean
-        Check if the map is a square
+        Check if the input string is one of the allowed categories
+        Check if all the rows of the map have the same length
+        :return: ValueError or nothing
+        """
+        s = textwrap.dedent(string)
+        rows = s.split('\n')
+        for i in rows[0]:
+            if i is not 'O':
+                raise ValueError('The edges of the map must be ocean')
+        for i in rows[-1]:
+            if i is not 'O':
+                raise ValueError('The edges of the map must be ocean')
 
-        accepted_landscape = ["J", "S", "D", "M", "O"]
-        for row in string:
-            for cell in row:
+        accepted_landscape = ['J', 'S', 'D', 'M', 'O']
+        for string in rows:
+            for cell in string:
                 if cell not in accepted_landscape:
                     raise ValueError(' That is an invalid landscape')
 
+        for i in rows:
+            if i[0] is not 'O':
+                raise ValueError('The of the map must be ocean')
+            elif i[-1] is not 'O':
+                raise ValueError('The edges of the map must be ocean')
 
-        bot_right = max(self.map_dict.keys())
-        top_left = min(self.map_dict.keys())
-
-        for coord, cell in self.map_dict.items():
-            if coord[0] == top_left[0] or coord[1] == top_left[1]
-                if type(cell).__name__ != "Ocean":
-                    raise ValueError('The border of the map must be ocean')
-            elif coord[0] == bot_right[0] or coord[1] == bot_right[1]:
-                if type(cell).__name__ != "Ocean":
-<<<<<<< HEAD
-                    raise ValueError('The border of the map cannot be ocean')
-                    raise ValueError('The border of the map must be ocean')
-            else:
-                continue
-
-
-        for row in range(self.rows):
-            for line in string
-"""
+        n_first_row = len(rows[0])
+        for ind, val in enumerate(rows):
+            if len(rows[ind]) != n_first_row:
+                raise ValueError('All rows must have equal length')
 
     def populate_map(self, coordinates, population):
         """
-        A method that populate the map with animals in each cell
+        A method that populate the map with animals in a cell
         :return:
         """
-        self.map_dict[coordinates].populate_cell(population)
-
-    def find_cell(self, cell_to_find):
-        """
-        for cell in map:
-            if cell_to find == cell:
-        """
-        pass
+        self.island[coordinates].populate_cell(population)
 
     @staticmethod
     def find_neighbor_cells(position):
@@ -104,8 +104,8 @@ class Map:
         """
         neighbours = [(position[0] + 1, position[1]),  # S
                       (position[0] - 1, position[1]),  # N
-                      (position[0], position[1] + 1),  # Ø
-                      (position[0], position[1] - 1)]  # V
+                      (position[0], position[1] + 1),  # E
+                      (position[0], position[1] - 1)]  # W
         return neighbours
 
     def migrate_to(self, position):
@@ -116,12 +116,11 @@ class Map:
         neigh = self.find_neighbor_cells(position)
         propensity_list = []
         for cell in neigh:
-            propensity_list.append(self.map_dict[cell].propensity_herb())
+            propensity_list.append(self.island[cell].propensity_herb())
         if sum(propensity_list) == 0:
             return position
 
         sum_propen = sum(propensity_list)
-
         p = []
         for prop in propensity_list:
             p.append(prop / sum_propen)
@@ -131,7 +130,6 @@ class Map:
             coord_prob.append((x, y))
 
         prob = sorted(coord_prob, key=lambda pro: pro[1])
-        print(prob)
         a = rd.random()
         if a <= prob[0][1]:
             return prob[0][0]
@@ -142,28 +140,34 @@ class Map:
         else:
             return prob[3][0]
 
-        # Noe feil med sannsynlighets testen
-
     def move(self):
         """
         The animals move from one cell to another
         :return:
         """
-        for loc, cell in self.map_dict.items():
-            if cell.animals_here:
-                moving_animals = cell.check_migration()
-                for animal in moving_animals:
-                    if animal.animal_moved is not True:
-                        new_cell = self.migrate_to(loc)
-                        self.map_dict[new_cell].add_animal(animal)
-                        animal.animal_moved = True
+        for loc, cell in self.island.items():
+            moving_animals = cell.check_migration()
+                # [Herb(), Carn(), Herb()]
+            for animal in moving_animals:
+                if animal.animal_moved is not True:
+                    new_cell = self.migrate_to(loc)
+                    self.island[new_cell].add_animal(animal)
+                    animal.animal_moved = True
+                elif animal.animal_moved is True:
+                    moving_animals.remove(animal)
                 cell.remove_animals(moving_animals)
-            else:
-                continue
 
-        for loc, cell in self.map_dict.items():
+        for loc, cell in self.island.items():
             for animal in cell.pop_total:
                 animal.animal_moved = False
+
+    def get_landscape_type(self, position):
+        """
+        A method that gives you the landscape instance in a certain class
+        :param position:
+        :return:
+        """
+        return self.island[position]
 
     def annual_cycle(self):
         """
@@ -178,40 +182,53 @@ class Map:
         7) Death
         :return:
         """
-        for coord, land in self.map_dict.items():
-            land.fodder_growth()
-            land.herbivore_eat()
-            land.carnivore_eat()
-            land.animal_mating()
-            Map().move()
-            land.age_weightloss()
-            land.animals_die()
+        #for coord, land in self.island.items():
+            #land.fodder_growth()
+            #land.herbivore_eat()
+            #land.carnivore_eat()
+            #land.animal_mating()
+        self.move()
+        #for coord, land in self.island.items():
+         #   land.age_weightloss()
+            #land.animals_die()
 
 
 if __name__ == "__main__":
-    area_type = '''OOOOOOOOOOOOOOOOOOOOO
-    OOOOOOOOSMMMMJJJJJJJO
-    OSSSSSJJJJMMJJJJJJJOO
-    OSSSSSSSSSMMJJJJJJOOO
-    OSSSSSJJJJJJJJJJJJOOO
-    OSSSSSJJJDDJJJSJJJOOO
-    OSSJJJJJDDDJJJSSSSOOO
-    OOSSSSJJJDDJJJSOOOOOO
-    OSSSJJJJJDDJJJJJJJOOO
-    OSSSSJJJJDDJJJJOOOOOO
-    OOSSSSJJJJJJJJOOOOOOO
-    OOOSSSSJJJJJJJOOOOOOO
-    OOOOOOOOOOOOOOOOOOOOO'''
-
-    pos = (2, 6)
-    #area_type = textwrap.dedent(area_type)
-    m = Map()
-    m.create_map(area_type)
-    m.populate_map((2, 7), [Herbivore()for _ in range(5)])
-
-    #print(m.find_neighbor_cells(pos))
-    print(m.migrate_to(pos))
-    #m.move()
-
+    area_type = '''\
+                    OOOOOOOOOOOOOOOOOOOOO
+                    OOOOOOOOSMMMMJJJJJJJO
+                    OSSSSSJJJJMMJJJJJJJOO
+                    OSSSSSSSSSMMJJJJJJOOO
+                    OSSSSSJJJJJJJJJJJJOOO
+                    OSSSSSJJJDDJJJSJJJOOO
+                    OSSJJJJJDDDJJJSSSSOOO
+                    OOSSSSJJJDDJJJSOOOOOO
+                    OSSSJJJJJDDJJJJJJJOOO
+                    OSSSSJJJJDDJJJJOOOOOO
+                    OOSSSSJJJJJJJJOOOOOOO
+                    OOOSSSSJJJJJJJOOOOOOO
+                    OOOOOOOOOOOOOOOOOOOOO'''
+    m = Map(area_type)
+    rd.seed(8)
+    m.populate_map((1, 8), [Carnivore(age=10, weight=50) for _ in range(100)])
+    pos1 = (1, 8)
+    pos2 = (2, 8)
+    print(m.find_neighbor_cells(pos1))
+    print(m.migrate_to(pos1))
+    cell1 = m.get_landscape_type(pos1)
+    cell2 = m.get_landscape_type(pos2)
+    print(cell1.total_pop())
+    print(cell2.total_pop())
     m.annual_cycle()
+    print(cell1.total_pop())
+    print(cell2.total_pop())
+    print(m.island[3, 8].total_pop())
+    print(m.island[2, 9].total_pop())
+    print(m.island[2, 7].total_pop())
+
+
+
+
+
+
 
