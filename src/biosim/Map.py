@@ -140,8 +140,6 @@ class Map:
         else:
             return prob[3][0]
 
-        # Noe feil med sannsynlighets testen
-
     def move(self):
         """
         The animals move from one cell to another
@@ -163,6 +161,14 @@ class Map:
             for animal in cell.pop_total:
                 animal.animal_moved = False
 
+    def get_landscape_type(self, position):
+        """
+        A method that gives you the landscape instance in a certain class
+        :param position:
+        :return:
+        """
+        return self.island[position]
+
     def annual_cycle(self):
         """
         An annual cycle on the map where every cell and animal on
@@ -179,12 +185,12 @@ class Map:
         for coord, land in self.island.items():
             land.fodder_growth()
             land.herbivore_eat()
-            land.carnivore_eat()
-            land.animal_mating()
+            #land.carnivore_eat()
+            #land.animal_mating()
         self.move()
         for coord, land in self.island.items():
             land.age_weightloss()
-            land.animals_die()
+            #land.animals_die()
 
 
 if __name__ == "__main__":
@@ -203,11 +209,26 @@ if __name__ == "__main__":
                     OOOSSSSJJJJJJJOOOOOOO
                     OOOOOOOOOOOOOOOOOOOOO'''
     m = Map(area_type)
-
-    m.populate_map((2, 7), [Herbivore() for _ in range(5)])
-    pos = (2, 6)
-    print(m.find_neighbor_cells(pos))
-    print(m.migrate_to(pos))
-    m.move()
+    rd.seed(8)
+    m.populate_map((1, 8), [Herbivore(age=10, weight=50) for _ in range(10000)])
+    pos1 = (1, 8)
+    pos2 = (2, 8)
+    print(m.find_neighbor_cells(pos1))
+    print(m.migrate_to(pos1))
+    cell1 = m.get_landscape_type(pos1)
+    cell2 = m.get_landscape_type(pos2)
+    print(cell1.total_pop())
+    print(cell2.total_pop())
     m.annual_cycle()
+    print(cell1.total_pop())
+    print(cell2.total_pop())
+    print(m.island[3, 8].total_pop())
+    print(m.island[2, 9].total_pop())
+    print(m.island[2, 7].total_pop())
+
+
+
+
+
+
 
