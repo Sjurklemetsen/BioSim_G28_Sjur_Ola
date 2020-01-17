@@ -4,7 +4,8 @@ __author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
 __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
 from src.biosim import Fauna as fa
-from 
+from src.biosim import Geography as geo
+from src.biosim import Map as ma
 
 class BioSim:
     def __init__(
@@ -48,8 +49,10 @@ class BioSim:
         :param species: String, name of animal species
         :param params: Dict with valid parameter specification for species
         """
-        if species ==
-            Herbivore.set_parameter
+        if species == 'Herbivore':
+            fa.Herbivore.set_parameter(params)
+        elif species == 'Carnivore':
+            fa.Carnivore.set_parameter(params)
 
     def set_landscape_parameters(self, landscape, params):
         """
@@ -58,6 +61,10 @@ class BioSim:
         :param landscape: String, code letter for landscape
         :param params: Dict with valid parameter specification for landscape
         """
+        if landscape == 'J':
+            geo.Jungle.set_parameter(params)
+        elif landscape == 'S':
+            geo.Savannah.set_parameter(params)
 
     def simulate(self, num_years, vis_years=1, img_years=None):
         """
@@ -76,7 +83,7 @@ class BioSim:
 
         :param population: List of dictionaries specifying population
         """
-
+        populate_map(coord, population)
 
 
     @property
@@ -97,3 +104,35 @@ class BioSim:
 
     def make_movie(self):
         """Create MPEG4 movie from visualization images saved."""
+
+
+if __name__ == "__main__":
+    geo = """
+    OOOOOOOOOOOOOOOOOOOOO
+    OOOOOOOOSMMMMJJJJJJJO
+    OSSSSSJJJJMMJJJJJJJOO
+    OSSSSSSSSSMMJJJJJJOOO
+    OSSSSSJJJJJJJJJJJJOOO
+    OSSSSSJJJDDJJJSJJJOOO
+    OSSJJJJJDDDJJJSSSSOOO
+    OOSSSSJJJDDJJJSOOOOOO
+    OSSSJJJJJDDJJJJJJJOOO
+    OSSSSJJJJDDJJJJOOOOOO
+    OOSSSSJJJJJJJJOOOOOOO
+    OOOSSSSJJJJJJJOOOOOOO
+    OOOOOOOOOOOOOOOOOOOOO
+    """
+    ini_herbs = [{'loc': (10,10),
+                  'pop': [{'species': 'Herbivore',
+                               'age': 5,
+                               'weight': 20}
+                              for _ in range(150)]}]
+    ini_carns = [{'loc': (10, 10),
+                  'pop': [{'species': 'Carnivore',
+                           'age': 5,
+                           'weight': 20}
+                          for _ in range(40)]}]
+    sim = BioSim(geo, ini_herbs, seed=123456)
+    #sim.set_animal_parameters()
+    #sim.set_landscape_parameters()
+    sim.add_population()
