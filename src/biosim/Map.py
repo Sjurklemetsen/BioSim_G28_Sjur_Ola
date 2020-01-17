@@ -17,7 +17,7 @@ class Map:
     """
 
     def __init__(self, land_string):
-        self.map_dict = {}
+        self.island = {}
         self.create_map(land_string)
 
     def create_map(self, land_string):
@@ -51,8 +51,8 @@ class Map:
                 area_list[ind] = Jungle()
 
         for ind, val in enumerate(area_list):
-            self.map_dict[coordinates[ind]] = area_list[ind]
-        return self.map_dict
+            self.island[coordinates[ind]] = area_list[ind]
+        return self.island
 
     @staticmethod
     def check_string(string):
@@ -93,7 +93,7 @@ class Map:
         A method that populate the map with animals in a cell
         :return:
         """
-        self.map_dict[coordinates].populate_cell(population)
+        self.island[coordinates].populate_cell(population)
 
     @staticmethod
     def find_neighbor_cells(position):
@@ -116,7 +116,7 @@ class Map:
         neigh = self.find_neighbor_cells(position)
         propensity_list = []
         for cell in neigh:
-            propensity_list.append(self.map_dict[cell].propensity_herb())
+            propensity_list.append(self.island[cell].propensity_herb())
         if sum(propensity_list) == 0:
             return position
 
@@ -130,7 +130,6 @@ class Map:
             coord_prob.append((x, y))
 
         prob = sorted(coord_prob, key=lambda pro: pro[1])
-        print(prob)
         a = rd.random()
         if a <= prob[0][1]:
             return prob[0][0]
@@ -148,19 +147,19 @@ class Map:
         The animals move from one cell to another
         :return:
         """
-        for loc, cell in self.map_dict.items():
+        for loc, cell in self.island.items():
             if cell.animals_here:
                 moving_animals = cell.check_migration()
                 for animal in moving_animals:
                     if animal.animal_moved is not True:
                         new_cell = self.migrate_to(loc)
-                        self.map_dict[new_cell].add_animal(animal)
+                        self.island[new_cell].add_animal(animal)
                         animal.animal_moved = True
                 cell.remove_animals(moving_animals)
             else:
                 continue
 
-        for loc, cell in self.map_dict.items():
+        for loc, cell in self.island.items():
             for animal in cell.pop_total:
                 animal.animal_moved = False
 
@@ -177,12 +176,13 @@ class Map:
         7) Death
         :return:
         """
-        for coord, land in self.map_dict.items():
+        for coord, land in self.island.items():
             land.fodder_growth()
             land.herbivore_eat()
             land.carnivore_eat()
             land.animal_mating()
-            self.move()
+        self.move()
+        for coord, land in self.island.items():
             land.age_weightloss()
             land.animals_die()
 
