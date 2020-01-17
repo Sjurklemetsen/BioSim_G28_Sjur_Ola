@@ -124,6 +124,7 @@ class Map:
         p = []
         for prop in propensity_list:
             p.append(prop / sum_propen)
+
         prob = 0
         probability = []
         for i in p:
@@ -216,6 +217,7 @@ if __name__ == "__main__":
     print(m.island[3, 8].total_pop())
     print(m.island[2, 9].total_pop())
     print(m.island[2, 7].total_pop())
+    rd.seed(1)
     m.annual_cycle()
     print('\n')
     print(m.island[1, 8].total_pop())
@@ -224,9 +226,9 @@ if __name__ == "__main__":
     print(m.island[2, 9].total_pop())
     print(m.island[2, 7].total_pop())
     print('\n')
-    print(m.island[2, 10].total_pop())
-    print(m.island[2, 6].total_pop())
-    print(m.island[4, 8].total_pop())
+    #print(m.island[2, 10].total_pop())
+    #print(m.island[2, 6].total_pop())
+    #print(m.island[4, 8].total_pop())
 
 
 
