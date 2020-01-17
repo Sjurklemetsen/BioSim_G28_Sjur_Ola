@@ -4,8 +4,8 @@ __author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
 __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
 from src.biosim import Map as ma
+import textwrap
 import random as rd
-
 
 class TestMap:
     """
@@ -73,9 +73,32 @@ class TestMap:
 
     def test_move(self):
         """
-        Tests that animal moves right
+        Tests that animal moves to the right cell
+        Test that the animal doesnt move more then once
+        Test that the animals are added to the new cell and removed from the
+        old cell
         """
-        pass
+
+        map = """\
+                 OOOO
+                 OSDO
+                 OOOO"""
+        m = ma.Map(map)
+        rd.seed(5)
+        m.populate_map((1, 2), [ma.Carnivore(
+            age=10, weight=50) for _ in range(100)])
+        m.populate_map((1, 2), [ma.Herbivore(
+            age=15, weight=30) for _ in range(10)])
+
+        print(m.island[1, 2].total_pop())
+        m.move()
+        print(m.island[1, 2]).totalpop())
+        assert m.island[1, 2].total_pop() == 56
+
+
+
+
+
 
     def test_annual_cycle(self):
         """
