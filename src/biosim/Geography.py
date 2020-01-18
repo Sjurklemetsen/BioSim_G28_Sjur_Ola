@@ -36,6 +36,27 @@ class BaseGeography:
     def pop_total(self):
         return self.pop_carnivores + self.pop_herbivores
 
+    @property
+    def herbivore_pop(self):
+        """
+        :return: How many herbivores in a cell
+        """
+        return len(self.pop_herbivores)
+
+    @property
+    def carnivore_pop(self):
+        """
+        :return: How many carnivores in a cell
+        """
+        return len(self.pop_carnivores)
+
+    @property
+    def total_pop(self):
+        """
+        :return: Total population in a cell
+        """
+        return len(self.pop_total)
+
     def populate_cell(self, population_list):
         """
         Populate the cell with a list of animals
@@ -79,36 +100,6 @@ class BaseGeography:
             if carn.check_death():
                 self.pop_carnivores.remove(carn)
 
-    @property
-    def herbivore_pop(self):
-        """
-        :return: How many herbivores in a cell
-        """
-        return len(self.pop_herbivores)
-
-    @property
-    def carnivore_pop(self):
-        """
-        :return: How many carnivores in a cell
-        """
-        return len(self.pop_carnivores)
-
-    @property
-    def total_pop(self):
-        """
-        :return: Total population in a cell
-        """
-        return len(self.pop_total)
-
-    @staticmethod
-    def sort_animal_fitness(population):
-        """
-        Sort the herbivores and carnivores in the cell after their fitness
-        :return:
-        """
-        population.sort(key=lambda animal: animal.fitness, reverse=True)
-        return population
-
     def propensity_herb(self):
         """
         Find the propensity in the cell for a herbivore
@@ -142,7 +133,7 @@ class BaseGeography:
         migrating_animals = []
         for animal in self.pop_total:
             if animal.animal_moved is False:
-                prob_move = animal.p['mu'] * animal.update_fitness()
+                prob_move = animal.p['mu'] * animal.fitness
                 if rd.random() < prob_move:
                     migrating_animals.append(animal)
             else:
@@ -166,6 +157,15 @@ class BaseGeography:
             return ate
         else:
             return 0
+
+    @staticmethod
+    def sort_animal_fitness(population):
+        """
+        Sort the herbivores and carnivores in the cell after their fitness
+        :return:
+        """
+        population.sort(key=lambda animal: animal.fitness, reverse=True)
+        return population
 
     def herbivore_eat(self):
         """
@@ -203,8 +203,6 @@ class BaseGeography:
         :return:
         """
         herb_born = []
-        carn_born = []
-
         for animal in self.pop_herbivores:
             if animal.check_birth(self.herbivore_pop):
                 potential_herb = Fa.Herbivore()
@@ -215,6 +213,8 @@ class BaseGeography:
                     animal.weight -= animal.p['xi'] * potential_herb.weight
             else:
                 continue
+
+        carn_born = []
         for animal in self.pop_carnivores:
             if animal.check_birth(self.carnivore_pop):
                 potential_carn = Fa.Carnivore()
@@ -303,7 +303,8 @@ class Mountain(BaseGeography):
 
 if __name__ == "__main__":
     j = Jungle()
-    herbs = [Fa.Herbivore(age=60, weight=50), Fa.Herbivore(age=100, weight=55), Fa.Herbivore(age=70, weight=60)]
+    herbs = [Fa.Herbivore(age=60, weight=50), Fa.Herbivore(age=100, weight=55),
+             Fa.Herbivore(age=70, weight=60)]
     carns = [Fa.Carnivore(weight=100), Fa.Carnivore(weight=100)]
     j.populate_cell(herbs)
     j.populate_cell(carns)
