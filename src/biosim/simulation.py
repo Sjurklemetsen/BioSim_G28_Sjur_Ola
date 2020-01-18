@@ -132,8 +132,8 @@ class BioSim:
         for coord, cell in self.map.island.items():
             herb += cell.herbivore_pop
             carn += cell.carnivore_pop
-        num_animals_per_species['Herbivores'] = herb
-        num_animals_per_species['Carnivores'] = carn
+        num_animals_per_species['Herbivore'] = herb
+        num_animals_per_species['Carnivore'] = carn
         return num_animals_per_species
 
     @property
@@ -146,8 +146,8 @@ class BioSim:
         for coord, cell in self.map.island.items():
             herbs.append(cell.herbivore_pop)
             carns.append(cell.carnivore_pop)
-        data['Herbivores'] = herbs
-        data['Carnivores'] = carns
+        data['Herbivore'] = herbs
+        data['Carnivore'] = carns
         return pd.DataFrame(data)
 
 

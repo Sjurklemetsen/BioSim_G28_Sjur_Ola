@@ -3,10 +3,10 @@
 __author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
 __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
-from src.biosim.Fauna import *
+from src.biosim import Fauna as Fa
 import math
+import random as rd
 
-# bruke property for å oppdatere den totale populasjonen
 
 class BaseGeography:
     """
@@ -117,9 +117,9 @@ class BaseGeography:
         if isinstance(self, Ocean) or isinstance(self, Mountain):
             return 0
         else:
-            e_k = self.fodder / ((self.herbivore_pop() + 1) *
-                                 Herbivore().p['F'])
-            return math.exp(Herbivore().p['landa'] * e_k)
+            e_k = self.fodder / ((self.herbivore_pop + 1) *
+                                 Fa.Herbivore().p['F'])
+            return math.exp(Fa.Herbivore().p['landa'] * e_k)
 
     def propensity_carn(self):
         """
@@ -129,9 +129,9 @@ class BaseGeography:
         if isinstance(self, Ocean) or isinstance(self, Mountain):
             return 0
         else:
-            e_k = self.get_herb_weight() / ((self.carnivore_pop() + 1) *
-                                            Carnivore().p['F'])
-            return math.exp(Herbivore().p['landa'] * e_k)
+            e_k = self.get_herb_weight() / ((self.carnivore_pop + 1) *
+                                            Fa.Carnivore().p['F'])
+            return math.exp(Fa.Herbivore().p['landa'] * e_k)
 
     def check_migration(self):
         """
@@ -155,7 +155,7 @@ class BaseGeography:
         fodder: How much foddere there is in the cell
         :return: appetite - How much fodder the animal eat
         """
-        appetite = Herbivore.p['F']
+        appetite = Fa.Herbivore.p['F']
 
         if appetite <= self.fodder:
             self.fodder -= appetite
@@ -207,7 +207,7 @@ class BaseGeography:
 
         for animal in self.pop_herbivores:
             if animal.check_birth(self.herbivore_pop):
-                potential_herb = Herbivore()
+                potential_herb = Fa.Herbivore()
                 if animal.p['xi'] * potential_herb.weight > animal.weight:
                     continue
                 else:
@@ -217,7 +217,7 @@ class BaseGeography:
                 continue
         for animal in self.pop_carnivores:
             if animal.check_birth(self.carnivore_pop):
-                potential_carn = Carnivore()
+                potential_carn = Fa.Carnivore()
                 if animal.p['xi'] * potential_carn.weight > animal.weight:
                     continue
                 else:
@@ -258,13 +258,6 @@ class Jungle(BaseGeography):
     def __init__(self):
         super().__init__()
 
-    """def fodder_growth(self):
-        
-        Replenishes fodder each year
-        :return:
-
-        self.fodder = self.geo_p['f_max']"""
-
 
 class Savannah(BaseGeography):
     """
@@ -274,14 +267,6 @@ class Savannah(BaseGeography):
 
     def __init__(self):
         super().__init__()
-
-    #def fodder_growth(self):
-        """
-        Fodder growth for savannah
-        :return:
-        """
-     #   self.fodder += self.geo_p['alpha'] * (self.geo_p['f_max']
-      #                                        - self.fodder)
 
 
 class Desert(BaseGeography):
@@ -317,7 +302,22 @@ class Mountain(BaseGeography):
 
 
 if __name__ == "__main__":
-    print(Carnivore().p['F'])
+    j = Jungle()
+    herbs = [Fa.Herbivore(age=60, weight=50), Fa.Herbivore(age=100, weight=55), Fa.Herbivore(age=70, weight=60)]
+    carns = [Fa.Carnivore(weight=100), Fa.Carnivore(weight=100)]
+    j.populate_cell(herbs)
+    j.populate_cell(carns)
+    rd.seed(5)
+    """print(rd.random())
+    print(rd.random())
+    print(rd.random())
+    print(rd.random())
+    print(rd.random())
+    print(rd.random())"""
+
+    j.carnivore_eat()
+    print(j.herbivore_pop)
+    print(j.carnivore_pop)
 
     """
     print(a)
