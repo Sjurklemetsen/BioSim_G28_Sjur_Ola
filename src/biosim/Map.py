@@ -88,8 +88,10 @@ class Map:
             if len(rows[ind]) != n_first_row:
                 raise ValueError('All rows must have equal length')
 
-    def check_landscape_type(self, pos):
-        if isinstance(self.island[pos], Ocean):
+    def check_input_in_sim(self, pos):
+        if pos not in self.island.keys():
+            raise ValueError('The coordinates does not exist on the map')
+        elif isinstance(self.island[pos], Ocean):
             raise ValueError('Animals cannot be located in Ocean cells')
         elif isinstance(self.island[pos], Mountain):
             raise ValueError('Animals cannot be located in Mountain cells')
@@ -99,7 +101,6 @@ class Map:
         A method that populate the map with animals in a cell
         :return:
         """
-
         self.island[pos].populate_cell(pop)
 
     @staticmethod
