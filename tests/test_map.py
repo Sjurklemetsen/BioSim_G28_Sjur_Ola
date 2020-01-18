@@ -4,6 +4,8 @@ __author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
 __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
 from src.biosim import Map as Ma
+from src.biosim import Fauna as Fa
+from src.biosim import Geography as Geo
 import textwrap
 import random as rd
 
@@ -65,8 +67,6 @@ class TestMap:
         m = Ma.Map(map)
         rd.seed(6)
         pos = (1, 2)
-        pop = [Ma.Herbivore() for _ in range(20)]
-        m.populate_map(pos, pop)
         a = m.migrate_to(pos)
         b = m.migrate_to(pos)
         c = m.migrate_to(pos)
