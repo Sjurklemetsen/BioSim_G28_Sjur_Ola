@@ -8,31 +8,24 @@ from src.biosim import Geography as geo
 from src.biosim import Map as ma
 import random as rd
 
+
 class BioSim:
     def __init__(
-        self,
-        island_map,
-        ini_pop,
-        seed,
+            self,
+            island_map,
+            ini_pop,
+            seed):
+
+        """
         ymax_animals=None,
         cmax_animals=None,
         img_base=None,
         img_fmt="png",
-    ):
+        """
         rd.seed(seed)
-        self.island = ma.Map(island_map)
+        self.island_map = ma.Map(island_map)
         self.add_population(ini_pop)
-
-        ini_herbs = [{’loc’: (10, 10),
-        ’pop’: [{’species’: ’Herbivore’,
-        ’age’: 5,
-        ’weight’: 20}
-        for _ in range(150)]}]
-        ini_carns = [{’loc’: (10, 10),
-        ’pop’: [{’species’: ’Carnivore’,
-        ’age’: 5,
-        ’weight’: 20}
-        for _ in range(40)]}]
+        print(self.island_map.island)
 
         """
         :param island_map: Multi-line string specifying island geography
@@ -99,12 +92,20 @@ class BioSim:
 
         :param population: List of dictionaries specifying population
         """
-        for dict in population:
-
-
-
-        populate_map(coord, population)
-
+        for dicti in population:
+            population_list = []
+            location = dicti['loc']
+            self.island_map.check_landscape_type(location)
+            for popu in dicti['pop']:
+                if popu['species'] == 'Herbivore':
+                    population_list.append(fa.Herbivore(age=popu['age'],
+                                                        weight=popu['weight']))
+                elif popu['species'] == 'Carnivore':
+                    population_list.append(fa.Carnivore(age=popu['age'],
+                                                        weight=popu['weight']))
+                else:
+                    raise ValueError('That is not a species ')
+            self.island_map.populate_map(location, population_list)
 
     @property
     def year(self):
@@ -127,32 +128,32 @@ class BioSim:
 
 
 if __name__ == "__main__":
-    geo = """
-    OOOOOOOOOOOOOOOOOOOOO
-    OOOOOOOOSMMMMJJJJJJJO
-    OSSSSSJJJJMMJJJJJJJOO
-    OSSSSSSSSSMMJJJJJJOOO
-    OSSSSSJJJJJJJJJJJJOOO
-    OSSSSSJJJDDJJJSJJJOOO
-    OSSJJJJJDDDJJJSSSSOOO
-    OOSSSSJJJDDJJJSOOOOOO
-    OSSSJJJJJDDJJJJJJJOOO
-    OSSSSJJJJDDJJJJOOOOOO
-    OOSSSSJJJJJJJJOOOOOOO
-    OOOSSSSJJJJJJJOOOOOOO
-    OOOOOOOOOOOOOOOOOOOOO
-    """
-    ini_herbs = [{'loc': (10,10),
+    geo = """\
+             OOOOOOOOOOOOOOOOOOOOO
+             OOOOOOOOSMMMMJJJJJJJO
+             OSSSSSJJJJMMJJJJJJJOO
+             OSSSSSSSSSMMJJJJJJOOO
+             OSSSSSJJJJJJJJJJJJOOO
+             OSSSSSJJJDDJJJSJJJOOO
+             OSSJJJJJDDDJJJSSSSOOO
+             OOSSSSJJJDDJJJSOOOOOO
+             OSSSJJJJJDDJJJJJJJOOO
+             OSSSSJJJJDDJJJJOOOOOO
+             OOSSSSJJJJJJJJOOOOOOO
+             OOOSSSSJJJJJJJOOOOOOO
+             OOOOOOOOOOOOOOOOOOOOO"""
+    ini_herbs = [{'loc': (10, 10),
                   'pop': [{'species': 'Herbivore',
-                               'age': 5,
-                               'weight': 20}
-                              for _ in range(150)]}]
+                           'age': 5,
+                           'weight': 20}
+                          for _ in range(150)]}]
     ini_carns = [{'loc': (10, 10),
                   'pop': [{'species': 'Carnivore',
                            'age': 5,
                            'weight': 20}
                           for _ in range(40)]}]
     sim = BioSim(geo, ini_herbs, seed=123456)
-    #sim.set_animal_parameters()
-    #sim.set_landscape_parameters()
-    sim.add_population()
+
+    # sim.set_animal_parameters()
+    # sim.set_landscape_parameters()
+

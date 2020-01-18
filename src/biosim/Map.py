@@ -75,11 +75,11 @@ class Map:
         for string in rows:
             for cell in string:
                 if cell not in accepted_landscape:
-                    raise ValueError(' That is an invalid landscape')
+                    raise ValueError('That is an invalid landscape')
 
         for i in rows:
             if i[0] is not 'O':
-                raise ValueError('The of the map must be ocean')
+                raise ValueError('The edges of the map must be ocean')
             elif i[-1] is not 'O':
                 raise ValueError('The edges of the map must be ocean')
 
@@ -87,6 +87,12 @@ class Map:
         for ind, val in enumerate(rows):
             if len(rows[ind]) != n_first_row:
                 raise ValueError('All rows must have equal length')
+
+    def check_landscape_type(self, pos):
+        if isinstance(self.island[pos], Ocean):
+            raise ValueError('Animals cannot be located in Ocean cells')
+        elif isinstance(self.island[pos], Mountain):
+            raise ValueError('Animals cannot be located in Mountain cells')
 
     def populate_map(self, pos, pop):
         """
