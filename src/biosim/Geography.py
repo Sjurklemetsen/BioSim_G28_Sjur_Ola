@@ -79,18 +79,21 @@ class BaseGeography:
             if carn.check_death():
                 self.pop_carnivores.remove(carn)
 
+    @property
     def herbivore_pop(self):
         """
         :return: How many herbivores in a cell
         """
         return len(self.pop_herbivores)
 
+    @property
     def carnivore_pop(self):
         """
         :return: How many carnivores in a cell
         """
         return len(self.pop_carnivores)
 
+    @property
     def total_pop(self):
         """
         :return: Total population in a cell
@@ -203,7 +206,7 @@ class BaseGeography:
         carn_born = []
 
         for animal in self.pop_herbivores:
-            if animal.check_birth(self.herbivore_pop()):
+            if animal.check_birth(self.herbivore_pop):
                 potential_herb = Herbivore()
                 if animal.p['xi'] * potential_herb.weight > animal.weight:
                     continue
@@ -213,7 +216,7 @@ class BaseGeography:
             else:
                 continue
         for animal in self.pop_carnivores:
-            if animal.check_birth(self.carnivore_pop()):
+            if animal.check_birth(self.carnivore_pop):
                 potential_carn = Carnivore()
                 if animal.p['xi'] * potential_carn.weight > animal.weight:
                     continue
