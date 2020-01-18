@@ -143,14 +143,14 @@ def test_add_population(plain_sim):
     plain_sim.add_population(
         [
             {
-                "loc": (2, 2),
+                "loc": (1, 1),
                 "pop": [
                     {"species": "Herbivore", "age": 1, "weight": 10.0},
                     {"species": "Carnivore", "age": 1, "weight": 10.0},
                 ],
             },
             {
-                "loc": (2, 3),
+                "loc": (1, 2),
                 "pop": [
                     {"species": "Herbivore", "age": 1, "weight": 10.0},
                     {"species": "Carnivore", "age": 1, "weight": 10.0},
@@ -203,14 +203,14 @@ def test_get_animal_distribution(plain_sim):
     plain_sim.add_population(
         [
             {
-                "loc": (2, 2),
+                "loc": (1, 1),
                 "pop": [
                     {"species": "Herbivore", "age": 1, "weight": 10.0},
                     {"species": "Carnivore", "age": 1, "weight": 10.0},
                 ],
             },
             {
-                "loc": (2, 3),
+                "loc": (1, 2),
                 "pop": [
                     {"species": "Herbivore", "age": 1, "weight": 10.0},
                     {"species": "Herbivore", "age": 1, "weight": 10.0},
