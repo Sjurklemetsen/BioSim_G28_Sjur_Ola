@@ -5,6 +5,7 @@ __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
 import random as rd
 import math
+import numpy as np
 
 
 class BaseFauna:
@@ -177,8 +178,11 @@ class Carnivore(BaseFauna):
 
         if self.fitness <= herb.fitness:
             return False
-        elif 0 < self.fitness - herb.fitness < self.p['DeltaPhiMax'] and prob < rd.random():
-            return True
+        elif 0 < self.fitness - herb.fitness < self.p['DeltaPhiMax']:
+            if prob > rd.random():
+                return True
+            else:
+                return False
         else:
             return True
 
