@@ -56,7 +56,7 @@ class TestFauna:
         :return: integer
         """
         herb = Fa.Herbivore()
-        assert isinstance(herb.update_fitness(), (int, float))
+        assert isinstance(herb.fitness, (int, float))
 
     def test_check_death(self):
         """
@@ -64,12 +64,15 @@ class TestFauna:
         the function returns a boolean expression
         :return:
         """
-        rd.seed(111)
-        herb = Fa.Herbivore(weight=0)
-        herb1 = Fa.Herbivore(weight=20, age=10)
-        assert herb1.check_death() is False
-        assert herb.check_death() is True
-        assert isinstance(herb1.check_death(), bool)
+        h_die = Fa.Herbivore(weight=0)
+        rd.seed(1)
+        h_unlucky = Fa.Herbivore(weight=20, age=90)
+        h_survivor = Fa.Herbivore(age=20, weight=40)
+        assert h_unlucky.check_death() is True
+        assert h_survivor.check_death() is False
+        assert h_die.check_death() is True
+
+        assert isinstance(h_die.check_death(), bool)
 
     def test_check_birth(self):
         """
@@ -80,7 +83,7 @@ class TestFauna:
         """
         herb = Fa.Herbivore(weight=60, age=20)
         herb2 = Fa.Herbivore(weight=33.24, age=2)
-        print(min(1, herb.p['gamma'] * herb.update_fitness()*(4 - 1)))  # 0.58
+        print(min(1, herb.p['gamma'] * herb.fitness*(4 - 1)))  # 0.58
         assert herb.check_birth(1) is False
         rd.seed(11)  # rd.random() = 0.45
         assert herb.check_birth(4) is True
@@ -109,10 +112,12 @@ class TestFauna:
         """
         c = Fa.Carnivore(age=10, weight=60)
         herb = Fa.Herbivore(age=80, weight=3)
-        c2 = Fa.Carnivore(age=10, weight=60)
+        herb2 = Fa.Herbivore(age=5, weight=70)
+        c2 = Fa.Carnivore(age=60, weight=50)
         rd.seed(224)  # 0.06, 0.19
         assert c.prob_eating(herb) is True
-        assert c2.prob_eating(herb) is False
+        assert c.prob_eating(herb) is False
+        assert c2.prob_eating(herb2) is False
         assert isinstance(c.prob_eating(herb), bool)
 
     def test_carnivore_eat(self):
@@ -123,10 +128,7 @@ class TestFauna:
         """
         c = Fa.Carnivore(weight=40)
         c2 = Fa.Carnivore(weight=40)
-        c2.p['DeltaPhiMax'] = 0.001
-        w = c.weight
-        herb = [Fa.Herbivore(weight=10)]
-        herbs = [Fa.Herbivore(age=10, weight=10) for _ in range(1000)]
+        herb = [Fa.Herbivore(weight=10) for _ in range(5)]
         assert len(c.eat(herbs)) == 995
         assert 0 < (c.weight-w) <= 45
         assert len(c2.eat(herb)) == 0
