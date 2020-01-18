@@ -3,10 +3,11 @@
 __author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
 __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
-from src.biosim import Fauna as fa
-from src.biosim import Geography as geo
-from src.biosim import Map as ma
+from src.biosim import Fauna as Fa
+from src.biosim import Geography as Geo
+from src.biosim import Map as Ma
 import random as rd
+import pandas as pd
 
 
 class BioSim:
@@ -15,7 +16,6 @@ class BioSim:
             island_map,
             ini_pop,
             seed):
-
         """
         ymax_animals=None,
         cmax_animals=None,
@@ -23,10 +23,9 @@ class BioSim:
         img_fmt="png",
         """
         rd.seed(seed)
-        self.island_map = ma.Map(island_map)
+        self.map = Ma.Map(island_map)
         self.add_population(ini_pop)
-        print(self.island_map.island)
-
+        self._year = 0
         """
         :param island_map: Multi-line string specifying island geography
         :param ini_pop: List of dictionaries specifying initial population
@@ -59,9 +58,9 @@ class BioSim:
         :param params: Dict with valid parameter specification for species
         """
         if species == 'Herbivore':
-            fa.Herbivore.set_parameter(params)
+            Fa.Herbivore.set_parameter(params)
         elif species == 'Carnivore':
-            fa.Carnivore.set_parameter(params)
+            Fa.Carnivore.set_parameter(params)
 
     def set_landscape_parameters(self, landscape, params):
         """
@@ -71,20 +70,22 @@ class BioSim:
         :param params: Dict with valid parameter specification for landscape
         """
         if landscape == 'J':
-            geo.Jungle.set_parameter(params)
+            Geo.Jungle.set_parameter(params)
         elif landscape == 'S':
-            geo.Savannah.set_parameter(params)
+            Geo.Savannah.set_parameter(params)
 
     def simulate(self, num_years, vis_years=1, img_years=None):
         """
         Run simulation while visualizing the result.
-
         :param num_years: number of years to simulate
         :param vis_years: years between visualization updates
         :param img_years: years between visualizations saved to files (default: vis_years)
 
         Image files will be numbered consecutively.
         """
+        for year in range(num_years):
+            self.map.annual_cycle()
+            self._year += 1
 
     def add_population(self, population):
         """
@@ -93,43 +94,77 @@ class BioSim:
         :param population: List of dictionaries specifying population
         """
         for dicti in population:
-            population_list = []
             location = dicti['loc']
-            self.island_map.check_landscape_type(location)
+            self.map.check_input_in_sim(location)
+            population_list = []
             for popu in dicti['pop']:
+                if popu['age'] < 0 or popu['weight'] <= 0:
+                    raise ValueError('''Age must be a non negative number and 
+                    weight must be a positive number''')
                 if popu['species'] == 'Herbivore':
-                    population_list.append(fa.Herbivore(age=popu['age'],
+                    population_list.append(Fa.Herbivore(age=popu['age'],
                                                         weight=popu['weight']))
                 elif popu['species'] == 'Carnivore':
-                    population_list.append(fa.Carnivore(age=popu['age'],
+                    population_list.append(Fa.Carnivore(age=popu['age'],
                                                         weight=popu['weight']))
                 else:
                     raise ValueError('That is not a species ')
-            self.island_map.populate_map(location, population_list)
+            self.map.populate_map(location, population_list)
 
     @property
     def year(self):
-        """Last year simulated."""
+        return self._year
 
     @property
     def num_animals(self):
         """Total number of animals on island."""
+        num_animals = 0
+        for coord, cell in self.map.island.items():
+            num_animals += cell.total_pop
+        return num_animals
 
     @property
     def num_animals_per_species(self):
         """Number of animals per species in island, as dictionary."""
+        num_animals_per_species = {}
+        herb = 0
+        carn = 0
+        for coord, cell in self.map.island.items():
+            herb += cell.herbivore_pop
+            carn += cell.carnivore_pop
+        num_animals_per_species['Herbivores'] = herb
+        num_animals_per_species['Carnivores'] = carn
+        return num_animals_per_species
 
     @property
     def animal_distribution(self):
-        """Pandas DataFrame with animal count per species for each cell on island."""
+        """Pandas DataFrame with animal count per species for
+         each cell on island."""
+        data = {'Coordinates': list(self.map.island.keys())}
+        herbs = []
+        carns = []
+        for coord, cell in self.map.island.items():
+            herbs.append(cell.herbivore_pop)
+            carns.append(cell.carnivore_pop)
+        data['Herbivores'] = herbs
+        data['Carnivores'] = carns
+        return pd.DataFrame(data)
+
 
     def make_movie(self):
         """Create MPEG4 movie from visualization images saved."""
 
 
 if __name__ == "__main__":
-    geo = """\
-             OOOOOOOOOOOOOOOOOOOOO
+
+    Geo = """\
+             OOOOOOO
+             OJJJJJO
+             OJJSOOO
+             OOOOOOO"""
+
+   # Geo = """\
+    """OOOOOOOOOOOOOOOOOOOOO
              OOOOOOOOSMMMMJJJJJJJO
              OSSSSSJJJJMMJJJJJJJOO
              OSSSSSSSSSMMJJJJJJOOO
@@ -142,18 +177,18 @@ if __name__ == "__main__":
              OOSSSSJJJJJJJJOOOOOOO
              OOOSSSSJJJJJJJOOOOOOO
              OOOOOOOOOOOOOOOOOOOOO"""
-    ini_herbs = [{'loc': (10, 10),
+    ini_herbs = [{'loc': (1, 1),
                   'pop': [{'species': 'Herbivore',
                            'age': 5,
-                           'weight': 20}
+                           'weight': 10}
                           for _ in range(150)]}]
-    ini_carns = [{'loc': (10, 10),
+    ini_carns = [{'loc': (2, 2),
                   'pop': [{'species': 'Carnivore',
                            'age': 5,
                            'weight': 20}
                           for _ in range(40)]}]
-    sim = BioSim(geo, ini_herbs, seed=123456)
+    sim = BioSim(Geo, ini_herbs, seed=123456)
+    sim.add_population(ini_carns)
+    print(sim.animal_distribution)
 
-    # sim.set_animal_parameters()
-    # sim.set_landscape_parameters()
 
