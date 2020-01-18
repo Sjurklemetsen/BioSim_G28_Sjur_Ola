@@ -88,12 +88,13 @@ class Map:
             if len(rows[ind]) != n_first_row:
                 raise ValueError('All rows must have equal length')
 
-    def populate_map(self, coordinates, population):
+    def populate_map(self, pos, pop):
         """
         A method that populate the map with animals in a cell
         :return:
         """
-        self.island[coordinates].populate_cell(population)
+
+        self.island[pos].populate_cell(pop)
 
     @staticmethod
     def find_neighbor_cells(position):

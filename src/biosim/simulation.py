@@ -6,6 +6,7 @@ __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 from src.biosim import Fauna as fa
 from src.biosim import Geography as geo
 from src.biosim import Map as ma
+import random as rd
 
 class BioSim:
     def __init__(
@@ -18,6 +19,21 @@ class BioSim:
         img_base=None,
         img_fmt="png",
     ):
+        rd.seed(seed)
+        self.island = ma.Map(island_map)
+        self.add_population(ini_pop)
+
+        ini_herbs = [{’loc’: (10, 10),
+        ’pop’: [{’species’: ’Herbivore’,
+        ’age’: 5,
+        ’weight’: 20}
+        for _ in range(150)]}]
+        ini_carns = [{’loc’: (10, 10),
+        ’pop’: [{’species’: ’Carnivore’,
+        ’age’: 5,
+        ’weight’: 20}
+        for _ in range(40)]}]
+
         """
         :param island_map: Multi-line string specifying island geography
         :param ini_pop: List of dictionaries specifying initial population
@@ -83,6 +99,10 @@ class BioSim:
 
         :param population: List of dictionaries specifying population
         """
+        for dict in population:
+
+
+
         populate_map(coord, population)
 
 

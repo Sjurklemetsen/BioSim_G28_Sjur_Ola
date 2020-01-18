@@ -4,7 +4,7 @@ __author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
 __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
 import random as rd
-import numpy as np
+import math
 
 
 class BaseFauna:
@@ -76,9 +76,9 @@ class BaseFauna:
         if self.weight <= 0:
             return 0
         else:
-            self.fitness = 1 / (1 + np.exp(self.p['phi_age'] * (
+            self.fitness = 1 / (1 + math.exp(self.p['phi_age'] * (
                 self.age - self.p['a_half']
-                    ))) * 1 / (1 + np.exp(-self.p['phi_weight'] * (
+                    ))) * 1 / (1 + math.exp(-self.p['phi_weight'] * (
                         self.weight - self.p['w_half'])))
         return self.fitness
 
