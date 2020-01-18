@@ -47,21 +47,33 @@ class BaseFauna:
         if weight is None:
             self.weight = np.random.normal(self.p['w_birth'],
                                            self.p['sigma_birth'])
-        self.fitness = self.update_fitness()
+
+    @property
+    def fitness(self):
+        """
+        Update the fitness of the animal based on age and weight
+        :return: New updated value: float
+        """
+        if self.weight <= 0:
+            fitness = 0
+        else:
+            fitness = 1 / (1 + math.exp(self.p['phi_age'] * (
+                    self.age - self.p['a_half']
+            ))) * 1 / (1 + math.exp(-self.p['phi_weight'] * (
+                    self.weight - self.p['w_half'])))
+        return fitness
 
     def aging(self):
         """
         Age of the animals increase by one each year
         """
         self.age += 1
-        self.update_fitness()
 
     def weight_decrease(self):
         """
         The weight of the animal decrease each year
         """
         self.weight -= self.p['eta'] * self.weight
-        self.update_fitness()
 
     def get_weight(self):
         """
@@ -69,28 +81,14 @@ class BaseFauna:
         """
         return self.weight
 
-    def update_fitness(self):
-        """
-        Update the fitness of the animal based on age and weight
-        :return: New updated value: float
-        """
-        if self.weight <= 0:
-            return 0
-        else:
-            self.fitness = 1 / (1 + math.exp(self.p['phi_age'] * (
-                self.age - self.p['a_half']
-                    ))) * 1 / (1 + math.exp(-self.p['phi_weight'] * (
-                        self.weight - self.p['w_half'])))
-        return self.fitness
-
     def check_death(self):
         """
         Function that checks if the animal is dead or not
         :return: Boolean expression
         """
-        if self.update_fitness() == 0:
+        if self.fitness == 0:
             return True
-        elif rd.random() < self.p['omega'] * (1 - self.update_fitness()):
+        elif rd.random() < self.p['omega'] * (1 - self.fitness):
             return True
         else:
             return False
@@ -101,7 +99,7 @@ class BaseFauna:
         :param n_animals:
         :return: Boolean expression
         """
-        probability = min(1, self.p['gamma'] * self.update_fitness() *
+        probability = min(1, self.p['gamma'] * self.fitness *
                           (n_animals - 1))
 
         if self.weight < self.p['zeta'] * (self.p['w_birth'] +
@@ -142,7 +140,6 @@ class Herbivore(BaseFauna):
         :return:
         """
         self.weight += appetite * self.p['beta']
-        self.update_fitness()
 
 
 class Carnivore(BaseFauna):
@@ -201,12 +198,10 @@ class Carnivore(BaseFauna):
                 herb_eaten += herb.weight
                 if herb_eaten >= self.p['F']:
                     self.weight += (herb_eaten - self.p['F'])*self.p['beta']
-                    self.update_fitness()
                     pop_herb.remove(herb)
                     break
                 elif herb_eaten < self.p['F']:
                     self.weight += herb.weight*self.p['beta']
-                    self.update_fitness()
                     pop_herb.remove(herb)
             else:
                 continue
