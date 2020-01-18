@@ -38,7 +38,7 @@ class BaseFauna:
         :param new_p: dictionary with new parameters
         """
         for key in new_p:
-            cls.p[key] = new_p
+            cls.p[key] = new_p[key]
 
     def __init__(self, age=0, weight=None):
         self.age = age
@@ -214,12 +214,19 @@ class Carnivore(BaseFauna):
 
 
 if __name__ == "__main__":
-    rd.seed(11)
+    Herbivore.set_parameter(new_p={
+            'w_birth': 4,
+            'sigma_birth': 2,
+            'F': 15})
+
+    h = Herbivore()
+    print(Herbivore.p['w_birth'])
+    """rd.seed(11)
     print(rd.random()) # 0.827
 
     c = Carnivore(age=10, weight=70)
     pop_herb = [Herbivore() for n in range(100)]
-    print(len(pop_herb))
+    print(len(pop_herb))"""
 
 
 
