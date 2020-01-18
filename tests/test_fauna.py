@@ -119,6 +119,9 @@ class TestFauna:
         assert c.prob_eating(herb) is False
         assert c2.prob_eating(herb2) is False
         assert isinstance(c.prob_eating(herb), bool)
+        Fa.Carnivore.p['DeltaPhiMax'] = 0.5
+        # Carn fitness - herb fitness bigger than DeltaPhiMax
+        assert c.prob_eating(herb)
 
     def test_carnivore_eat(self):
         """
@@ -127,12 +130,12 @@ class TestFauna:
         Tests that the population decreases when carnivore eats
         """
         c = Fa.Carnivore(weight=40)
-        c2 = Fa.Carnivore(weight=40)
-        herb = [Fa.Herbivore(weight=10) for _ in range(5)]
-        assert len(c.eat(herbs)) == 995
-        assert 0 < (c.weight-w) <= 45
-        assert len(c2.eat(herb)) == 0
-        assert c2.weight == 47.5
+        c2 = Fa.Carnivore(age=60, weight=2)
+        herb = [Fa.Herbivore(weight=10, age=80) for _ in range(100)]
+        c.eat(herb)
+        print(len(herb))
+        c2.eat(herb)
+        print(len(herb))
 
     def test_set_parameter(self):
         new_p = {

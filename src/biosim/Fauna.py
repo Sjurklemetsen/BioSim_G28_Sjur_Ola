@@ -203,8 +203,6 @@ class Carnivore(BaseFauna):
                 elif herb_eaten < self.p['F']:
                     self.weight += herb.weight*self.p['beta']
                     pop_herb.remove(herb)
-            else:
-                continue
         return pop_herb
 
 
