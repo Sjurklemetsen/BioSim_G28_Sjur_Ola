@@ -127,15 +127,20 @@ class TestFauna:
         """
         Tests that the weight increases according to formula when a carnivore
         eats a herbivore.
-        Tests that the population decreases when carnivore eats
+        Tests that carnivore stops eating when it has tried to kill everyone
+        Tests that Carnivore stops eating when carnivore is full
+        Tests that Herbivore list decreases when carnivore eats
         """
         c = Fa.Carnivore(weight=40)
-        c2 = Fa.Carnivore(age=60, weight=2)
-        herb = [Fa.Herbivore(weight=10, age=80) for _ in range(100)]
-        c.eat(herb)
-        print(len(herb))
-        c2.eat(herb)
-        print(len(herb))
+        herbs = [Fa.Herbivore(weight=20, age=80) for _ in range(10)]
+        herbs2 = [Fa.Herbivore(weight=12, age=80) for _ in range(100)]
+        rd.seed(1)
+        c.eat(herbs)
+        assert len(herbs) == 8
+        assert c.weight == 70
+        c.eat(herbs2)
+        assert len(herbs2) == 95
+        assert c.weight == 113.5
 
     def test_set_parameter(self):
         new_p = {
