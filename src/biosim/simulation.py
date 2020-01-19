@@ -8,6 +8,11 @@ from src.biosim import Geography as Geo
 from src.biosim import Map as Ma
 import random as rd
 import pandas as pd
+from matplotlib import colors
+import matplotlib.pyplot as plt
+import textwrap
+
+
 
 
 class BioSim:
@@ -26,6 +31,8 @@ class BioSim:
         self.map = Ma.Map(island_map)
         self.add_population(ini_pop)
         self._year = 0
+        self.island_map = island_map
+
         """
         :param island_map: Multi-line string specifying island geography
         :param ini_pop: List of dictionaries specifying initial population
@@ -73,6 +80,39 @@ class BioSim:
             Geo.Jungle.set_parameter(params)
         elif landscape == 'S':
             Geo.Savannah.set_parameter(params)
+
+    def standard_map(self):
+        island_string = self.island_map
+        string_map = textwrap.dedent(island_string)
+        string_map.replace('\n', ' ')
+
+        color_code = {'O': colors.to_rgb('aqua'),
+                      'M': colors.to_rgb('grey'),
+                      'J': colors.to_rgb('forestgreen'),
+                      'S': colors.to_rgb('yellowgreen'),
+                      'D': colors.to_rgb('khaki')}
+
+        island_map = [[color_code[column] for column in row]
+                      for row in string_map.splitlines()]
+
+        fig = plt.figure()
+        axim = fig.add_axes([0.05, 0.5, 0.4, 0.5])  # llx, lly, w, h
+        axim.imshow(island_map)
+        axim.set_xticks(range(len(island_map[0])))
+        axim.set_xticklabels(range(0, 1 + len(island_map[0])))
+        axim.set_yticks(range(len(island_map)))
+        axim.set_yticklabels(range(0, 1 + len(island_map)))
+
+        axlg = fig.add_axes([0.46, 0.7, 0.06, 0.2])  # llx, lly, w, h
+        axlg.axis('off')
+        for ix, name in enumerate(('Ocean', 'Mountain', 'Jungle',
+                                   'Savannah', 'Desert')):
+            axlg.add_patch(plt.Rectangle((0., ix * 0.2), 0.3, 0.1,
+                                         edgecolor='none',
+                                         facecolor=color_code[name[0]]))
+            axlg.text(0.35, ix * 0.2, name, transform=axlg.transAxes)
+
+        plt.show()
 
     def simulate(self, num_years, vis_years=1, img_years=None):
         """
@@ -188,7 +228,7 @@ if __name__ == "__main__":
                            'weight': 20}
                           for _ in range(40)]}]
     sim = BioSim(Geo, ini_herbs, seed=123456)
-    sim.add_population(ini_carns)
-    print(sim.animal_distribution)
+    sim.standard_map()
+
 
 
