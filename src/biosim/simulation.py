@@ -93,6 +93,7 @@ class BioSim:
 
         island_map = [[color_code[column] for column in row]
                       for row in string_map.splitlines()]
+        return island_map
 
         fig = plt.figure()
         axim = fig.add_axes([0.05, 0.5, 0.4, 0.5])  # llx, lly, w, h
