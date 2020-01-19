@@ -136,8 +136,6 @@ class BaseGeography:
                 prob_move = animal.p['mu'] * animal.fitness
                 if rd.random() < prob_move:
                     migrating_animals.append(animal)
-            else:
-                continue
         return migrating_animals
 
     def fodder_eaten(self):
@@ -211,8 +209,6 @@ class BaseGeography:
                 else:
                     herb_born.append(potential_herb)
                     animal.weight -= animal.p['xi'] * potential_herb.weight
-            else:
-                continue
 
         carn_born = []
         for animal in self.pop_carnivores:
@@ -223,8 +219,7 @@ class BaseGeography:
                 else:
                     carn_born.append(potential_carn)
                     animal.weight -= animal.p['xi'] * potential_carn.weight
-            else:
-                continue
+
 
         self.pop_herbivores.extend(herb_born)
         self.pop_carnivores.extend(carn_born)
