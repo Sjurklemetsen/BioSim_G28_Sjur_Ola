@@ -97,8 +97,9 @@ class Map:
 
     def populate_map(self, pos, pop):
         """
-        A method that populate the map with animals in a cell
-        :return:
+        Populate the map with animals in a specific cell(coordinate)
+        :param pos: tuple
+        :param pop: list
         """
         self.island[pos].populate_cell(pop)
 
@@ -138,19 +139,15 @@ class Map:
             prob += i
             probability.append(prob)
 
-        prob = []
-        for x, y in zip(neigh, probability):
-            prob.append((x, y))
-
         a = rd.random()
-        if a <= prob[0][1]:
-            return prob[0][0]
-        elif prob[0][1] < a <= prob[1][1]:
-            return prob[1][0]
-        elif prob[1][1] < a <= prob[2][1]:
-            return prob[2][0]
+        if a <= probability[0]:
+            return neigh[0]
+        elif probability[0] < a <= probability[1]:
+            return neigh[1]
+        elif probability[1] < a <= probability[2]:
+            return neigh[2]
         else:
-            return prob[3][0]
+            return neigh[3]
 
     def move(self):
         """
@@ -172,7 +169,7 @@ class Map:
     def get_landscape_type(self, position):
         """
         A method that gives you the landscape instance in a certain class
-        :param position:
+        :param position: tuple
         :return:
         """
         return self.island[position]

@@ -39,6 +39,19 @@ class TestMap:
         """
         pass
 
+    def test_populate_map(self):
+        map = """\
+                 OOOOOO
+                 OJDJJO
+                 OSJJOO
+                 OOOOOO"""
+        m = Ma.Map(map)
+        pos = (1, 1)
+        pop = [Fa.Carnivore(), Fa.Herbivore(), Fa.Carnivore()]
+        m.populate_map(pos, pop)
+        assert m.island[1, 1].total_pop == 3
+        assert m.island[1, 1].carnivore_pop == 2
+
     def test_find_neighbour_cells(self):
         """
         Tests that function finds the neighbouring cells of the input
@@ -56,26 +69,35 @@ class TestMap:
 
     def test_migrate_to(self):
         """
-        Tests that
+        Returns the position its in when Mountain or Ocean is surrounding it
         Tests that it returns a tuple based on propensity
+        Tests that it can return 4 possible outcomes
         """
         map = """\
-                 OOOOOO
-                 OJDJJO
-                 OSJJOO
-                 OOOOOO"""
+                 OOOOO
+                 OJJJO
+                 OJJJO
+                 OJJOO
+                 OOOOO"""
+
+        map2 = """\
+                  OOOO
+                  OJMO
+                  OOOO"""
         m = Ma.Map(map)
-        rd.seed(6)
-        pos = (1, 2)
+        rd.seed(148)
+        pos = (2, 2)
         a = m.migrate_to(pos)
         b = m.migrate_to(pos)
         c = m.migrate_to(pos)
         d = m.migrate_to(pos)
+        m2 = Ma.Map(map2)
+        assert m2.migrate_to((1, 1)) == (1, 1)
         assert isinstance(a, tuple)
-        assert a == (1, 1)
-        assert b == (1, 1)
-        assert c == (1, 3)
-        assert d == (2, 2)
+        assert a == (1, 2)
+        assert b == (2, 3)
+        assert c == (2, 1)
+        assert d == (3, 2)
 
     def test_move(self):
         """

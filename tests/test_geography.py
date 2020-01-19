@@ -39,6 +39,7 @@ class TestGeography:
         j.populate_cell(carns)
         print(j.pop_herbivores)
         assert isinstance(j.pop_herbivores[0], Fa.Herbivore)
+        assert len(j.pop_total) == 15
         assert len(j.pop_herbivores) == 10
         assert len(j.pop_carnivores) == 5
 
