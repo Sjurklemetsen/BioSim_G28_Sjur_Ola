@@ -335,3 +335,4 @@ class TestGeography:
         jung = Geo.Jungle()
         assert jung.geo_p['f_max'] == 1000
         assert jung.fodder == 1000
+        Geo.Jungle.set_parameter({'f_max': 800, 'alpha': 300})
