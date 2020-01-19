@@ -13,8 +13,6 @@ import matplotlib.pyplot as plt
 import textwrap
 
 
-
-
 class BioSim:
     def __init__(
             self,
@@ -27,6 +25,7 @@ class BioSim:
         img_base=None,
         img_fmt="png",
         """
+        self.island_map = island_map
         rd.seed(seed)
         self.map = Ma.Map(island_map)
         self.add_population(ini_pop)
@@ -113,6 +112,44 @@ class BioSim:
             axlg.text(0.35, ix * 0.2, name, transform=axlg.transAxes)
 
         plt.show()
+
+
+        """
+        map_colors = []
+        for coord, cell in self.map.island.items():
+            if cell.__name__ == 'Ocean':
+                map_colors.append(coord, map_colors['O'])
+            elif cell.__name__ == 'Mountain':
+                map_colors.append([coord, map_colors['M'])
+
+        [((0,2),  ]
+
+        fig = plt.figure()
+        """
+
+    def plot_island_population(self):
+        """
+        This method generate a plot of the population on the island
+        :return:
+        """
+        pass
+
+    def update_map(self):
+        """
+        Update the map plot each year
+        :return:
+        """
+        pass
+
+    def heat_map(self):
+        """
+        A method that shows the population in each cell by showing colors
+        :return:
+        """
+        """
+        :return: 
+        """
+        pass
 
     def simulate(self, num_years, vis_years=1, img_years=None):
         """
@@ -203,20 +240,6 @@ if __name__ == "__main__":
              OJJSOOO
              OOOOOOO"""
 
-   # Geo = """\
-    """OOOOOOOOOOOOOOOOOOOOO
-             OOOOOOOOSMMMMJJJJJJJO
-             OSSSSSJJJJMMJJJJJJJOO
-             OSSSSSSSSSMMJJJJJJOOO
-             OSSSSSJJJJJJJJJJJJOOO
-             OSSSSSJJJDDJJJSJJJOOO
-             OSSJJJJJDDDJJJSSSSOOO
-             OOSSSSJJJDDJJJSOOOOOO
-             OSSSJJJJJDDJJJJJJJOOO
-             OSSSSJJJJDDJJJJOOOOOO
-             OOSSSSJJJJJJJJOOOOOOO
-             OOOSSSSJJJJJJJOOOOOOO
-             OOOOOOOOOOOOOOOOOOOOO"""
     ini_herbs = [{'loc': (1, 1),
                   'pop': [{'species': 'Herbivore',
                            'age': 5,

@@ -146,7 +146,9 @@ class TestFauna:
         h = Fa.Herbivore()
         assert h.p['w_birth'] == 4
         assert h.p['F'] == 15
-        #assert h.fitness ==
+        Fa.Herbivore.set_parameter(new_p={'w_birth': 8, 'sigma_birth': 1.5,
+                                          'F': 10})
+
 
 
 
