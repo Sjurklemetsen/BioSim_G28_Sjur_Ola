@@ -3,10 +3,10 @@
 __author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
 __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
-from src.biosim.Fauna import *
+from src.biosim import Fauna as Fa
 import math
+import random as rd
 
-# bruke property for å oppdatere den totale populasjonen
 
 class BaseGeography:
     """
@@ -35,6 +35,27 @@ class BaseGeography:
     @property
     def pop_total(self):
         return self.pop_carnivores + self.pop_herbivores
+
+    @property
+    def herbivore_pop(self):
+        """
+        :return: How many herbivores in a cell
+        """
+        return len(self.pop_herbivores)
+
+    @property
+    def carnivore_pop(self):
+        """
+        :return: How many carnivores in a cell
+        """
+        return len(self.pop_carnivores)
+
+    @property
+    def total_pop(self):
+        """
+        :return: Total population in a cell
+        """
+        return len(self.pop_total)
 
     def populate_cell(self, population_list):
         """
@@ -79,36 +100,6 @@ class BaseGeography:
             if carn.check_death():
                 self.pop_carnivores.remove(carn)
 
-    @property
-    def herbivore_pop(self):
-        """
-        :return: How many herbivores in a cell
-        """
-        return len(self.pop_herbivores)
-
-    @property
-    def carnivore_pop(self):
-        """
-        :return: How many carnivores in a cell
-        """
-        return len(self.pop_carnivores)
-
-    @property
-    def total_pop(self):
-        """
-        :return: Total population in a cell
-        """
-        return len(self.pop_total)
-
-    @staticmethod
-    def sort_animal_fitness(population):
-        """
-        Sort the herbivores and carnivores in the cell after their fitness
-        :return:
-        """
-        population.sort(key=lambda animal: animal.fitness, reverse=True)
-        return population
-
     def propensity_herb(self):
         """
         Find the propensity in the cell for a herbivore
@@ -117,9 +108,9 @@ class BaseGeography:
         if isinstance(self, Ocean) or isinstance(self, Mountain):
             return 0
         else:
-            e_k = self.fodder / ((self.herbivore_pop() + 1) *
-                                 Herbivore().p['F'])
-            return math.exp(Herbivore().p['landa'] * e_k)
+            e_k = self.fodder / ((self.herbivore_pop + 1) *
+                                 Fa.Herbivore().p['F'])
+            return math.exp(Fa.Herbivore().p['landa'] * e_k)
 
     def propensity_carn(self):
         """
@@ -129,9 +120,9 @@ class BaseGeography:
         if isinstance(self, Ocean) or isinstance(self, Mountain):
             return 0
         else:
-            e_k = self.get_herb_weight() / ((self.carnivore_pop() + 1) *
-                                            Carnivore().p['F'])
-            return math.exp(Herbivore().p['landa'] * e_k)
+            e_k = self.get_herb_weight() / ((self.carnivore_pop + 1) *
+                                            Fa.Carnivore().p['F'])
+            return math.exp(Fa.Herbivore().p['landa'] * e_k)
 
     def check_migration(self):
         """
@@ -142,7 +133,7 @@ class BaseGeography:
         migrating_animals = []
         for animal in self.pop_total:
             if animal.animal_moved is False:
-                prob_move = animal.p['mu'] * animal.update_fitness()
+                prob_move = animal.p['mu'] * animal.fitness
                 if rd.random() < prob_move:
                     migrating_animals.append(animal)
             else:
@@ -155,7 +146,7 @@ class BaseGeography:
         fodder: How much foddere there is in the cell
         :return: appetite - How much fodder the animal eat
         """
-        appetite = Herbivore.p['F']
+        appetite = Fa.Herbivore.p['F']
 
         if appetite <= self.fodder:
             self.fodder -= appetite
@@ -166,6 +157,15 @@ class BaseGeography:
             return ate
         else:
             return 0
+
+    @staticmethod
+    def sort_animal_fitness(population):
+        """
+        Sort the herbivores and carnivores in the cell after their fitness
+        :return:
+        """
+        population.sort(key=lambda animal: animal.fitness, reverse=True)
+        return population
 
     def herbivore_eat(self):
         """
@@ -203,11 +203,9 @@ class BaseGeography:
         :return:
         """
         herb_born = []
-        carn_born = []
-
         for animal in self.pop_herbivores:
             if animal.check_birth(self.herbivore_pop):
-                potential_herb = Herbivore()
+                potential_herb = Fa.Herbivore()
                 if animal.p['xi'] * potential_herb.weight > animal.weight:
                     continue
                 else:
@@ -215,9 +213,11 @@ class BaseGeography:
                     animal.weight -= animal.p['xi'] * potential_herb.weight
             else:
                 continue
+
+        carn_born = []
         for animal in self.pop_carnivores:
             if animal.check_birth(self.carnivore_pop):
-                potential_carn = Carnivore()
+                potential_carn = Fa.Carnivore()
                 if animal.p['xi'] * potential_carn.weight > animal.weight:
                     continue
                 else:
@@ -258,13 +258,6 @@ class Jungle(BaseGeography):
     def __init__(self):
         super().__init__()
 
-    """def fodder_growth(self):
-        
-        Replenishes fodder each year
-        :return:
-
-        self.fodder = self.geo_p['f_max']"""
-
 
 class Savannah(BaseGeography):
     """
@@ -274,14 +267,6 @@ class Savannah(BaseGeography):
 
     def __init__(self):
         super().__init__()
-
-    #def fodder_growth(self):
-        """
-        Fodder growth for savannah
-        :return:
-        """
-     #   self.fodder += self.geo_p['alpha'] * (self.geo_p['f_max']
-      #                                        - self.fodder)
 
 
 class Desert(BaseGeography):
@@ -317,7 +302,23 @@ class Mountain(BaseGeography):
 
 
 if __name__ == "__main__":
-    print(Carnivore().p['F'])
+    j = Jungle()
+    herbs = [Fa.Herbivore(age=60, weight=50), Fa.Herbivore(age=100, weight=55),
+             Fa.Herbivore(age=70, weight=60)]
+    carns = [Fa.Carnivore(weight=100), Fa.Carnivore(weight=100)]
+    j.populate_cell(herbs)
+    j.populate_cell(carns)
+    rd.seed(5)
+    """print(rd.random())
+    print(rd.random())
+    print(rd.random())
+    print(rd.random())
+    print(rd.random())
+    print(rd.random())"""
+
+    j.carnivore_eat()
+    print(j.herbivore_pop)
+    print(j.carnivore_pop)
 
     """
     print(a)

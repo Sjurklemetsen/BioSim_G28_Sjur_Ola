@@ -3,9 +3,12 @@
 __author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
 __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
-from src.biosim import Map as ma
+from src.biosim import Map as Ma
+from src.biosim import Fauna as Fa
+from src.biosim import Geography as Geo
 import textwrap
 import random as rd
+
 
 class TestMap:
     """
@@ -27,7 +30,7 @@ class TestMap:
                  OSDO
                  OOOO"""
         map = textwrap.dedent(map)
-        m = ma.Map(map)
+        m = Ma.Map(map)
         m.create_map(map)
 
     def test_check_map_string(self):
@@ -44,7 +47,7 @@ class TestMap:
                  OOOO
                  OSDO
                  OOOO"""
-        m = ma.Map(map)
+        m = Ma.Map(map)
         a = m.find_neighbor_cells((2, 3))
         b = m.find_neighbor_cells((1, 1))
         assert isinstance(a, list)
@@ -61,11 +64,9 @@ class TestMap:
                  OJDJJO
                  OSJJOO
                  OOOOOO"""
-        m = ma.Map(map)
+        m = Ma.Map(map)
         rd.seed(6)
         pos = (1, 2)
-        pop = [ma.Herbivore() for _ in range(20)]
-        m.populate_map(pos, pop)
         a = m.migrate_to(pos)
         b = m.migrate_to(pos)
         c = m.migrate_to(pos)
@@ -89,10 +90,10 @@ class TestMap:
                  OOJJOO
                  OOOOOO"""
         rd.seed(5)
-        m = ma.Map(map)
-        m.populate_map((1, 2), [ma.Carnivore(
+        m = Ma.Map(map)
+        m.populate_map((1, 2), [Ma.Carnivore(
             age=10, weight=50) for _ in range(100)])
-        m.populate_map((1, 2), [ma.Herbivore(
+        m.populate_map((1, 2), [Ma.Herbivore(
             age=15, weight=30) for _ in range(10)])
 
         new_cell = m.migrate_to((1, 2))
@@ -113,6 +114,6 @@ class TestMap:
                 OOOO"""
         map = textwrap.dedent(map)
         print(map)
-        m = ma.Map()
+        m = Ma.Map()
         m.create_map(map)
         m.populate_map()

@@ -3,8 +3,7 @@
 __author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
 __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
-from src.biosim.Geography import *
-import math
+from src.biosim import Geography as Geo
 import random as rd
 import textwrap
 
@@ -40,15 +39,15 @@ class Map:
 
         for ind, val in enumerate(area_list):
             if val == 'O':
-                area_list[ind] = Ocean()
+                area_list[ind] = Geo.Ocean()
             elif val == 'M':
-                area_list[ind] = Mountain()
+                area_list[ind] = Geo.Mountain()
             elif val == 'D':
-                area_list[ind] = Desert()
+                area_list[ind] = Geo.Desert()
             elif val == 'S':
-                area_list[ind] = Savannah()
+                area_list[ind] = Geo.Savannah()
             else:
-                area_list[ind] = Jungle()
+                area_list[ind] = Geo.Jungle()
 
         for ind, val in enumerate(area_list):
             self.island[coordinates[ind]] = area_list[ind]
@@ -91,9 +90,9 @@ class Map:
     def check_input_in_sim(self, pos):
         if pos not in self.island.keys():
             raise ValueError('The coordinates does not exist on the map')
-        elif isinstance(self.island[pos], Ocean):
+        elif isinstance(self.island[pos], Geo.Ocean):
             raise ValueError('Animals cannot be located in Ocean cells')
-        elif isinstance(self.island[pos], Mountain):
+        elif isinstance(self.island[pos], Geo.Mountain):
             raise ValueError('Animals cannot be located in Mountain cells')
 
     def populate_map(self, pos, pop):
@@ -189,7 +188,6 @@ class Map:
         5) Aging
         6) Loss of weight
         7) Death
-        :return:
         """
         for coord, land in self.island.items():
             land.fodder_growth()

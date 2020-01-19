@@ -3,7 +3,7 @@
 __author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
 __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
-from src.biosim import Fauna as fa
+from src.biosim import Fauna as Fa
 import random as rd
 
 
@@ -13,8 +13,8 @@ class TestFauna:
     """
 
     def test_constructor_default(self):
-        herb = fa.Herbivore()
-        assert isinstance(herb, fa.Herbivore)
+        herb = Fa.Herbivore()
+        assert isinstance(herb, Fa.Herbivore)
         assert herb.age == 0
         assert herb.weight >= 0
         assert herb.fitness >= 0
@@ -27,7 +27,7 @@ class TestFauna:
 
         :return:
         """
-        herb = fa.Herbivore()
+        herb = Fa.Herbivore()
         herb.aging()
         assert herb.age == 1
         assert isinstance(herb.age, int)
@@ -37,7 +37,7 @@ class TestFauna:
         Tests if weight_decrease function decreases weight
         :return:
         """
-        herb = fa.Herbivore(weight=10)
+        herb = Fa.Herbivore(weight=10)
         herb.weight_decrease()
         assert herb.weight <= 10
 
@@ -46,7 +46,7 @@ class TestFauna:
         Tests if function returns correct weight and that its an integer
         :return:
         """
-        herb = fa.Herbivore(weight=10)
+        herb = Fa.Herbivore(weight=10)
         assert herb.get_weight() == 10
         assert isinstance(herb.get_weight(), (int, float))
 
@@ -55,8 +55,8 @@ class TestFauna:
         Tests if the fitness returns a integer
         :return: integer
         """
-        herb = fa.Herbivore()
-        assert isinstance(herb.update_fitness(), (int, float))
+        herb = Fa.Herbivore()
+        assert isinstance(herb.fitness, (int, float))
 
     def test_check_death(self):
         """
@@ -64,12 +64,15 @@ class TestFauna:
         the function returns a boolean expression
         :return:
         """
-        rd.seed(111)
-        herb = fa.Herbivore(weight=0)
-        herb1 = fa.Herbivore(weight=20, age=10)
-        assert herb1.check_death() is False
-        assert herb.check_death() is True
-        assert isinstance(herb1.check_death(), bool)
+        h_die = Fa.Herbivore(weight=0)
+        rd.seed(1)
+        h_unlucky = Fa.Herbivore(weight=20, age=90)
+        h_survivor = Fa.Herbivore(age=20, weight=40)
+        assert h_unlucky.check_death() is True
+        assert h_survivor.check_death() is False
+        assert h_die.check_death() is True
+
+        assert isinstance(h_die.check_death(), bool)
 
     def test_check_birth(self):
         """
@@ -78,9 +81,9 @@ class TestFauna:
         would be less than 33.25 with default parameters.
         test that method works and returns True or False
         """
-        herb = fa.Herbivore(weight=60, age=20)
-        herb2 = fa.Herbivore(weight=33.24, age=2)
-        print(min(1, herb.p['gamma'] * herb.update_fitness()*(4 - 1)))  # 0.58
+        herb = Fa.Herbivore(weight=60, age=20)
+        herb2 = Fa.Herbivore(weight=33.24, age=2)
+        print(min(1, herb.p['gamma'] * herb.fitness*(4 - 1)))  # 0.58
         assert herb.check_birth(1) is False
         rd.seed(11)  # rd.random() = 0.45
         assert herb.check_birth(4) is True
@@ -93,7 +96,7 @@ class TestFauna:
         Test that fitness increases when an animal eats
         :return:
         """
-        herb = fa.Herbivore(weight=1)
+        herb = Fa.Herbivore(weight=1)
         a = herb.fitness
         herb.eat(10)
         assert herb.weight == 10
@@ -107,13 +110,18 @@ class TestFauna:
         Tests that when rd.random() is less than probability of eating returns
         True
         """
-        c = fa.Carnivore(age=10, weight=60)
-        herb = fa.Herbivore(age=80, weight=3)
-        c2 = fa.Carnivore(age=10, weight=60)
-        rd.seed(224)  # 0.0652
+        c = Fa.Carnivore(age=10, weight=60)
+        herb = Fa.Herbivore(age=80, weight=3)
+        herb2 = Fa.Herbivore(age=5, weight=70)
+        c2 = Fa.Carnivore(age=60, weight=50)
+        rd.seed(224)  # 0.06, 0.19
         assert c.prob_eating(herb) is True
+        assert c.prob_eating(herb) is False
+        assert c2.prob_eating(herb2) is False
         assert isinstance(c.prob_eating(herb), bool)
-        assert c2.prob_eating(herb) is True
+        Fa.Carnivore.p['DeltaPhiMax'] = 0.5
+        # Carn fitness - herb fitness bigger than DeltaPhiMax
+        assert c.prob_eating(herb)
 
     def test_carnivore_eat(self):
         """
@@ -121,16 +129,27 @@ class TestFauna:
         eats a herbivore.
         Tests that the population decreases when carnivore eats
         """
-        c = fa.Carnivore(weight=40)
-        c2 = fa.Carnivore(weight=40)
-        c2.p['DeltaPhiMax'] = 0.001
-        w = c.weight
-        herb = [fa.Herbivore(weight=10)]
-        herbs = [fa.Herbivore(age=10, weight=10) for _ in range(1000)]
-        assert len(c.eat(herbs)) == 995
-        assert 0 < (c.weight-w) <= 45
-        assert len(c2.eat(herb)) == 0
-        assert c2.weight == 47.5
+        c = Fa.Carnivore(weight=40)
+        c2 = Fa.Carnivore(age=60, weight=2)
+        herb = [Fa.Herbivore(weight=10, age=80) for _ in range(100)]
+        c.eat(herb)
+        print(len(herb))
+        c2.eat(herb)
+        print(len(herb))
+
+    def test_set_parameter(self):
+        new_p = {
+            'w_birth': 4,
+            'sigma_birth': 2,
+            'F': 15}
+        Fa.Herbivore.set_parameter(new_p)
+        h = Fa.Herbivore()
+        assert h.p['w_birth'] == 4
+        assert h.p['F'] == 15
+        #assert h.fitness ==
+
+
+
 
 
 
