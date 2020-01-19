@@ -8,6 +8,8 @@ from src.biosim import Geography as Geo
 from src.biosim import Map as Ma
 import random as rd
 import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 
 
 class BioSim:
@@ -22,6 +24,7 @@ class BioSim:
         img_base=None,
         img_fmt="png",
         """
+        self.island_map = island_map
         rd.seed(seed)
         self.map = Ma.Map(island_map)
         self.add_population(ini_pop)
@@ -73,6 +76,94 @@ class BioSim:
             Geo.Jungle.set_parameter(params)
         elif landscape == 'S':
             Geo.Savannah.set_parameter(params)
+
+    def plot_island_map(self):
+        """
+        This method generates a map
+        :return:
+        """
+        rbg_value = {'D': (1., 1., 0.5),
+                    'J': (0., 0.6, 0.),
+                    'M': (0.5, 0.5, 0.5),
+                    'O': (0., 0., 1.),
+                    'S': (0.5, 1., 0.5)}
+        rbg_map = [[rbg_value[i] for i in row] for row in self.island_map]
+        fig = plt.figure()
+
+        axim = fig.add_axes([0.1, 0.1, 0.7, 0.8])
+        axim.imshow(rbg_map)
+        axim.set_xticks(range(len(rbg_map[0])))
+        axim.set_xticklabels(range(1, 1 + len(rbg_map[0])))
+        axim.set_yticks(range(len(rbg_map)))
+        axim.set_yticklabels(range(1, 1 + len(rbg_map)))
+
+        axlg = fig.add_axes([0.85, 0.1, 0.1, 0.8])
+        axlg.axis('off')
+        for ix, name in enumerate(('Ocean', 'Mountain', 'Jungle',
+                                   'Savannah', 'Desert')):
+            axlg.add_patch(plt.Rectangle((0., ix * 0.2), 0.3, 0.1,
+                                         edgecolor='none',
+                                         facecolor=rbg_value[name[0]]))
+            axlg.text(0.35, ix * 0.2, name, transform=axlg.transAxes)
+
+        plt.show()
+
+
+        """
+        map_colors = []
+        for coord, cell in self.map.island.items():
+            if cell.__name__ == 'Ocean':
+                map_colors.append(coord, map_colors['O'])
+            elif cell.__name__ == 'Mountain':
+                map_colors.append([coord, map_colors['M'])
+
+        [((0,2),  ]
+
+        fig = plt.figure()
+        """
+
+    def plot_island_population(self):
+        """
+        This method generate a plot of the population on the island
+        :return:
+        """
+        pass
+
+    def update_map(self):
+        """
+        Update the map plot each year
+        :return:
+        """
+        pass
+
+    def heat_map(self):
+        """
+        A method that shows the population in each cell by showing colors
+        :return:
+        """
+        """
+        :return: 
+        """
+        pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def simulate(self, num_years, vis_years=1, img_years=None):
         """
@@ -163,20 +254,6 @@ if __name__ == "__main__":
              OJJSOOO
              OOOOOOO"""
 
-   # Geo = """\
-    """OOOOOOOOOOOOOOOOOOOOO
-             OOOOOOOOSMMMMJJJJJJJO
-             OSSSSSJJJJMMJJJJJJJOO
-             OSSSSSSSSSMMJJJJJJOOO
-             OSSSSSJJJJJJJJJJJJOOO
-             OSSSSSJJJDDJJJSJJJOOO
-             OSSJJJJJDDDJJJSSSSOOO
-             OOSSSSJJJDDJJJSOOOOOO
-             OSSSJJJJJDDJJJJJJJOOO
-             OSSSSJJJJDDJJJJOOOOOO
-             OOSSSSJJJJJJJJOOOOOOO
-             OOOSSSSJJJJJJJOOOOOOO
-             OOOOOOOOOOOOOOOOOOOOO"""
     ini_herbs = [{'loc': (1, 1),
                   'pop': [{'species': 'Herbivore',
                            'age': 5,
@@ -188,7 +265,6 @@ if __name__ == "__main__":
                            'weight': 20}
                           for _ in range(40)]}]
     sim = BioSim(Geo, ini_herbs, seed=123456)
-    sim.add_population(ini_carns)
-    print(sim.animal_distribution)
+    sim.plot_island_map()
 
 
