@@ -341,8 +341,11 @@ class BioSim:
             self.ax_heat_c = self.fig.add_axes([0.54, 0.0, 0.45, 0.6])
             self.heat_map_carnivore()
 
-        """if self.year_text is None:
-            self.fig.text(0.80, 0.95, f' Year:{self.year}', fontsize=14)"""
+        if self.ax_line is None:
+            self.ax_line = self.fig.add_axes([0.54, 0.45, 0.45, 0.6])
+            self.ax_line.set_ylim(0, self.ymax_animals)
+        self.ax_line.set_xlim(0, self.final_year + 1)
+        self.plot_island_population()
 
     def update_graphics(self):
         pass
