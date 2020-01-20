@@ -47,7 +47,8 @@ class BioSim:
         self.img_ctr = 0
         self.final_year = None
         self.img_fmt = img_fmt
-        self.img_base = img_base
+        if img_base is None:
+            self.img_base = FFMPEG_BINARY
 
         # For different graphics
         self.fig = None
@@ -239,7 +240,6 @@ class BioSim:
 
         self.herb_density = self.ax_heat_h.imshow(herb_cell, interpolation='nearest', cmap='Greens')
         self.ax_heat_h.set_title('Herbivore population density')
-        return self.herb_density
 
     def update_heat_map_herbivore(self):
         pass
@@ -250,10 +250,13 @@ class BioSim:
 
         self.herb_density = self.ax_heat_c.imshow(carn_cell, interpolation='nearest', cmap='Reds')
         self.ax_heat_c.set_title('Carnivore population density')
-        return self.herb_density
 
     def update_heat_map_carnivore(self):
         pass
+
+    def update_all(self):
+        self.heat_map_carnivore()
+        self.heat_map_herbivore()
 
     def simulate(self, num_years, vis_years=1, img_years=None):
         """
@@ -271,18 +274,19 @@ class BioSim:
         self.setup_graphics()
 
         while self._year < self.final_year:
+            self.map.annual_cycle()
 
             if self.num_animals == 0:
                 break
 
             if self._year % vis_years == 0:
-                self.save_graphic()
+                self.update_all()
 
             if self._year % img_years:
                 self.save_graphic()
 
-            self.map.annual_cycle()
             self._year += 1
+        plt.show()
 
         """for year in range(num_years):
             self.map.annual_cycle()
@@ -295,17 +299,21 @@ class BioSim:
 
         if self.ax_map is None:
             self.ax_map = self.fig.add_axes([0.04, 0.45, 0.45, 0.6])
-
-            self.fig.text(0.80, 0.95, f' Year:{self.year}', fontsize=14)
-
-            self.ax_heat_c = self.fig.add_axes([0.54, 0.0, 0.45, 0.6])
-            self.ax_heat_h = self.fig.add_axes([0.04, 0.0, 0.45, 0.6])
-
             self.standard_map()
-            self.heat_map_carnivore()
+
+        if self.herb_density is None:
+            self.ax_heat_h = self.fig.add_axes([0.04, 0.0, 0.45, 0.6])
             self.heat_map_herbivore()
 
-        plt.show()
+        if self.carn_density is None:
+            self.ax_heat_c = self.fig.add_axes([0.54, 0.0, 0.45, 0.6])
+            self.heat_map_carnivore()
+
+        """if self.year_text is None:
+            self.fig.text(0.80, 0.95, f' Year:{self.year}', fontsize=14)"""
+
+    def update_graphics(self):
+        pass
 
     def save_graphic(self):
         if self.img_base is None:
@@ -358,13 +366,13 @@ if __name__ == "__main__":
                           for _ in range(5)]}]
     sim = BioSim(Geo, ini_herbs, seed=123456)
     sim.add_population(ini_carns)
-    sim.simulate(10, 1, 1)
+    sim.simulate(10)
     #print(sim.num_animals_per_species)
     #sim.plot_island_population()
     #sim.heat_map_herbivore()
     #sim.heat_map_carnivore()
     #sim.heat_map_carnivore()
-    sim.visualize()
+    #sim.setup_graphics()
     #sim.standard_map()
 
 
