@@ -11,6 +11,8 @@ import pandas as pd
 from matplotlib import colors
 import matplotlib.pyplot as plt
 import textwrap
+import seaborn as sns
+import numpy as np
 
 
 class BioSim:
@@ -133,7 +135,11 @@ class BioSim:
         This method generate a plot of the population on the island
         :return:
         """
-        pass
+        y_max = 60
+        x = np.linspace(0, self.year)
+        plt.plot((x, y_max), data=self.num_animals_per_species['Herbivore'])
+        plt.plot((x, y_max), data=self.num_animals_per_species['Carnivore'])
+        plt.show()
 
     def update_map(self):
         """
@@ -142,15 +148,22 @@ class BioSim:
         """
         pass
 
-    def heat_map(self):
+    def heat_map_herbivore(self):
         """
         A method that shows the population in each cell by showing colors
         :return:
         """
-        """
-        :return: 
-        """
-        pass
+        herbivore = self.animal_distribution
+        herbivore_hm = herbivore.pivot('Row', 'Col', 'Herbivore')
+        sns.heatmap(herbivore_hm)
+        plt.show()
+
+    def heat_map_carnivore(self):
+
+        carnivore = self.animal_distribution
+        carnivore_hm = carnivore.pivot('Row', 'Col', 'Carnivore')
+        sns.heatmap(carnivore_hm)
+        plt.show()
 
     def simulate(self, num_years, vis_years=1, img_years=None):
         """
@@ -218,12 +231,18 @@ class BioSim:
     def animal_distribution(self):
         """Pandas DataFrame with animal count per species for
          each cell on island."""
-        data = {'Coordinates': list(self.map.island.keys())}
+        data = {}
+        rows = []
+        col = []
         herbs = []
         carns = []
         for coord, cell in self.map.island.items():
             herbs.append(cell.herbivore_pop)
             carns.append(cell.carnivore_pop)
+            rows.append(coord[0])
+            col.append(coord[1])
+        data['Row'] = rows
+        data['Col'] = col
         data['Herbivore'] = herbs
         data['Carnivore'] = carns
         return pd.DataFrame(data)
@@ -237,22 +256,28 @@ if __name__ == "__main__":
 
     Geo = """\
              OOOOOOO
-             OJJJJJO
-             OJJSOOO
+             OJSSDDO
+             OJSDDOO
              OOOOOOO"""
 
     ini_herbs = [{'loc': (1, 1),
                   'pop': [{'species': 'Herbivore',
                            'age': 5,
                            'weight': 10}
-                          for _ in range(150)]}]
+                          for _ in range(200)]}]
     ini_carns = [{'loc': (2, 2),
                   'pop': [{'species': 'Carnivore',
                            'age': 5,
-                           'weight': 20}
-                          for _ in range(40)]}]
+                           'weight': 60}
+                          for _ in range(5)]}]
     sim = BioSim(Geo, ini_herbs, seed=123456)
-    sim.standard_map()
+    sim.add_population(ini_carns)
+    sim.simulate(100)
+    print(sim.num_animals_per_species)
+    sim.plot_island_population()
+    sim.heat_map_herbivore()
+    sim.heat_map_carnivore()
+    #sim.standard_map()
 
 
 
