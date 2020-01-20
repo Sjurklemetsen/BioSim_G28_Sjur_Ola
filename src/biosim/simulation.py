@@ -11,8 +11,15 @@ import pandas as pd
 from matplotlib import colors
 import matplotlib.pyplot as plt
 import textwrap
-import seaborn as sns
 import numpy as np
+import subprocess
+import os
+
+FFMPEG_BINARY = 'C:/Users/olahe/Documents/Inf200/biosim_graphics/ffmpeg.exe'
+
+DEFAULT_GRAPHICS_DIR = os.path.join('..', 'data')
+DEFAULT_GRAPHICS_NAME = 'dv'
+DEFAULT_MOVIE_FORMAT = 'mp4'
 
 
 class BioSim:
@@ -26,30 +33,31 @@ class BioSim:
             img_base=None,
             img_fmt="png"
     ):
-
-        self.island_map = island_map
         rd.seed(seed)
+        self.island_map = island_map
         self.map = Ma.Map(island_map)
         self.add_population(ini_pop)
+        self.ymax_animals = ymax_animals
         self._year = 0
-        self.island_map = island_map
 
-        if ymax_animals is None:
-            self.ymax_animals = 100
         if cmax_animals is None:
             self.cmax_animals = {}
 
+        # For saving images and simulation
+        self.img_ctr = 0
+        self.final_year = None
+        self.img_fmt = img_fmt
+        self.img_base = img_base
+
+        # For different graphics
         self.fig = None
         self.ax_map = None
         self.ax_line = None
         self.ax_heat_h = None
         self.ax_heat_c = None
-
         self.herb_density = None
         self.carn_density = None
         self.map_geo = None
-
-
 
         """
         :param island_map: Multi-line string specifying island geography
@@ -99,145 +107,6 @@ class BioSim:
         elif landscape == 'S':
             Geo.Savannah.set_parameter(params)
 
-    def standard_map(self):
-        island_string = self.island_map
-        string_map = textwrap.dedent(island_string)
-        string_map.replace('\n', ' ')
-
-        color_code = {'O': colors.to_rgb('aqua'),
-                      'M': colors.to_rgb('grey'),
-                      'J': colors.to_rgb('forestgreen'),
-                      'S': colors.to_rgb('yellowgreen'),
-                      'D': colors.to_rgb('khaki')}
-
-        island_map = [[color_code[column] for column in row]
-                      for row in string_map.splitlines()]
-
-        self.ax_map.imshow(island_map, interpolation='nearest')
-        self.ax_map.set_xticks(range(len(island_map[0])))
-        self.ax_map.set_xticklabels(range(0, 1 + len(island_map[0])))
-        self.ax_map.set_yticks(range(len(island_map)))
-        self.ax_map.set_yticklabels(range(0, 1 + len(island_map)))
-
-        """axlg = fig.add_axes([0.46, 0.7, 0.06, 0.2])  # llx, lly, w, h
-        axlg.axis('off')
-        for ix, name in enumerate(('Ocean', 'Mountain', 'Jungle',
-                                   'Savannah', 'Desert')):
-            axlg.add_patch(plt.Rectangle((0., ix * 0.2), 0.3, 0.1,
-                                         edgecolor='none',
-                                         facecolor=color_code[name[0]]))
-            axlg.text(0.35, ix * 0.2, name, transform=axlg.transAxes)
-
-        plt.show()"""
-
-
-        """
-        map_colors = []
-        for coord, cell in self.map.island.items():
-            if cell.__name__ == 'Ocean':
-                map_colors.append(coord, map_colors['O'])
-            elif cell.__name__ == 'Mountain':
-                map_colors.append([coord, map_colors['M'])
-
-        [((0,2),  ]
-
-        fig = plt.figure()
-        """
-
-    def plot_island_population(self):
-        """
-        This method generate a plot of the population on the island
-        :return:
-        """
-        y_max = 60
-        x = np.linspace(0, self.year)
-        plt.plot((x, y_max), data=self.num_animals_per_species['Herbivore'])
-        plt.plot((x, y_max), data=self.num_animals_per_species['Carnivore'])
-        plt.show()
-
-    def update_map(self):
-        """
-        Update the map plot each year
-        :return:
-        """
-        pass
-
-    def heat_map_herbivore(self):
-        """
-        A method that shows the population in each cell by showing colors
-        :return:
-        """
-
-        herb_cell = self.animal_distribution.pivot('Row', 'Col', 'Herbivore')
-
-        self.herb_density = self.ax_heat_h.imshow(herb_cell, interpolation='nearest', cmap='Greens')
-        self.ax_heat_h.set_title('Herbivore population density')
-        return self.herb_density
-
-    def update_heat_map_herbivore(self):
-        pass
-
-    def heat_map_carnivore(self):
-
-        carn_cell = self.animal_distribution.pivot('Row', 'Col', 'Carnivore')
-
-        self.herb_density = self.ax_heat_c.imshow(carn_cell, interpolation='nearest', cmap='Reds')
-        self.ax_heat_c.set_title('Carnivore population density')
-        return self.herb_density
-
-    def simulate(self, num_years, vis_years=1, img_years=None):
-        """
-        Run simulation while visualizing the result.
-        :param num_years: number of years to simulate
-        :param vis_years: years between visualization updates
-        :param img_years: years between visualizations saved to files (default: vis_years)
-
-        Image files will be numbered consecutively.
-        """
-        for year in range(num_years):
-            self.map.annual_cycle()
-            self._year += 1
-
-    def visualize(self):
-
-        if self.fig is None:
-            self.fig = plt.figure()
-
-            self.fig.text(0.80, 0.95, f' Year:{self.year}', fontsize=14)
-            self.ax_map = self.fig.add_axes([0.04, 0.5, 0.45, 0.45])
-            self.ax_heat_c = self.fig.add_axes([0.54, 0.0, 0.45, 0.45])
-            self.ax_heat_h = self.fig.add_axes([0.04, 0.0, 0.45, 0.45])
-
-            self.standard_map()
-            self.heat_map_carnivore()
-            self.heat_map_herbivore()
-
-        plt.show()
-
-    def add_population(self, population):
-        """
-        Add a population to the island
-
-        :param population: List of dictionaries specifying population
-        """
-        for dicti in population:
-            location = dicti['loc']
-            self.map.check_input_in_sim(location)
-            population_list = []
-            for popu in dicti['pop']:
-                if popu['age'] < 0 or popu['weight'] <= 0:
-                    raise ValueError('''Age must be a non negative number and 
-                    weight must be a positive number''')
-                if popu['species'] == 'Herbivore':
-                    population_list.append(Fa.Herbivore(age=popu['age'],
-                                                        weight=popu['weight']))
-                elif popu['species'] == 'Carnivore':
-                    population_list.append(Fa.Carnivore(age=popu['age'],
-                                                        weight=popu['weight']))
-                else:
-                    raise ValueError('That is not a species ')
-            self.map.populate_map(location, population_list)
-
     @property
     def year(self):
         return self._year
@@ -283,9 +152,190 @@ class BioSim:
         data['Carnivore'] = carns
         return pd.DataFrame(data)
 
+    def add_population(self, population):
+        """
+        Add a population to the island
 
-    def make_movie(self):
+        :param population: List of dictionaries specifying population
+        """
+        for dicti in population:
+            location = dicti['loc']
+            self.map.check_input_in_sim(location)
+            population_list = []
+            for popu in dicti['pop']:
+                if popu['age'] < 0 or popu['weight'] <= 0:
+                    raise ValueError('''Age must be a non negative number and 
+                    weight must be a positive number''')
+                if popu['species'] == 'Herbivore':
+                    population_list.append(Fa.Herbivore(age=popu['age'],
+                                                        weight=popu['weight']))
+                elif popu['species'] == 'Carnivore':
+                    population_list.append(Fa.Carnivore(age=popu['age'],
+                                                        weight=popu['weight']))
+                else:
+                    raise ValueError('That is not a species ')
+            self.map.populate_map(location, population_list)
+
+    def standard_map(self):
+        island_string = self.island_map
+        string_map = textwrap.dedent(island_string)
+        string_map.replace('\n', ' ')
+
+        color_code = {'O': colors.to_rgb('aqua'),
+                      'M': colors.to_rgb('grey'),
+                      'J': colors.to_rgb('forestgreen'),
+                      'S': colors.to_rgb('yellowgreen'),
+                      'D': colors.to_rgb('khaki')}
+
+        island_map = [[color_code[column] for column in row]
+                      for row in string_map.splitlines()]
+
+        self.ax_map.imshow(island_map, interpolation='nearest')
+        self.ax_map.set_xticks(range(len(island_map[0])))
+        self.ax_map.set_xticklabels(range(0, 1 + len(island_map[0])))
+        self.ax_map.set_yticks(range(len(island_map)))
+        self.ax_map.set_yticklabels(range(0, 1 + len(island_map)))
+
+        """for ix, name in enumerate(('Ocean', 'Mountain', 'Jungle',
+                                   'Savannah', 'Desert')):
+            self.ax_map.add_patch(plt.Rectangle((0., ix * 0.2), 0.3, 0.1,
+                                         edgecolor='none',
+                                         facecolor=color_code[name[0]]))
+            self.ax_map.text(0.35, ix * 0.2, name, transform=axlg.transAxes)
+    
+"""
+
+        """
+        map_colors = []
+        for coord, cell in self.map.island.items():
+            if cell.__name__ == 'Ocean':
+                map_colors.append(coord, map_colors['O'])
+            elif cell.__name__ == 'Mountain':
+                map_colors.append([coord, map_colors['M'])
+
+        [((0,2),  ]
+
+        fig = plt.figure()
+        """
+
+    def plot_island_population(self):
+        """
+        This method generate a plot of the population on the island
+        :return:
+        """
+        y_max = 60
+        x = np.linspace(0, self.year)
+        plt.plot((x, y_max), data=self.num_animals_per_species['Herbivore'])
+        plt.plot((x, y_max), data=self.num_animals_per_species['Carnivore'])
+        plt.show()
+
+    def heat_map_herbivore(self):
+        """
+        A method that shows the population in each cell by showing colors
+        :return:
+        """
+
+        herb_cell = self.animal_distribution.pivot('Row', 'Col', 'Herbivore')
+
+        self.herb_density = self.ax_heat_h.imshow(herb_cell, interpolation='nearest', cmap='Greens')
+        self.ax_heat_h.set_title('Herbivore population density')
+        return self.herb_density
+
+    def update_heat_map_herbivore(self):
+        pass
+
+    def heat_map_carnivore(self):
+
+        carn_cell = self.animal_distribution.pivot('Row', 'Col', 'Carnivore')
+
+        self.herb_density = self.ax_heat_c.imshow(carn_cell, interpolation='nearest', cmap='Reds')
+        self.ax_heat_c.set_title('Carnivore population density')
+        return self.herb_density
+
+    def update_heat_map_carnivore(self):
+        pass
+
+    def simulate(self, num_years, vis_years=1, img_years=None):
+        """
+        Run simulation while visualizing the result.
+        :param num_years: number of years to simulate
+        :param vis_years: years between visualization updates
+        :param img_years: years between visualizations saved to files (default: vis_years)
+
+        Image files will be numbered consecutively.
+        """
+        if img_years is None:
+            img_years = vis_years
+
+        self.final_year = self._year + num_years
+        self.setup_graphics()
+
+        while self._year < self.final_year:
+
+            if self.num_animals == 0:
+                break
+
+            if self._year % vis_years == 0:
+                self.save_graphic()
+
+            if self._year % img_years:
+                self.save_graphic()
+
+            self.map.annual_cycle()
+            self._year += 1
+
+        """for year in range(num_years):
+            self.map.annual_cycle()
+            self._year += 1"""
+
+    def setup_graphics(self):
+
+        if self.fig is None:
+            self.fig = plt.figure()
+
+        if self.ax_map is None:
+            self.ax_map = self.fig.add_axes([0.04, 0.45, 0.45, 0.6])
+
+            self.fig.text(0.80, 0.95, f' Year:{self.year}', fontsize=14)
+
+            self.ax_heat_c = self.fig.add_axes([0.54, 0.0, 0.45, 0.6])
+            self.ax_heat_h = self.fig.add_axes([0.04, 0.0, 0.45, 0.6])
+
+            self.standard_map()
+            self.heat_map_carnivore()
+            self.heat_map_herbivore()
+
+        plt.show()
+
+    def save_graphic(self):
+        if self.img_base is None:
+            return
+
+        plt.savefig('{base}_{num:05d}.{type}'.format(base=self.img_base,
+                                                     num=self.img_ctr,
+                                                     type=self.img_fmt))
+        self.img_ctr += 1
+
+    def make_movie(self, movie_fmt=DEFAULT_MOVIE_FORMAT):
         """Create MPEG4 movie from visualization images saved."""
+        if self.img_base is None:
+            raise RuntimeError("No filename defined.")
+
+        if movie_fmt == 'mp4':
+            try:
+                # Parameters chosen according to http://trac.ffmpeg.org/wiki/Encode/H.264,
+                # section "Compatibility"
+                subprocess.check_call([FFMPEG_BINARY,
+                                       '-i',
+                                       '{}_%05d.png'.format(self.img_base),
+                                       '-y',
+                                       '-profile:v', 'baseline',
+                                       '-level', '3.0',
+                                       '-pix_fmt', 'yuv420p',
+                                       '{}.{}'.format(self.img_base,
+                                                      movie_fmt)])
+            except subprocess.CalledProcessError as err:
+                raise RuntimeError('ERROR: ffmpeg failed with: {}'.format(err))
 
 
 if __name__ == "__main__":
@@ -308,7 +358,7 @@ if __name__ == "__main__":
                           for _ in range(5)]}]
     sim = BioSim(Geo, ini_herbs, seed=123456)
     sim.add_population(ini_carns)
-    sim.simulate(10)
+    sim.simulate(10, 1, 1)
     #print(sim.num_animals_per_species)
     #sim.plot_island_population()
     #sim.heat_map_herbivore()
