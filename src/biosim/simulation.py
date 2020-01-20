@@ -20,19 +20,35 @@ class BioSim:
             self,
             island_map,
             ini_pop,
-            seed):
-        """
-        ymax_animals=None,
-        cmax_animals=None,
-        img_base=None,
-        img_fmt="png",
-        """
+            seed,
+            ymax_animals=None,
+            cmax_animals=None,
+            img_base=None,
+            img_fmt="png"
+    ):
+
         self.island_map = island_map
         rd.seed(seed)
         self.map = Ma.Map(island_map)
         self.add_population(ini_pop)
         self._year = 0
         self.island_map = island_map
+
+        if ymax_animals is None:
+            self.ymax_animals = 100
+        if cmax_animals is None:
+            self.cmax_animals = {}
+
+        self.fig = None
+        self.ax_map = None
+        self.ax_line = None
+        self.ax_heat_h = None
+        self.ax_heat_c = None
+
+        self.herb_density = None
+        self.carn_density = None
+
+
 
         """
         :param island_map: Multi-line string specifying island geography
@@ -153,10 +169,11 @@ class BioSim:
         A method that shows the population in each cell by showing colors
         :return:
         """
-        herbivore = self.animal_distribution
-        herbivore_hm = herbivore.pivot('Row', 'Col', 'Herbivore')
-        hm_herb = sns.heatmap(herbivore_hm)
-        return hm_herb
+        self.herb_density = self.ax_heat_h.imshow(animals, interpolation='nearest')
+
+    def update_heat_map_herbivore(self):
+
+
 
     def heat_map_carnivore(self):
 
@@ -183,9 +200,12 @@ class BioSim:
         herbivore_hm = herbivore.pivot('Row', 'Col', 'Herbivore')
         sns.heatmap(herbivore_hm)
 
-        fig, ax = plt.figure()
+        fig = plt.figure()
         ax1 = fig.add_subplot(121)
         ax2 = fig.add_subplot(122)
+        #ax_animals = fig.add_subplot
+        #ax2 = fig.add_subplot(122)
+
         ax1.imshow(self.standard_map())
         ax2.imshow(self.heat_map_herbivore())
         fig.show()
