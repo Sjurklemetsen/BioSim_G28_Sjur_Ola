@@ -47,6 +47,7 @@ class BioSim:
 
         self.herb_density = None
         self.carn_density = None
+        self.map_geo = None
 
 
 
@@ -112,15 +113,13 @@ class BioSim:
         island_map = [[color_code[column] for column in row]
                       for row in string_map.splitlines()]
 
-        fig = plt.figure()
-        axim = fig.add_axes([0.05, 0.5, 0.4, 0.5])  # llx, lly, w, h
-        axim.imshow(island_map)
-        axim.set_xticks(range(len(island_map[0])))
-        axim.set_xticklabels(range(0, 1 + len(island_map[0])))
-        axim.set_yticks(range(len(island_map)))
-        axim.set_yticklabels(range(0, 1 + len(island_map)))
+        self.ax_map.imshow(island_map, interpolation='nearest')
+        self.ax_map.set_xticks(range(len(island_map[0])))
+        self.ax_map.set_xticklabels(range(0, 1 + len(island_map[0])))
+        self.ax_map.set_yticks(range(len(island_map)))
+        self.ax_map.set_yticklabels(range(0, 1 + len(island_map)))
 
-        axlg = fig.add_axes([0.46, 0.7, 0.06, 0.2])  # llx, lly, w, h
+        """axlg = fig.add_axes([0.46, 0.7, 0.06, 0.2])  # llx, lly, w, h
         axlg.axis('off')
         for ix, name in enumerate(('Ocean', 'Mountain', 'Jungle',
                                    'Savannah', 'Desert')):
@@ -129,7 +128,7 @@ class BioSim:
                                          facecolor=color_code[name[0]]))
             axlg.text(0.35, ix * 0.2, name, transform=axlg.transAxes)
 
-        plt.show()
+        plt.show()"""
 
 
         """
@@ -172,10 +171,7 @@ class BioSim:
         herb_cell = self.animal_distribution.pivot('Row', 'Col', 'Herbivore')
 
         self.herb_density = self.ax_heat_h.imshow(herb_cell, interpolation='nearest', cmap='Greens')
-        self.ax_heat_h.ylabel('Y')
-        self.ax_heat_h.ylabel('X')
         self.ax_heat_h.set_title('Herbivore population density')
-
         return self.herb_density
 
     def update_heat_map_herbivore(self):
@@ -187,17 +183,7 @@ class BioSim:
 
         self.herb_density = self.ax_heat_c.imshow(carn_cell, interpolation='nearest', cmap='Reds')
         self.ax_heat_c.set_title('Carnivore population density')
-
         return self.herb_density
-        """
-        plt.yticks(np.arange(0.5, len(df.index), 1), df.index)
-        plt.xticks(np.arange(0.5, len(df.columns), 1), df.columns)
-        plt.show()
-        plt.show()"""
-
-        """plt.yticks(np.arange(0, len(carn_cell.index), 1), carn_cell.index)
-        plt.xticks(np.arange(0, len(carn_cell.columns), 1), carn_cell.columns)
-        plt.show()"""
 
     def simulate(self, num_years, vis_years=1, img_years=None):
         """
@@ -217,11 +203,15 @@ class BioSim:
         if self.fig is None:
             self.fig = plt.figure()
 
+            self.fig.text(0.80, 0.95, f' Year:{self.year}', fontsize=14)
+            self.ax_map = self.fig.add_axes([0.04, 0.5, 0.45, 0.45])
             self.ax_heat_c = self.fig.add_axes([0.54, 0.0, 0.45, 0.45])
             self.ax_heat_h = self.fig.add_axes([0.04, 0.0, 0.45, 0.45])
 
+            self.standard_map()
             self.heat_map_carnivore()
             self.heat_map_herbivore()
+
         plt.show()
 
     def add_population(self, population):
