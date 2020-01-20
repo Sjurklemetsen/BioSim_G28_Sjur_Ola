@@ -235,6 +235,7 @@ class TestGeography:
         d.populate_cell([Fa.Herbivore(weight=10) for _ in range(10)])
         assert d.get_herb_weight() == 100
 
+
     def test_animal_mating(self):
         """
         Tests that babies born is an instance of its species
