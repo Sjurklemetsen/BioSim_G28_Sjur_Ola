@@ -166,14 +166,6 @@ class Map:
             for animal in cell.pop_total:
                 animal.animal_moved = False
 
-    def get_landscape_type(self, position):
-        """
-        A method that gives you the landscape instance in a certain class
-        :param position: tuple
-        :return:
-        """
-        return self.island[position]
-
     def annual_cycle(self):
         """
         An annual cycle on the map where every cell and animal on

@@ -6,8 +6,8 @@ __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 from src.biosim import Map as Ma
 from src.biosim import Fauna as Fa
 from src.biosim import Geography as Geo
-import textwrap
 import random as rd
+import pytest
 
 
 class TestMap:
@@ -25,19 +25,46 @@ class TestMap:
         """
         Tests map creation
         """
-        map = """
+        map = """\
                  OOOO
                  OSDO
                  OOOO"""
-        map = textwrap.dedent(map)
         m = Ma.Map(map)
         m.create_map(map)
 
     def test_check_map_string(self):
         """
-        Tests that input for map creation is valid
+        Tests that wrong input for map creation raises ValueErrors
         """
-        pass
+        map1 = "ODO\nOJO\nODO"
+        map2 = "OOO\nOPO\nOOO"
+        map3 = "OOO\nOJJ\nOOO"
+        map4 = "OOO\nOSOO\nOOO"
+        with pytest.raises(ValueError):
+            Ma.Map(map1)
+        with pytest.raises(ValueError):
+            Ma.Map(map2)
+        with pytest.raises(ValueError):
+            Ma.Map(map3)
+        with pytest.raises(ValueError):
+            Ma.Map(map4)
+
+    def test_check_input_in_sim(self):
+        """
+        Inputs for position in simulation cant be Mountain, Ocean or out of
+        bounds
+        """
+        pos1 = (-1, 1)
+        pos2 = (1, 1)
+        pos3 = (0, 1)
+        map = "OOO\nOMO\nOOO"
+        m = Ma.Map(map)
+        with pytest.raises(ValueError):
+            m.check_input_in_sim(pos1)
+        with pytest.raises(ValueError):
+            m.check_input_in_sim(pos2)
+        with pytest.raises(ValueError):
+            m.check_input_in_sim(pos3)
 
     def test_populate_map(self):
         map = """\
@@ -113,9 +140,9 @@ class TestMap:
                  OOOOOO"""
         rd.seed(5)
         m = Ma.Map(map)
-        m.populate_map((1, 2), [Ma.Carnivore(
+        m.populate_map((1, 2), [Fa.Carnivore(
             age=10, weight=50) for _ in range(100)])
-        m.populate_map((1, 2), [Ma.Herbivore(
+        m.populate_map((1, 2), [Fa.Herbivore(
             age=15, weight=30) for _ in range(10)])
 
         new_cell = m.migrate_to((1, 2))
@@ -130,12 +157,14 @@ class TestMap:
         """
         Tests that annual cycle works as it should
         """
-        map = """
-                OOOO
-                OJJO
-                OOOO"""
-        map = textwrap.dedent(map)
-        print(map)
-        m = Ma.Map()
-        m.create_map(map)
-        m.populate_map()
+        map = """\
+                 OOOO
+                 OJJO
+                 OOOO"""
+        m = Ma.Map(map)
+        m.populate_map((1, 2), [Fa.Carnivore(
+            age=10, weight=50) for _ in range(100)])
+        m.populate_map((1, 2), [Fa.Herbivore(
+            age=15, weight=30) for _ in range(10)])
+        for _ in range(10):
+            m.annual_cycle()
