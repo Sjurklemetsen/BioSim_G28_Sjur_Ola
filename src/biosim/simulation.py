@@ -47,6 +47,7 @@ class BioSim:
 
         self.herb_density = None
         self.carn_density = None
+        self.map_geo = None
 
 
 
@@ -111,17 +112,14 @@ class BioSim:
 
         island_map = [[color_code[column] for column in row]
                       for row in string_map.splitlines()]
-        return island_map
 
-        fig = plt.figure()
-        axim = fig.add_axes([0.05, 0.5, 0.4, 0.5])  # llx, lly, w, h
-        axim.imshow(island_map)
-        axim.set_xticks(range(len(island_map[0])))
-        axim.set_xticklabels(range(0, 1 + len(island_map[0])))
-        axim.set_yticks(range(len(island_map)))
-        axim.set_yticklabels(range(0, 1 + len(island_map)))
+        self.ax_map.imshow(island_map, interpolation='nearest')
+        self.ax_map.set_xticks(range(len(island_map[0])))
+        self.ax_map.set_xticklabels(range(0, 1 + len(island_map[0])))
+        self.ax_map.set_yticks(range(len(island_map)))
+        self.ax_map.set_yticklabels(range(0, 1 + len(island_map)))
 
-        axlg = fig.add_axes([0.46, 0.7, 0.06, 0.2])  # llx, lly, w, h
+        """axlg = fig.add_axes([0.46, 0.7, 0.06, 0.2])  # llx, lly, w, h
         axlg.axis('off')
         for ix, name in enumerate(('Ocean', 'Mountain', 'Jungle',
                                    'Savannah', 'Desert')):
@@ -130,7 +128,7 @@ class BioSim:
                                          facecolor=color_code[name[0]]))
             axlg.text(0.35, ix * 0.2, name, transform=axlg.transAxes)
 
-        plt.show()
+        plt.show()"""
 
 
         """
@@ -169,18 +167,23 @@ class BioSim:
         A method that shows the population in each cell by showing colors
         :return:
         """
-        self.herb_density = self.ax_heat_h.imshow(animals, interpolation='nearest')
+
+        herb_cell = self.animal_distribution.pivot('Row', 'Col', 'Herbivore')
+
+        self.herb_density = self.ax_heat_h.imshow(herb_cell, interpolation='nearest', cmap='Greens')
+        self.ax_heat_h.set_title('Herbivore population density')
+        return self.herb_density
 
     def update_heat_map_herbivore(self):
-
-
+        pass
 
     def heat_map_carnivore(self):
 
-        carnivore = self.animal_distribution
-        carnivore_hm = carnivore.pivot('Row', 'Col', 'Carnivore')
-        sns.heatmap(carnivore_hm)
-        #plt.show()
+        carn_cell = self.animal_distribution.pivot('Row', 'Col', 'Carnivore')
+
+        self.herb_density = self.ax_heat_c.imshow(carn_cell, interpolation='nearest', cmap='Reds')
+        self.ax_heat_c.set_title('Carnivore population density')
+        return self.herb_density
 
     def simulate(self, num_years, vis_years=1, img_years=None):
         """
@@ -196,21 +199,20 @@ class BioSim:
             self._year += 1
 
     def visualize(self):
-        herbivore = self.animal_distribution
-        herbivore_hm = herbivore.pivot('Row', 'Col', 'Herbivore')
-        sns.heatmap(herbivore_hm)
 
-        fig = plt.figure()
-        ax1 = fig.add_subplot(121)
-        ax2 = fig.add_subplot(122)
-        #ax_animals = fig.add_subplot
-        #ax2 = fig.add_subplot(122)
+        if self.fig is None:
+            self.fig = plt.figure()
 
-        ax1.imshow(self.standard_map())
-        ax2.imshow(self.heat_map_herbivore())
-        fig.show()
-        #ax1.plot(self.standard_map())
-        #ax2.plot(self.heat_map_carnivore())
+            self.fig.text(0.80, 0.95, f' Year:{self.year}', fontsize=14)
+            self.ax_map = self.fig.add_axes([0.04, 0.5, 0.45, 0.45])
+            self.ax_heat_c = self.fig.add_axes([0.54, 0.0, 0.45, 0.45])
+            self.ax_heat_h = self.fig.add_axes([0.04, 0.0, 0.45, 0.45])
+
+            self.standard_map()
+            self.heat_map_carnivore()
+            self.heat_map_herbivore()
+
+        plt.show()
 
     def add_population(self, population):
         """
@@ -307,10 +309,11 @@ if __name__ == "__main__":
     sim = BioSim(Geo, ini_herbs, seed=123456)
     sim.add_population(ini_carns)
     sim.simulate(10)
-    print(sim.num_animals_per_species)
+    #print(sim.num_animals_per_species)
     #sim.plot_island_population()
-    sim.heat_map_herbivore()
-    sim.heat_map_carnivore()
+    #sim.heat_map_herbivore()
+    #sim.heat_map_carnivore()
+    #sim.heat_map_carnivore()
     sim.visualize()
     #sim.standard_map()
 
