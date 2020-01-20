@@ -15,7 +15,7 @@ import numpy as np
 import subprocess
 import os
 
-FFMPEG_BINARY = 'C:/Users/olahe/Documents/Inf200/biosim_graphics/ffmpeg.exe'
+FFMPEG_BINARY = 'C:/Users/sjurk/OneDrive/Dokumenter/Skole/INF200/BioSim_G28_Sjur_Ola/Simulation_photos/ffmpeg.exe'
 
 DEFAULT_GRAPHICS_DIR = os.path.join('..', 'data')
 DEFAULT_GRAPHICS_NAME = 'dv'
@@ -59,7 +59,9 @@ class BioSim:
         self.herb_density = None
         self.carn_density = None
         self.map_geo = None
-
+        self.line_herb = None
+        self.line_carn = None
+        self.final_year = None
         """
         :param island_map: Multi-line string specifying island geography
         :param ini_pop: List of dictionaries specifying initial population
@@ -224,11 +226,41 @@ class BioSim:
         This method generate a plot of the population on the island
         :return:
         """
-        y_max = 60
-        x = np.linspace(0, self.year)
-        plt.plot((x, y_max), data=self.num_animals_per_species['Herbivore'])
-        plt.plot((x, y_max), data=self.num_animals_per_species['Carnivore'])
-        plt.show()
+        if self.line_herb is None:
+            herb_plot = self.ax_line.plot(np.arange(
+                0, self.final_year), np.full(self.final_year, np.nan))
+            self.line_herb = herb_plot[0]
+        else:
+            x, y = self.line_herb.get_data()
+            new_x = np.arange(x[-1] + 1, self.final_year)
+            if len(new_x) > 0:
+                new_y = np.full(new_x.shape, np.nan)
+                self.line_herb.set_data(
+                    np.hstack((x, new_x)), np.hstack((y, new_y)))
+
+        if self.line_carn is None:
+            carn_plot = self.ax_line.plot(np.arange(
+                0, self.final_year), np.full(self.final_year, np.nan))
+            self.line_carn = carn_plot[0]
+        else:
+            (x, y) = self.line_carn.get_data()
+            new_x = np.arange(x[-1] + 1, self.final_year)
+            if len(new_x) > 0:
+                new_y = np.full(new_x.shape, np.nan)
+                self.line_carn.set_data(
+                    np.hstack((x, new_x)), np.hstack((y, new_y)))
+
+        self.ax_line.set_title('Populations')
+        self.ax_line.legend(['Herbivores', 'Carnivores'])
+
+    def update_line_plot(self):
+        y_herb = self.line_herb.get_ydata()
+        y_herb[self.year] = self.num_animals_per_species['Herbivores']
+        self.line_herb.set_ydata(y_herb)
+
+        y_carn = self.line_carn.get_ydata()
+        y_carn[self.year] = self.num_animals_per_species['Carnivores']
+        self.line_carn.set_ydata(y_carn)
 
     def heat_map_herbivore(self):
         """
