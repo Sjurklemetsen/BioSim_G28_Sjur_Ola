@@ -43,7 +43,7 @@ class BioSim:
         self._year = 0
 
         if cmax_animals is None:
-            self.cmax_animals = {}
+            self.cmax_animals = {'Herbivore': 100, 'Carnivore': 50}
 
         # For saving images and simulation
         self.img_ctr = 0
@@ -244,7 +244,7 @@ class BioSim:
 
         herb_cell = self.animal_distribution.pivot('Row', 'Col', 'Herbivore')
 
-        self.herb_density = self.ax_heat_h.imshow(herb_cell, interpolation='nearest', cmap='Greens')
+        self.herb_density = self.ax_heat_h.imshow(herb_cell, vmax=self.cmax_animals['Herbivore'], interpolation='nearest', cmap='Greens')
         self.ax_heat_h.set_title('Herbivore population density')
         
     def heat_map_carnivore(self):
