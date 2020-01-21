@@ -11,8 +11,7 @@ import textwrap
 class Map:
     """
     Map of the islands biography containing all the cells from Geography
-    Makes a dictionary with coordinate tuples as key and instance classes
-    as values
+    and the animals from fauna class
     """
 
     def __init__(self, land_string):
@@ -59,7 +58,6 @@ class Map:
         Check if the edges at the map is ocean
         Check if the input string is one of the allowed categories
         Check if all the rows of the map have the same length
-        :return: ValueError or nothing
         """
         s = textwrap.dedent(string)
         rows = s.split('\n')
@@ -88,6 +86,10 @@ class Map:
                 raise ValueError('All rows must have equal length')
 
     def check_input_in_sim(self, pos):
+        """
+        Check that the inputs in simulation class is acceptable.
+        :param pos: tuple
+        """
         if pos not in self.island.keys():
             raise ValueError('The coordinates does not exist on the map')
         elif isinstance(self.island[pos], Geo.Ocean):
@@ -97,7 +99,7 @@ class Map:
 
     def populate_map(self, pos, pop):
         """
-        Populate the map with animals in a specific cell(coordinate)
+        Populate the map with animals in a specific cell
         :param pos: tuple
         :param pop: list
         """
@@ -118,7 +120,7 @@ class Map:
 
     def migrate_to(self, position):
         """
-        Calculates which neighbour cell animal migrates to
+        Method that Calculates which neighbour cell the animal migrates to
         :return: tuple
         """
         neigh = self.find_neighbor_cells(position)
@@ -151,8 +153,7 @@ class Map:
 
     def move(self):
         """
-        The animals move from one cell to another
-        :return:
+        The animals in the cells move from one cell to another
         """
         for loc, cell in self.island.items():
             moving_animals = cell.check_migration()

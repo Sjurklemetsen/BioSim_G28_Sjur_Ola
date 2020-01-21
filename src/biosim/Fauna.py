@@ -52,7 +52,7 @@ class BaseFauna:
     def fitness(self):
         """
         Update the fitness of the animal based on age and weight
-        :return: New updated value: float
+        :return: float
         """
         if self.weight <= 0:
             fitness = 0
@@ -77,13 +77,13 @@ class BaseFauna:
 
     def get_weight(self):
         """
-        :return: The weight of the animal: float
+        :return: float
         """
         return self.weight
 
     def check_death(self):
         """
-        Function that checks if the animal is dead or not
+        Method that checks if the animal is dead
         :return: Boolean expression
         """
         if self.fitness == 0:
@@ -96,7 +96,7 @@ class BaseFauna:
     def check_birth(self, n_animals):
         """
         A Method that check if an animal is ready to give birth or not
-        :param n_animals:
+        :param n_animals: int - How many animals of the same species in a cell
         :return: Boolean expression
         """
         probability = min(1, self.p['gamma'] * self.fitness *
@@ -112,6 +112,9 @@ class BaseFauna:
 
 
 class Herbivore(BaseFauna):
+    """
+    A class for herbivores that eat fodder
+    """
     p = {
         "w_birth": 8.0,
         "sigma_birth": 1.5,
@@ -135,14 +138,15 @@ class Herbivore(BaseFauna):
 
     def eat(self, appetite):
         """
-        The herbivore has a weight increase if it eats fodder in a jungle or
-        a savannah cell
-        :return:
+        The herbivore has a weight increase if it eats fodder
         """
         self.weight += appetite * self.p['beta']
 
 
 class Carnivore(BaseFauna):
+    """
+    A class for carnivores that eat herbivores
+    """
     p = {
         "w_birth": 6.0,
         "sigma_birth": 1.0,
@@ -168,7 +172,7 @@ class Carnivore(BaseFauna):
     def prob_eating(self, herb):
         """
         Chances for a carnivore to eat a herbivore
-        :input: A list of herbivores with sorted fitness.
+        :input: list - Herbivores with sorted fitness.
         :return: Boolean expression
         """
         prob = (self.fitness - herb.fitness) / self.p['DeltaPhiMax']
@@ -185,11 +189,10 @@ class Carnivore(BaseFauna):
 
     def eat(self, pop_herb):
         """
-        The weight of the animal increase every time the animal eat
-        The amount of herbivores decrease if a carnivore eats
-        update weight
-        update fitness
-        :return:
+        The carnivore tries to eat the herbivores in the cell.
+        The weight of the animal increase every time the animal eat.
+        The amount of herbivores decrease if a carnivore eats.
+        :return: list - the new herbivore population
         """
         herb_eaten = 0
 
