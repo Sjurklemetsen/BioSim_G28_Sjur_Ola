@@ -254,7 +254,7 @@ class BioSim:
         self.heat_map_herbivore()
         self.update_population_plot()
         self.ax_year.set_text(f'Year: {self.year}')
-        self.ax_animal_count.set_text(f'Total: {self.num_animals}')
+        self.ax_animal_count.set_text(f'Pop: {self.num_animals}')
 
         plt.pause(1e-6)
 
@@ -298,12 +298,12 @@ class BioSim:
             self.fig.tight_layout()
 
         if self.ax_year is None:
-            self.ax_year = self.fig.text(0.1, 0.92, f'Year: {self.year}',
+            self.ax_year = self.fig.text(0.1, 0.9, f'Year: {self.year}',
                                          fontsize=12)
 
         if self.ax_animal_count is None:
-            self.ax_animal_count = self.fig.text(0.75, 0.9,
-                                                 f'Total: {self.num_animals}',
+            self.ax_animal_count = self.fig.text(0.84, 0.90,
+                                                 f'Pop: {self.num_animals}',
                                                  fontsize=12)
 
         if self.ax_map is None:
