@@ -247,9 +247,6 @@ class BioSim:
         self.herb_density = self.ax_heat_h.imshow(herb_cell, interpolation='nearest', cmap='Greens')
         self.ax_heat_h.set_title('Herbivore population density')
 
-    def update_heat_map_herbivore(self):
-        pass
-
     def heat_map_carnivore(self):
 
         carn_cell = self.animal_distribution.pivot('Row', 'Col', 'Carnivore')
@@ -257,8 +254,6 @@ class BioSim:
         self.herb_density = self.ax_heat_c.imshow(carn_cell, interpolation='nearest', cmap='Reds')
         self.ax_heat_c.set_title('Carnivore population density')
 
-    def update_heat_map_carnivore(self):
-        pass
 
     def year_count(self):
         pass
