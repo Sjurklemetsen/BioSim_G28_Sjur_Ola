@@ -10,7 +10,8 @@ Welcome to BioSim's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
+   biosim
+   tests
 
 Indices and tables
 ==================
