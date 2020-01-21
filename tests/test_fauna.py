@@ -13,6 +13,9 @@ class TestFauna:
     """
 
     def test_constructor_default(self):
+        """
+        Tests instantiation of constructor default and its parameters
+        """
         herb = Fa.Herbivore()
         assert isinstance(herb, Fa.Herbivore)
         assert herb.age == 0
@@ -21,30 +24,27 @@ class TestFauna:
 
     def test_aging(self):
         """
-        Test if the age of an animal in the fauna is the correct one.
+        Test that the age of a animal is the correct one.
         Test that the age is equal to zero when a animal is born
-        Test that
-
-        :return:
         """
         herb = Fa.Herbivore()
         herb.aging()
         assert herb.age == 1
+        assert Fa.Herbivore().age == 0
         assert isinstance(herb.age, int)
 
     def test_weight_decrease(self):
         """
-        Tests if weight_decrease function decreases weight
-        :return:
+        Tests if weight_decrease function decreases weight according to formula
         """
         herb = Fa.Herbivore(weight=10)
         herb.weight_decrease()
-        assert herb.weight <= 10
+        print(herb.weight)
+        assert herb.weight == 9.5
 
     def test_get_weight(self):
         """
         Tests if function returns correct weight and that its an integer
-        :return:
         """
         herb = Fa.Herbivore(weight=10)
         assert herb.get_weight() == 10
@@ -53,16 +53,19 @@ class TestFauna:
     def test_update_fitness(self):
         """
         Tests if the fitness returns a integer
-        :return: integer
+        Tests that fitness is zero when weight is 0
         """
         herb = Fa.Herbivore()
+        herb2 = Fa.Herbivore(weight=0)
         assert isinstance(herb.fitness, (int, float))
+        assert herb2.fitness == 0
 
     def test_check_death(self):
         """
         Tests if an animal with weight=0 returns True(animal dies) and that
         the function returns a boolean expression
-        :return:
+        Tests that an animal dies with a possibility and survives with another
+        possibility
         """
         h_die = Fa.Herbivore(weight=0)
         rd.seed(1)
@@ -71,7 +74,6 @@ class TestFauna:
         assert h_unlucky.check_death() is True
         assert h_survivor.check_death() is False
         assert h_die.check_death() is True
-
         assert isinstance(h_die.check_death(), bool)
 
     def test_check_birth(self):
@@ -83,18 +85,19 @@ class TestFauna:
         """
         herb = Fa.Herbivore(weight=60, age=20)
         herb2 = Fa.Herbivore(weight=33.24, age=2)
+        carn = Fa.Carnivore(weight=60, age=20)
         print(min(1, herb.p['gamma'] * herb.fitness*(4 - 1)))  # 0.58
         assert herb.check_birth(1) is False
         rd.seed(11)  # rd.random() = 0.45
         assert herb.check_birth(4) is True
         assert isinstance(herb.check_birth(40), bool)
         assert herb2.check_birth(100) is False
+        assert carn.check_birth(6) is True
 
     def test_herbivore_eat(self):
         """
         Test that weight increases with 9 when appetite*beta = 9
         Test that fitness increases when an animal eats
-        :return:
         """
         herb = Fa.Herbivore(weight=1)
         a = herb.fitness
@@ -104,7 +107,7 @@ class TestFauna:
 
     def test_carnivore_prob_eating(self):
         """
-        Tests that method returns a boolean
+        Tests that method returns a bool
         Tests that method returns 0 when fitness of carnivore is less or equal
         to herbivores fitness
         Tests that when rd.random() is less than probability of eating returns
@@ -151,7 +154,8 @@ class TestFauna:
         h = Fa.Herbivore()
         assert h.p['w_birth'] == 4
         assert h.p['F'] == 15
-        Fa.Herbivore.set_parameter({'w_birth': 8, 'sigma_birth': 1.5, 'F': 10})
+        reset = {'w_birth': 8, 'sigma_birth': 1.5, 'F': 10}
+        Fa.Herbivore.set_parameter(reset)
 
 
 

@@ -10,14 +10,9 @@ import textwrap
 
 class Map:
     """
-<<<<<<< HEAD
     Map of the islands biography containing all the cells from Geography based
     on text string code. Map is a dictionary with coordinate tuples as key and
     instance of area type classes as values
-=======
-    Map of the islands biography containing all the cells from Geography
-    and the animals from fauna class
->>>>>>> master
     """
 
     def __init__(self, land_string):
@@ -61,17 +56,11 @@ class Map:
     @staticmethod
     def check_string(string):
         """
-<<<<<<< HEAD
-        Asserts value errors if the string input is not a valid island.Edges
-        must be ocean. Input must be an allowed landscape. Rows must have the
-        same length.
-        :param: string: string describing map
+        Asserts value errors if the string input is not a valid island. Edges
+        must be ocean. letters in string must an allowed landscape. Rows must
+        have the same length.
+        :param: string: map description
         :return: ValueError or nothing if string is valid
-=======
-        Check if the edges at the map is ocean
-        Check if the input string is one of the allowed categories
-        Check if all the rows of the map have the same length
->>>>>>> master
         """
         s = textwrap.dedent(string)
         rows = s.split('\n')
