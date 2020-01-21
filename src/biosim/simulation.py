@@ -228,11 +228,11 @@ class BioSim:
         """
 
     def update_population_plot(self):
-        carn_count, herb_count = self.num_animals_per_species.values()
-        self.carn_y.append(carn_count)
-        self.herb_y.append(herb_count)
+        n_herb, n_carn = self.num_animals_per_species.values()
+        self.herb_y.append(n_herb)
+        self.carn_y.append(n_carn)
         self.ax_line.plot(range(self.year + 1), self.herb_y,
-                          'r', self.carn_y, 'g')
+                          'g', self.carn_y, 'r')
         self.ax_line.legend(['Herbivore', 'Carnivore'])
 
 
@@ -389,8 +389,7 @@ if __name__ == "__main__":
                           for _ in range(20)]}]
     sim = BioSim(Geo, ini_herbs, seed=123456)
     sim.add_population(ini_carns)
-    sim.simulate(40)
-    sim.make_movie()
+    sim.simulate(20)
 
     #print(sim.num_animals_per_species)
     #sim.plot_island_population()
