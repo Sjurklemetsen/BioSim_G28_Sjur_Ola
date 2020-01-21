@@ -39,9 +39,12 @@ class BioSim:
         :param island_map: Multi-line string specifying island geography
         :param ini_pop: List of dictionaries specifying initial population
         :param seed: Integer used as random number seed
-        :param ymax_animals: Number specifying y-axis limit for graph showing animal numbers
-        :param cmax_animals: Dict specifying color-code limits for animal densities
-        :param img_base: String with beginning of file name for figures, including path
+        :param ymax_animals: Number specifying y-axis limit for graph showing
+        animal numbers
+        :param cmax_animals: Dict specifying color-code limits for animal
+        densities
+        :param img_base: String with beginning of file name for figures,
+        including path
         :param img_fmt: String with file type for figures, e.g. 'png'
         """
         rd.seed(seed)
@@ -76,7 +79,8 @@ class BioSim:
         self.carn_y = []
         self.herb_y = []
 
-    def set_animal_parameters(self, species, params):
+    @staticmethod
+    def set_animal_parameters(species, params):
         """
         Sets new parameters for animal species.
         :param species: String, name of animal species
@@ -87,11 +91,12 @@ class BioSim:
         elif species == 'Carnivore':
             Fa.Carnivore.set_parameter(params)
 
-    def set_landscape_parameters(self, landscape, params):
+    @staticmethod
+    def set_landscape_parameters(landscape, params):
         """
         Sets new parameters for landscape type.
-        :param landscape: String, letter code specifying geography type
-        :param params: Dict with valid parameter specifying geography type
+        :param: landscape: String, letter code specifying geography type
+        :param: params: Dict with valid parameter specifying geography type
         """
         if landscape == 'J':
             Geo.Jungle.set_parameter(params)
@@ -195,10 +200,6 @@ class BioSim:
                       for row in string_map.splitlines()]
 
         self.ax_map.imshow(island_map, interpolation='nearest')
-        #self.ax_map.set_xticks(range(len(island_map[0]))
-        #self.ax_map.set_xticklabels(range(0, 1 + len(island_map[0])))
-        #self.ax_map.set_yticks(range(len(island_map)))
-        #self.ax_map.set_yticklabels(range(0, 1 + len(island_map)))
         self.ax_map.set_title('Geography')
 
         axlg = self.fig.add_axes([0.03, 0.525, 0.1, 0.4])  # llx, lly, w, h
