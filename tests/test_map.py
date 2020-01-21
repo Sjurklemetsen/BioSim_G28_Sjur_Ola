@@ -148,10 +148,10 @@ class TestMap:
         new_cell = m.migrate_to((1, 2))
         m.move()
 
-        assert m.island[1, 2].total_pop() + m.island[
-            new_cell].total_pop() == 110
-        assert m.island[1, 2].total_pop() == 62
-        assert m.island[new_cell].total_pop() == 48
+        assert m.island[1, 2].total_pop + m.island[
+            new_cell].total_pop == 110
+        assert m.island[1, 2].total_pop == 62
+        assert m.island[new_cell].total_pop == 48
 
     def test_annual_cycle(self):
         """

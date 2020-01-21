@@ -10,9 +10,14 @@ import textwrap
 
 class Map:
     """
+<<<<<<< HEAD
     Map of the islands biography containing all the cells from Geography based
     on text string code. Map is a dictionary with coordinate tuples as key and
     instance of area type classes as values
+=======
+    Map of the islands biography containing all the cells from Geography
+    and the animals from fauna class
+>>>>>>> master
     """
 
     def __init__(self, land_string):
@@ -56,11 +61,17 @@ class Map:
     @staticmethod
     def check_string(string):
         """
+<<<<<<< HEAD
         Asserts value errors if the string input is not a valid island.Edges
         must be ocean. Input must be an allowed landscape. Rows must have the
         same length.
         :param: string: string describing map
         :return: ValueError or nothing if string is valid
+=======
+        Check if the edges at the map is ocean
+        Check if the input string is one of the allowed categories
+        Check if all the rows of the map have the same length
+>>>>>>> master
         """
         s = textwrap.dedent(string)
         rows = s.split('\n')
@@ -89,6 +100,10 @@ class Map:
                 raise ValueError('All rows must have equal length')
 
     def check_input_in_sim(self, pos):
+        """
+        Check that the inputs in simulation class is acceptable.
+        :param pos: tuple
+        """
         if pos not in self.island.keys():
             raise ValueError('The coordinates does not exist on the map')
         elif isinstance(self.island[pos], Geo.Ocean):
@@ -98,7 +113,7 @@ class Map:
 
     def populate_map(self, pos, pop):
         """
-        Populate the map with animals in a specific cell(coordinate)
+        Populate the map with animals in a specific cell
         :param pos: tuple
         :param pop: list
         """
@@ -119,7 +134,7 @@ class Map:
 
     def migrate_to(self, position):
         """
-        Calculates which neighbour cell animal migrates to
+        Method that Calculates which neighbour cell the animal migrates to
         :return: tuple
         """
         neigh = self.find_neighbor_cells(position)
@@ -152,8 +167,7 @@ class Map:
 
     def move(self):
         """
-        The animals move from one cell to another
-        :return:
+        The animals in the cells move from one cell to another
         """
         for loc, cell in self.island.items():
             moving_animals = cell.check_migration()

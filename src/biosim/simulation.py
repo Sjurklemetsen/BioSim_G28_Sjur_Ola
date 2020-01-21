@@ -15,7 +15,9 @@ import numpy as np
 import subprocess
 import os
 
-FFMPEG_BINARY = r'C:/Users/olahe/Documents/Inf200/BioSim_G28_Sjur_Ola/src/ffmpeg.exe'
+FFMPEG_BINARY = r'C:/Users/sjurk/OneDrive/Dokumenter/Skole/INF200/Movie' \
+                r'/ffmpeg-20200115-0dc0837-win64-static/ffmpeg-20200115' \
+                r'-0dc0837-win64-static/bin/ffmpeg.exe'
 
 DEFAULT_GRAPHICS_DIR = os.path.join('..', 'data')
 DEFAULT_GRAPHICS_NAME = 'dv'
@@ -48,7 +50,7 @@ class BioSim:
         self.final_year = None
         self.img_fmt = img_fmt
         if img_base is None:
-            self.img_base = os.path.join('..', 'data')
+            self.img_base = os.path.join('..', 'BioSim')
 
         # For different graphics
         self.fig = None
@@ -64,6 +66,8 @@ class BioSim:
         self.line_carn = None
         self.year_plot = None
         self.final_year = None
+        self.carn_y = []
+        self.herb_y = []
         """
         :param island_map: Multi-line string specifying island geography
         :param ini_pop: List of dictionaries specifying initial population
@@ -223,46 +227,14 @@ class BioSim:
         fig = plt.figure()
         """
 
-    def plot_island_population(self):
-        """
-        This method generate a plot of the population on the island
-        :return:
-        """
-        if self.line_herb is None:
-            herb_plot = self.ax_line.plot(np.arange(
-                0, self.final_year), np.full(self.final_year, np.nan))
-            self.line_herb = herb_plot[0]
-        else:
-            x, y = self.line_herb.get_data()
-            new_x = np.arange(x[-1] + 1, self.final_year)
-            if len(new_x) > 0:
-                new_y = np.full(new_x.shape, np.nan)
-                self.line_herb.set_data(
-                    np.hstack((x, new_x)), np.hstack((y, new_y)))
+    def update_population_plot(self):
+        n_herb, n_carn = self.num_animals_per_species.values()
+        self.herb_y.append(n_herb)
+        self.carn_y.append(n_carn)
+        self.ax_line.plot(range(self.year + 1), self.herb_y,
+                          'g', self.carn_y, 'r')
+        self.ax_line.legend(['Herbivore', 'Carnivore'])
 
-        if self.line_carn is None:
-            carn_plot = self.ax_line.plot(np.arange(
-                0, self.final_year), np.full(self.final_year, np.nan))
-            self.line_carn = carn_plot[0]
-        else:
-            (x, y) = self.line_carn.get_data()
-            new_x = np.arange(x[-1] + 1, self.final_year)
-            if len(new_x) > 0:
-                new_y = np.full(new_x.shape, np.nan)
-                self.line_carn.set_data(
-                    np.hstack((x, new_x)), np.hstack((y, new_y)))
-
-        self.ax_line.set_title('Populations')
-        self.ax_line.legend(['Herbivores', 'Carnivores'])
-
-    def update_line_plot(self):
-        y_herb = self.line_herb.get_ydata()
-        y_herb[self.year] = self.num_animals_per_species['Herbivores']
-        self.line_herb.set_ydata(y_herb)
-
-        y_carn = self.line_carn.get_ydata()
-        y_carn[self.year] = self.num_animals_per_species['Carnivores']
-        self.line_carn.set_ydata(y_carn)
 
     def heat_map_herbivore(self):
         """
@@ -275,9 +247,6 @@ class BioSim:
         self.herb_density = self.ax_heat_h.imshow(herb_cell, interpolation='nearest', cmap='Greens')
         self.ax_heat_h.set_title('Herbivore population density')
 
-    def update_heat_map_herbivore(self):
-        pass
-
     def heat_map_carnivore(self):
 
         carn_cell = self.animal_distribution.pivot('Row', 'Col', 'Carnivore')
@@ -285,8 +254,6 @@ class BioSim:
         self.herb_density = self.ax_heat_c.imshow(carn_cell, interpolation='nearest', cmap='Reds')
         self.ax_heat_c.set_title('Carnivore population density')
 
-    def update_heat_map_carnivore(self):
-        pass
 
     def year_count(self):
         pass
@@ -296,6 +263,8 @@ class BioSim:
         self.heat_map_carnivore()
         self.heat_map_herbivore()
         self.year_count()
+        self.update_population_plot()
+        plt.pause(1e-6)
 
     def simulate(self, num_years, vis_years=1, img_years=None):
         """
@@ -313,7 +282,6 @@ class BioSim:
         self.setup_graphics()
 
         while self._year < self.final_year:
-            self.map.annual_cycle()
 
             if self.num_animals == 0:
                 break
@@ -324,7 +292,7 @@ class BioSim:
             if self._year % img_years == 0:
                 self.save_graphic()
             self._year += 1
-        plt.show()
+            self.map.annual_cycle()
 
         """for year in range(num_years):
             self.map.annual_cycle()
@@ -358,12 +326,12 @@ class BioSim:
             self.heat_map_carnivore()
 
         if self.ax_line is None:
-            self.ax_line = self.fig.add_subplot(222)
+            self.ax_line = self.fig.add_subplot(322)
+            if self.ymax_animals is not None:
+                self.ax_line.set_ylim(0, self.ymax_animals)
+            self.ax_line.set_xlim(0, self.final_year + 1)
+            self.ax_line.set_title('Populations')
 
-            #self.ax_line = self.fig.add_subplot([0.54, 0.58, 0.45, 0.6])
-            self.ax_line.set_ylim(0, self.ymax_animals)
-        self.ax_line.set_xlim(0, self.final_year + 1)
-        self.plot_island_population()
 
     def save_graphic(self):
         if self.img_base is None:
@@ -413,11 +381,11 @@ if __name__ == "__main__":
                   'pop': [{'species': 'Carnivore',
                            'age': 5,
                            'weight': 60}
-                          for _ in range(5)]}]
+                          for _ in range(20)]}]
     sim = BioSim(Geo, ini_herbs, seed=123456)
     sim.add_population(ini_carns)
-    sim.simulate(10)
-    sim.make_movie()
+    sim.simulate(20)
+
     #print(sim.num_animals_per_species)
     #sim.plot_island_population()
     #sim.heat_map_herbivore()

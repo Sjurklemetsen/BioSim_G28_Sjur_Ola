@@ -58,8 +58,13 @@ class BaseFauna:
     @property
     def fitness(self):
         """
+<<<<<<< HEAD
         Fitness of the animal is calculated based on current age and weight
         :return: New updated value: float (0-1)
+=======
+        Update the fitness of the animal based on age and weight
+        :return: float
+>>>>>>> master
         """
         if self.weight <= 0:
             fitness = 0
@@ -84,14 +89,23 @@ class BaseFauna:
 
     def get_weight(self):
         """
+<<<<<<< HEAD
         :return: Current weight of the animal: float
+=======
+        :return: float
+>>>>>>> master
         """
         return self.weight
 
     def check_death(self):
         """
+<<<<<<< HEAD
         Checks if the animal dies or not, always a possibility that animal dies
         :return: Bool (True if it dies)
+=======
+        Method that checks if the animal is dead
+        :return: Boolean expression
+>>>>>>> master
         """
         if self.fitness == 0:
             return True
@@ -102,9 +116,15 @@ class BaseFauna:
 
     def check_birth(self, n_animals):
         """
+<<<<<<< HEAD
         Method that check if an animal is ready to give birth or not
         :param n_animals: possible mating partners
         :return: Bool (True if ready)
+=======
+        A Method that check if an animal is ready to give birth or not
+        :param n_animals: int - How many animals of the same species in a cell
+        :return: Boolean expression
+>>>>>>> master
         """
         probability = min(1, self.p['gamma'] * self.fitness *
                           (n_animals - 1))
@@ -120,8 +140,12 @@ class BaseFauna:
 
 class Herbivore(BaseFauna):
     """
+<<<<<<< HEAD
     Subclass that defines a Herbivore
     :param: p: default parameters for a Herbivore
+=======
+    A class for herbivores that eat fodder
+>>>>>>> master
     """
     p = {
         "w_birth": 8.0,
@@ -146,16 +170,24 @@ class Herbivore(BaseFauna):
 
     def eat(self, appetite):
         """
+<<<<<<< HEAD
         A herbivore increase in weight when it eats fodder in jungle or
         savannah
+=======
+        The herbivore has a weight increase if it eats fodder
+>>>>>>> master
         """
         self.weight += appetite * self.p['beta']
 
 
 class Carnivore(BaseFauna):
     """
+<<<<<<< HEAD
     Subclass that defines a Carnivore
     :param: p: Default parameters for a carnivore
+=======
+    A class for carnivores that eat herbivores
+>>>>>>> master
     """
     p = {
         "w_birth": 6.0,
@@ -181,10 +213,16 @@ class Carnivore(BaseFauna):
 
     def prob_eating(self, herb):
         """
+<<<<<<< HEAD
         Carnivore has a chance of successfully killing a herbivore by formula
         in method
         :param herb: instance of Herbivore subclass
         :return: Bool (True if successful)
+=======
+        Chances for a carnivore to eat a herbivore
+        :input: list - Herbivores with sorted fitness.
+        :return: Boolean expression
+>>>>>>> master
         """
         prob = (self.fitness - herb.fitness) / self.p['DeltaPhiMax']
 
@@ -200,10 +238,17 @@ class Carnivore(BaseFauna):
 
     def eat(self, pop_herb):
         """
+<<<<<<< HEAD
         Carnivore tries to eat Herbivores in cell by order of lowest fitness
         until its appetite is full or it has tried to kill every herbivore in
         cell. weight and fitness is calculated every time Carnivore kills
         :return: list: herbivore survivors
+=======
+        The carnivore tries to eat the herbivores in the cell.
+        The weight of the animal increase every time the animal eat.
+        The amount of herbivores decrease if a carnivore eats.
+        :return: list - the new herbivore population
+>>>>>>> master
         """
         herb_eaten = 0
 

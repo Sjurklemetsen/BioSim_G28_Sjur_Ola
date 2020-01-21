@@ -15,7 +15,6 @@ class TestGeography:
     Tests for the geography class where we work with the different
     landscapes.
     """
-
     def test_constructor_default(self):
         jung = Geo.Jungle()
         # sava = geo.Savannah()
