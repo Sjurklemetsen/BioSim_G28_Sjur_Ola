@@ -156,10 +156,3 @@ class TestFauna:
         assert h.p['F'] == 15
         reset = {'w_birth': 8, 'sigma_birth': 1.5, 'F': 10}
         Fa.Herbivore.set_parameter(reset)
-
-
-
-
-
-
-

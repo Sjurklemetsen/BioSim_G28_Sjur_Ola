@@ -246,7 +246,7 @@ class BioSim:
 
         self.herb_density = self.ax_heat_h.imshow(herb_cell, interpolation='nearest', cmap='Greens')
         self.ax_heat_h.set_title('Herbivore population density')
-
+        
     def heat_map_carnivore(self):
 
         carn_cell = self.animal_distribution.pivot('Row', 'Col', 'Carnivore')
