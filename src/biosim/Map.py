@@ -10,8 +10,9 @@ import textwrap
 
 class Map:
     """
-    Map of the islands biography containing all the cells from Geography
-    and the animals from fauna class
+    Map of the islands biography containing all the cells from Geography based
+    on text string code. Map is a dictionary with coordinate tuples as key and
+    instance of area type classes as values
     """
 
     def __init__(self, land_string):
@@ -21,9 +22,9 @@ class Map:
     def create_map(self, land_string):
         """
         Method that creates a map as a dictionary with coordinates as keys and
-        cell instance as value
-        :param land_string: string
-        :return: dict
+        cell instance as values
+        :param land_string: string: letter code for landscape type
+        :return: dict: location and
         """
         area_list = []
         for i in land_string:
@@ -55,9 +56,11 @@ class Map:
     @staticmethod
     def check_string(string):
         """
-        Check if the edges at the map is ocean
-        Check if the input string is one of the allowed categories
-        Check if all the rows of the map have the same length
+        Asserts value errors if the string input is not a valid island. Edges
+        must be ocean. letters in string must an allowed landscape. Rows must
+        have the same length.
+        :param: string: map description
+        :return: ValueError or nothing if string is valid
         """
         s = textwrap.dedent(string)
         rows = s.split('\n')
@@ -205,7 +208,7 @@ if __name__ == "__main__":
                     OOSSSSJJJJJJJJOOOOOOO
                     OOOSSSSJJJJJJJOOOOOOO
                     OOOOOOOOOOOOOOOOOOOOO'''
-    m = Map(area_type)
+    """m = Map(area_type)
     m.populate_map((2, 8), [Carnivore(age=10, weight=50) for _ in range(1000)])
     m.populate_map((2, 8), [Herbivore(age=15, weight=30) for _ in range(1000)])
     print(m.island[1, 8].total_pop())
@@ -224,12 +227,4 @@ if __name__ == "__main__":
     print('\n')
     #print(m.island[2, 10].total_pop())
     #print(m.island[2, 6].total_pop())
-    #print(m.island[4, 8].total_pop())
-
-
-
-
-
-
-
-
+    #print(m.island[4, 8].total_pop())"""

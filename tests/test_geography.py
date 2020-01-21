@@ -16,20 +16,17 @@ class TestGeography:
     landscapes.
     """
     def test_constructor_default(self):
+        """
+        Tests constructor default parameters and the instance
+        """
         jung = Geo.Jungle()
-        # sava = geo.Savannah()
-        # ocean = geo.Ocean()
         assert isinstance(jung, Geo.Jungle)
-        # assert isinstance(sava, geo.Savannah)
-        # assert isinstance(ocean, geo.Ocean)
-        # assert jung.fodder == 800
-        # assert sava.fodder == 300 and sava.geo_p['alpha'] == 0.3
         assert isinstance(jung.pop_herbivores and jung.pop_carnivores, list)
 
     def test_populate_cell(self):
         """
         Tests that herbivores and carnivores population is increased with
-        method and that list contains instances of the animal
+        method and that list contains the same instance put in.
         """
         j = Geo.Jungle()
         herbs = [Fa.Herbivore() for _ in range(10)]
@@ -47,7 +44,6 @@ class TestGeography:
         Tests that herbivore and carnivore population lists expands with the
         method.
         Tests that the list contains an instance fauna
-        :return:
         """
         jung = Geo.Jungle()
         jung.add_animal(Fa.Herbivore(age=5, weight=20))
@@ -61,13 +57,11 @@ class TestGeography:
 
     def test_remove_animals(self):
         """
-        test if an animal with weight zero dies
-        test
-        :return:
+        Tests that list of animals are removed from cell
         """
         jung = Geo.Jungle()
-        herbs = [Fa.Herbivore(weight=0), Fa.Herbivore(weight=0)]
-        carns = [Fa.Carnivore(weight=0)]
+        herbs = [Fa.Herbivore(weight=40), Fa.Herbivore(weight=0)]
+        carns = [Fa.Carnivore(weight=10)]
         jung.populate_cell(herbs)
         jung.populate_cell(carns)
         jung.remove_animals(jung.pop_herbivores + jung.pop_carnivores)
@@ -106,7 +100,7 @@ class TestGeography:
         """
         Tests if herbivore pop list remains the same when fitness is already
         sorted right.
-        trengs mer...
+        Tests that an unsorted list of animals is sorted
         """
         j = Geo.Jungle()
         s = Geo.Savannah()
@@ -123,8 +117,8 @@ class TestGeography:
 
     def test_propensity_herbivore(self):
         """
-        Tests propensity for herbivores in different kind of cells and that
-        propensity is different when population is added
+        Tests propensity for herbivores in different kind of cells and cell
+        types and that propensity is different when population is added
         """
         j = Geo.Jungle()
         s = Geo.Savannah()
@@ -162,7 +156,7 @@ class TestGeography:
     def test_check_migration(self):
         """
         Test if method returns a list with animals ready to migrate and that
-        it is the same animal.
+        it is the same animal
         """
         j = Geo.Jungle()
         s = Geo.Savannah()
@@ -233,7 +227,6 @@ class TestGeography:
         d = Geo.Desert()
         d.populate_cell([Fa.Herbivore(weight=10) for _ in range(10)])
         assert d.get_herb_weight() == 100
-
 
     def test_animal_mating(self):
         """
