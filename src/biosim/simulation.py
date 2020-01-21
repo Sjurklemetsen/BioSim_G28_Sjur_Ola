@@ -204,15 +204,17 @@ class BioSim:
         self.ax_map.set_xticklabels(range(0, 1 + len(island_map[0])))
         self.ax_map.set_yticks(range(len(island_map)))
         self.ax_map.set_yticklabels(range(0, 1 + len(island_map)))
+        self.ax_map.set_title('Geography')
 
-        """for ix, name in enumerate(('Ocean', 'Mountain', 'Jungle',
+        axlg = self.fig.add_axes([0.44, 0.4, 0.1, 0.4])  # llx, lly, w, h
+        axlg.axis('off')
+        for ix, name in enumerate(('Ocean', 'Mountain', 'Jungle',
                                    'Savannah', 'Desert')):
             self.ax_map.add_patch(plt.Rectangle((0., ix * 0.2), 0.3, 0.1,
                                          edgecolor='none',
                                          facecolor=color_code[name[0]]))
             self.ax_map.text(0.35, ix * 0.2, name, transform=axlg.transAxes)
-    
-"""
+
 
         """
         map_colors = []
@@ -224,8 +226,8 @@ class BioSim:
 
         [((0,2),  ]
 
-        fig = plt.figure()
-        """
+        fig = plt.figure()"""
+
 
     def update_population_plot(self):
         n_herb, n_carn = self.num_animals_per_species.values()
@@ -302,6 +304,8 @@ class BioSim:
 
         if self.fig is None:
             self.fig = plt.figure()
+            self.fig.suptitle('Simulation of Rossumøya', fontsize=16)
+            self.fig.tight_layout()
 
         #if self.year_plot is None:
             #self.ax_year =
@@ -309,15 +313,13 @@ class BioSim:
 
         if self.ax_map is None:
             self.ax_map = self.fig.add_subplot(221)
-
-            #self.ax_map = self.fig.add_axes([0.04, 0.45, 0.45, 0.6])
             self.standard_map()
 
         if self.herb_density is None:
             self.ax_heat_h = self.fig.add_subplot(223)
-
-            #self.ax_heat_h = self.fig.add_axes([0.04, 0.0, 0.45, 0.6])
             self.heat_map_herbivore()
+            #self.ax_heat_h = self.fig.add_axes([0.04, 0.0, 0.45, 0.6])
+            #self.heat_map_herbivore()
 
         if self.carn_density is None:
             self.ax_heat_c = self.fig.add_subplot(224)
@@ -326,7 +328,7 @@ class BioSim:
             self.heat_map_carnivore()
 
         if self.ax_line is None:
-            self.ax_line = self.fig.add_subplot(322)
+            self.ax_line = self.fig.add_subplot(222)
             if self.ymax_animals is not None:
                 self.ax_line.set_ylim(0, self.ymax_animals)
             self.ax_line.set_xlim(0, self.final_year + 1)
