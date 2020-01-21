@@ -1,8 +1,7 @@
 biosim package
 ==============
 
-Submodules
-----------
+Here you find the classes and methods for each module in our simulation
 
 biosim.Fauna module
 -------------------
@@ -32,15 +31,6 @@ biosim.simulation module
 ------------------------
 
 .. automodule:: biosim.simulation
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-Module contents
----------------
-
-.. automodule:: biosim
     :members:
     :undoc-members:
     :show-inheritance:

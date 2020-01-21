@@ -1,8 +1,7 @@
 tests package
 =============
 
-Submodules
-----------
+The tests for each of the modules in the bio simulation
 
 tests.test\_annual\_cycle module
 --------------------------------
@@ -40,15 +39,6 @@ tests.test\_map module
 ----------------------
 
 .. automodule:: tests.test_map
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-Module contents
----------------
-
-.. automodule:: tests
     :members:
     :undoc-members:
     :show-inheritance:
