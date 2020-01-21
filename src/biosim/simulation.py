@@ -8,6 +8,7 @@ from src.biosim import Geography as Geo
 from src.biosim import Map as Ma
 import random as rd
 import pandas as pd
+import numpy as np
 from matplotlib import colors
 import matplotlib.pyplot as plt
 import textwrap
@@ -194,10 +195,10 @@ class BioSim:
                       for row in string_map.splitlines()]
 
         self.ax_map.imshow(island_map, interpolation='nearest')
-        self.ax_map.set_xticks(range(len(island_map[0])))
-        self.ax_map.set_xticklabels(range(0, 1 + len(island_map[0])))
-        self.ax_map.set_yticks(range(len(island_map)))
-        self.ax_map.set_yticklabels(range(0, 1 + len(island_map)))
+        #self.ax_map.set_xticks(range(len(island_map[0]))
+        #self.ax_map.set_xticklabels(range(0, 1 + len(island_map[0])))
+        #self.ax_map.set_yticks(range(len(island_map)))
+        #self.ax_map.set_yticklabels(range(0, 1 + len(island_map)))
         self.ax_map.set_title('Geography')
 
         axlg = self.fig.add_axes([0.03, 0.525, 0.1, 0.4])  # llx, lly, w, h
@@ -392,13 +393,19 @@ if __name__ == '__main__':
                           for _ in range(40)]}]
     sim = BioSim(island_map=geogr, ini_pop=ini_herbs,
                  seed=123456)
+    sim.add_population(population=ini_carns)
     sim.set_animal_parameters('Herbivore', {'zeta': 3.2, 'xi': 1.8})
     sim.set_animal_parameters('Carnivore', {'a_half': 70, 'phi_age': 0.5,
                                             'omega': 0.3, 'F': 65,
                                             'DeltaPhiMax': 9.})
     sim.set_landscape_parameters('J', {'f_max': 700})
-    sim.simulate(num_years=10, vis_years=1, img_years=2000)
+    sim.simulate(num_years=50, vis_years=1, img_years=2000)
+    print(sim.num_animals_per_species['Herbivore'])
+    print(sim.num_animals_per_species['Carnivore'])
+
     sim.add_population(population=ini_carns)
-    sim.simulate(num_years=10, vis_years=1, img_years=2000)
+    sim.simulate(num_years=50, vis_years=1, img_years=2000)
+    print(sim.num_animals_per_species['Herbivore'])
+    print(sim.num_animals_per_species['Carnivore'])
     plt.savefig('check_sim.pdf')
     input('Press ENTER')
