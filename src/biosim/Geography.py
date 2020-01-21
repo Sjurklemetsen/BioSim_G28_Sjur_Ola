@@ -10,18 +10,19 @@ import random as rd
 
 class BaseGeography:
     """
-    A class that contain cell with a certain area type and with an animal
-    inside it
-    The methods in this class and subclass describe how the animals inside a
-    cell eat, migrate and mate. There are also methods for how fodder grows in
-    a cell.
+    A class that instantiates a cell with area type Ocean, Mountain, Desert,
+    Savannah or Jungle. Area types have different qualities. The methods in
+    this class and subclass describe how the animals inside a cell eat, migrate
+    and mate. There are also methods for how fodder grows in a cell.
+    :param: geo_p dict: (f_max = max fodder, alpha = fodder growth)
     """
     geo_p = {'f_max': None, 'alpha': None}
 
     @classmethod
     def set_parameter(cls, new_parameters):
-        """This method let you set new parameters instead of the default ones
-        :param new_parameters: dictionary with new parameters
+        """
+        This method let you set new parameters instead of the default ones
+        :param new_parameters: dict with new parameters
         """
         for key in new_parameters:
             cls.geo_p[key] = new_parameters[key]
@@ -34,33 +35,37 @@ class BaseGeography:
 
     @property
     def pop_total(self):
+        """
+        Animal population in cell
+        :return: list
+        """
         return self.pop_carnivores + self.pop_herbivores
 
     @property
     def herbivore_pop(self):
         """
-        :return: How many herbivores in a cell
+        :return: int: Amount of herbivores in cell
         """
         return len(self.pop_herbivores)
 
     @property
     def carnivore_pop(self):
         """
-        :return: How many carnivores in a cell
+        :return: int: Amount of carnivores in cell
         """
         return len(self.pop_carnivores)
 
     @property
     def total_pop(self):
         """
-        :return: Total population in a cell
+        :return: int: Total population in a cell
         """
         return len(self.pop_total)
 
     def populate_cell(self, population_list):
         """
-        Populate the cell with a list of animals
-        :param population_list: A list with animal instances
+        Populate cell with a list of animals
+        :param population_list: A list of animal instances
         """
         for animal in population_list:
             if type(animal).__name__ == 'Herbivore':
@@ -71,7 +76,6 @@ class BaseGeography:
     def add_animal(self, animal):
         """
         Add a single animal to the cell
-        :return:
         """
         if type(animal).__name__ == 'Herbivore':
             self.pop_herbivores.append(animal)
@@ -81,7 +85,7 @@ class BaseGeography:
     def remove_animals(self, population_list):
         """
         Remove a list of animals from the cell
-        :return:
+        :param population_list: list of animal instances
         """
         for animal in population_list:
             if type(animal).__name__ == 'Herbivore':
@@ -91,7 +95,7 @@ class BaseGeography:
 
     def animals_die(self):
         """
-        This method removes the dead animals from a cell
+        Method removes the dead animals from a cell
         """
         for herb in self.pop_herbivores[::-1]:
             if herb.check_death():
@@ -102,8 +106,8 @@ class BaseGeography:
 
     def propensity_herb(self):
         """
-        Find the propensity in the cell for a herbivore
-        :return: int
+        Find the propensity of the cell for herbivores
+        :return: int: propensity
         """
         if isinstance(self, Ocean) or isinstance(self, Mountain):
             return 0
@@ -114,8 +118,8 @@ class BaseGeography:
 
     def propensity_carn(self):
         """
-        Find the propensity in the cell for a carnivore
-        :return: int
+        Find the propensity of the cell for carnivores
+        :return: int: propensity
         """
         if isinstance(self, Ocean) or isinstance(self, Mountain):
             return 0
@@ -126,9 +130,8 @@ class BaseGeography:
 
     def check_migration(self):
         """
-        Method that check what animals in the cell that is ready to migrate
-        to another cell.
-        :return: list
+        Method that checks if animals in cell can migrate to another cell.
+        :return: list: animals ready to migrate
         """
         migrating_animals = []
         for animal in self.pop_total:
@@ -141,8 +144,8 @@ class BaseGeography:
     def fodder_eaten(self):
         """
         A method that removes the fodder that gets eaten by the animals
-        fodder: How much foddere there is in the cell
-        :return: appetite - How much fodder the animal eat
+        fodder: Amount of fodder in cell
+        :return: appetite, ate: How much fodder the animal ate
         """
         appetite = Fa.Herbivore.p['F']
 
@@ -159,16 +162,15 @@ class BaseGeography:
     @staticmethod
     def sort_animal_fitness(population):
         """
-        Sort the herbivores and carnivores in the cell after their fitness
-        :return:
+        Sorts the herbivores and carnivores in the cell in order of fitness
+        :return: sorted list
         """
         population.sort(key=lambda animal: animal.fitness, reverse=True)
         return population
 
     def herbivore_eat(self):
         """
-        All the herbivores in the cell eat fodder
-        :return:
+        All the herbivores in cell eat fodder if available
         """
         self.sort_animal_fitness(self.pop_herbivores)
         for animal in self.pop_herbivores:
@@ -176,8 +178,9 @@ class BaseGeography:
 
     def carnivore_eat(self):
         """
-        All the carnivores in the cell tries to eat
-        :return: 
+        All the carnivores in cell tries to eat herbivores in cell. Fittest
+        carnivore is first to go. Herbivores are removed if carnivore is
+        successful
         """
         self.sort_animal_fitness(self.pop_carnivores)
         self.sort_animal_fitness(self.pop_herbivores)
@@ -188,6 +191,7 @@ class BaseGeography:
     def get_herb_weight(self):
         """
         Method to get the combined weight of all the herbivores in the cell
+        used for calculating propensity
         :return: int
         """
         herb_weight = 0
@@ -197,7 +201,8 @@ class BaseGeography:
 
     def animal_mating(self):
         """
-        All the animals in the cell try to mate.
+        All the animals in the cell try to mate and are added to population
+        if successful
         :return:
         """
         herb_born = []
@@ -220,19 +225,21 @@ class BaseGeography:
                     carn_born.append(potential_carn)
                     animal.weight -= animal.p['xi'] * potential_carn.weight
 
-
         self.pop_herbivores.extend(herb_born)
         self.pop_carnivores.extend(carn_born)
 
     def age_weightloss(self):
+        """
+        Animals in cell updates age and weight each year
+        """
         for animal in (self.pop_carnivores + self.pop_herbivores):
             animal.aging()
             animal.weight_decrease()
 
     def fodder_growth(self):
         """
-        Replenishes fodder each year
-        :return:
+        Fodder grows each year. Jungle is restored to max, while savannah
+        fodder grows with formula below
         """
         if isinstance(self, Jungle):
             self.fodder = self.geo_p['f_max']
@@ -245,8 +252,8 @@ class BaseGeography:
 
 class Jungle(BaseGeography):
     """
-    A jungle cell where carnivore can hunt herbivore and herbivore can eat food
-    Fodder replenish each year to f_max.
+    Cell where carnivores hunt herbivores here and herbivores eat fodder
+    Fodder replenishes each year to max.
     """
     geo_p = {'f_max': 800}
 
@@ -256,7 +263,8 @@ class Jungle(BaseGeography):
 
 class Savannah(BaseGeography):
     """
-    A savannah cell that holds fodder, but can suffer overgrazing
+    A savannah cell that holds fodder, but can suffer overgrazing. Carnivores
+    hunt herbivores here and herbivores eat fodder.
     """
     geo_p = {'f_max': 300, 'alpha': 0.3}
 
@@ -266,7 +274,8 @@ class Savannah(BaseGeography):
 
 class Desert(BaseGeography):
     """
-    Area type that holds no fodder, but animals can inhabit the cells
+    Area type that holds no fodder, but animals can inhabit the cells.
+    Carnivore hunt herbivores here
     """
     geo_p = {'f_max': 0}
 
@@ -276,8 +285,8 @@ class Desert(BaseGeography):
 
 class Ocean(BaseGeography):
     """
-    A Ocean. No fodder and no animals are allowed to move here
-    Ocean cell types are passive in this simulation
+    Ocean cell holds no fodder and no animals are allowed to move or placed
+    here. Ocean cell types are passive in this simulation
     """
 
     def __init__(self):
@@ -287,8 +296,8 @@ class Ocean(BaseGeography):
 
 class Mountain(BaseGeography):
     """
-    A Mountain cell. No fodder and no animals are allowed to move here
-    Mountain cell types are passive in this simulation
+    Mountain cell holds no fodder and no animals are allowed to move or placed
+    here. Mountain cell types are passive in this simulation
     """
 
     def __init__(self):

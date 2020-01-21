@@ -10,7 +10,9 @@ import numpy as np
 
 class BaseFauna:
     """
-    Class for an animal in the fauna
+    BaseClass of two animals in the fauna
+    :param: p: default parameters used for calculating different parameters and
+    methods
     """
     p = {
         'w_birth': None,
@@ -34,13 +36,18 @@ class BaseFauna:
     @classmethod
     def set_parameter(cls, new_p):
         """
-        This method let you set new parameters instead of the default ones
-        :param new_p: dictionary with new parameters
+        Class method let you set new parameters instead of the default ones
+        :param new_p: dictionary specifying new parameters
         """
         for key in new_p:
             cls.p[key] = new_p[key]
 
     def __init__(self, age=0, weight=None):
+        """
+        Base for the subclasses Herbivore and Carnivore
+        :param age: int specifying age of the animal
+        :param weight: int specifying weight of the animal
+        """
         self.age = age
         self.weight = weight
         self.animal_moved = False
@@ -51,8 +58,8 @@ class BaseFauna:
     @property
     def fitness(self):
         """
-        Update the fitness of the animal based on age and weight
-        :return: New updated value: float
+        Fitness of the animal is calculated based on current age and weight
+        :return: New updated value: float (0-1)
         """
         if self.weight <= 0:
             fitness = 0
@@ -65,26 +72,26 @@ class BaseFauna:
 
     def aging(self):
         """
-        Age of the animals increase by one each year
+        Age of the animal increase by one each year
         """
         self.age += 1
 
     def weight_decrease(self):
         """
-        The weight of the animal decrease each year
+        Weight of the animal decreases each year
         """
         self.weight -= self.p['eta'] * self.weight
 
     def get_weight(self):
         """
-        :return: The weight of the animal: float
+        :return: Current weight of the animal: float
         """
         return self.weight
 
     def check_death(self):
         """
-        Function that checks if the animal is dead or not
-        :return: Boolean expression
+        Checks if the animal dies or not, always a possibility that animal dies
+        :return: Bool (True if it dies)
         """
         if self.fitness == 0:
             return True
@@ -95,9 +102,9 @@ class BaseFauna:
 
     def check_birth(self, n_animals):
         """
-        A Method that check if an animal is ready to give birth or not
-        :param n_animals:
-        :return: Boolean expression
+        Method that check if an animal is ready to give birth or not
+        :param n_animals: possible mating partners
+        :return: Bool (True if ready)
         """
         probability = min(1, self.p['gamma'] * self.fitness *
                           (n_animals - 1))
@@ -112,6 +119,10 @@ class BaseFauna:
 
 
 class Herbivore(BaseFauna):
+    """
+    Subclass that defines a Herbivore
+    :param: p: default parameters for a Herbivore
+    """
     p = {
         "w_birth": 8.0,
         "sigma_birth": 1.5,
@@ -135,14 +146,17 @@ class Herbivore(BaseFauna):
 
     def eat(self, appetite):
         """
-        The herbivore has a weight increase if it eats fodder in a jungle or
-        a savannah cell
-        :return:
+        A herbivore increase in weight when it eats fodder in jungle or
+        savannah
         """
         self.weight += appetite * self.p['beta']
 
 
 class Carnivore(BaseFauna):
+    """
+    Subclass that defines a Carnivore
+    :param: p: Default parameters for a carnivore
+    """
     p = {
         "w_birth": 6.0,
         "sigma_birth": 1.0,
@@ -167,9 +181,10 @@ class Carnivore(BaseFauna):
 
     def prob_eating(self, herb):
         """
-        Chances for a carnivore to eat a herbivore
-        :input: A list of herbivores with sorted fitness.
-        :return: Boolean expression
+        Carnivore has a chance of successfully killing a herbivore by formula
+        in method
+        :param herb: instance of Herbivore subclass
+        :return: Bool (True if successful)
         """
         prob = (self.fitness - herb.fitness) / self.p['DeltaPhiMax']
 
@@ -185,11 +200,10 @@ class Carnivore(BaseFauna):
 
     def eat(self, pop_herb):
         """
-        The weight of the animal increase every time the animal eat
-        The amount of herbivores decrease if a carnivore eats
-        update weight
-        update fitness
-        :return:
+        Carnivore tries to eat Herbivores in cell by order of lowest fitness
+        until its appetite is full or it has tried to kill every herbivore in
+        cell. weight and fitness is calculated every time Carnivore kills
+        :return: list: herbivore survivors
         """
         herb_eaten = 0
 
@@ -221,8 +235,6 @@ if __name__ == "__main__":
     pop_herb = [Herbivore() for n in range(100)]
     print(len(pop_herb))"""
 
-
-
     """n_animals = 60
     p = min(1, 0.2 * herb.update_fitness() * (n_animals - 1))
     print(p)
@@ -234,6 +246,3 @@ if __name__ == "__main__":
     print(herb.check_death())
     print(herb.check_migration())
     print(rd.random())"""
-
-
-
