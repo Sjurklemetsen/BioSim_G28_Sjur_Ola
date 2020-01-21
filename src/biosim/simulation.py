@@ -11,7 +11,6 @@ import pandas as pd
 from matplotlib import colors
 import matplotlib.pyplot as plt
 import textwrap
-import numpy as np
 import subprocess
 import os
 
@@ -35,6 +34,15 @@ class BioSim:
             img_base=None,
             img_fmt="png"
     ):
+        """
+        :param island_map: Multi-line string specifying island geography
+        :param ini_pop: List of dictionaries specifying initial population
+        :param seed: Integer used as random number seed
+        :param ymax_animals: Number specifying y-axis limit for graph showing animal numbers
+        :param cmax_animals: Dict specifying color-code limits for animal densities
+        :param img_base: String with beginning of file name for figures, including path
+        :param img_fmt: String with file type for figures, e.g. 'png'
+        """
         rd.seed(seed)
         self.island_map = island_map
         self.map = Ma.Map(island_map)
@@ -61,41 +69,15 @@ class BioSim:
         self.ax_heat_c = None
         self.herb_density = None
         self.carn_density = None
+        self.ax_animal_count = None
         self.map_geo = None
-        self.line_herb = None
-        self.line_carn = None
-        self.year_plot = None
         self.final_year = None
         self.carn_y = []
         self.herb_y = []
-        """
-        :param island_map: Multi-line string specifying island geography
-        :param ini_pop: List of dictionaries specifying initial population
-        :param seed: Integer used as random number seed
-        :param ymax_animals: Number specifying y-axis limit for graph showing animal numbers
-        :param cmax_animals: Dict specifying color-code limits for animal densities
-        :param img_base: String with beginning of file name for figures, including path
-        :param img_fmt: String with file type for figures, e.g. 'png'
-
-        If ymax_animals is None, the y-axis limit should be adjusted automatically.
-
-        If cmax_animals is None, sensible, fixed default values should be used.
-        cmax_animals is a dict mapping species names to numbers, e.g.,
-           {'Herbivore': 50, 'Carnivore': 20}
-
-        If img_base is None, no figures are written to file.
-        Filenames are formed as
-
-            '{}_{:05d}.{}'.format(img_base, img_no, img_fmt)
-
-        where img_no are consecutive image numbers starting from 0.
-        img_base should contain a path and beginning of a file name.
-        """
 
     def set_animal_parameters(self, species, params):
         """
-        Set parameters for animal species.
-
+        Sets new parameters for animal species.
         :param species: String, name of animal species
         :param params: Dict with valid parameter specification for species
         """
@@ -106,10 +88,9 @@ class BioSim:
 
     def set_landscape_parameters(self, landscape, params):
         """
-        Set parameters for landscape type.
-
-        :param landscape: String, code letter for landscape
-        :param params: Dict with valid parameter specification for landscape
+        Sets new parameters for landscape type.
+        :param landscape: String, letter code specifying geography type
+        :param params: Dict with valid parameter specifying geography type
         """
         if landscape == 'J':
             Geo.Jungle.set_parameter(params)
@@ -118,11 +99,15 @@ class BioSim:
 
     @property
     def year(self):
+        """Current year"""
         return self._year
 
     @property
     def num_animals(self):
-        """Total number of animals on island."""
+        """
+        Total number of animals on island.
+        :return: int
+        """
         num_animals = 0
         for coord, cell in self.map.island.items():
             num_animals += cell.total_pop
@@ -130,7 +115,10 @@ class BioSim:
 
     @property
     def num_animals_per_species(self):
-        """Number of animals per species in island, as dictionary."""
+        """
+        Number of animals per species in island, as dictionary.
+        :return: dict
+        """
         num_animals_per_species = {}
         herb = 0
         carn = 0
@@ -143,8 +131,11 @@ class BioSim:
 
     @property
     def animal_distribution(self):
-        """Pandas DataFrame with animal count per species for
-         each cell on island."""
+        """
+        Pandas DataFrame with animal count per species for
+        each cell on island.
+        :return: pd dataframe: 'rows' 'columns' 'Herbivores' 'Carnivores'
+        """
         data = {}
         rows = []
         col = []
@@ -163,9 +154,8 @@ class BioSim:
 
     def add_population(self, population):
         """
-        Add a population to the island
-
-        :param population: List of dictionaries specifying population
+        Add a population to specific locations on the island
+        :param: population: dict
         """
         for dicti in population:
             location = dicti['loc']
@@ -186,6 +176,10 @@ class BioSim:
             self.map.populate_map(location, population_list)
 
     def standard_map(self):
+        """
+        Creates a map plot from string of the island.
+        Source: Hans Ekkehard Plesser
+        """
         island_string = self.island_map
         string_map = textwrap.dedent(island_string)
         string_map.replace('\n', ' ')
@@ -206,30 +200,19 @@ class BioSim:
         self.ax_map.set_yticklabels(range(0, 1 + len(island_map)))
         self.ax_map.set_title('Geography')
 
-        axlg = self.fig.add_axes([0.44, 0.4, 0.1, 0.4])  # llx, lly, w, h
+        axlg = self.fig.add_axes([0.03, 0.525, 0.1, 0.4])  # llx, lly, w, h
         axlg.axis('off')
-        for ix, name in enumerate(('Ocean', 'Mountain', 'Jungle',
-                                   'Savannah', 'Desert')):
-            self.ax_map.add_patch(plt.Rectangle((0., ix * 0.2), 0.3, 0.1,
+        for ix, name in enumerate(('O', 'M', 'J',
+                                   'S', 'D')):
+            axlg.add_patch(plt.Rectangle((0., ix * 0.2), 0.3, 0.1,
                                          edgecolor='none',
                                          facecolor=color_code[name[0]]))
-            self.ax_map.text(0.35, ix * 0.2, name, transform=axlg.transAxes)
-
-
-        """
-        map_colors = []
-        for coord, cell in self.map.island.items():
-            if cell.__name__ == 'Ocean':
-                map_colors.append(coord, map_colors['O'])
-            elif cell.__name__ == 'Mountain':
-                map_colors.append([coord, map_colors['M'])
-
-        [((0,2),  ]
-
-        fig = plt.figure()"""
-
+            axlg.text(0.35, ix * 0.2, name, transform=axlg.transAxes)
 
     def update_population_plot(self):
+        """
+        Updates population plot
+        """
         n_herb, n_carn = self.num_animals_per_species.values()
         self.herb_y.append(n_herb)
         self.carn_y.append(n_carn)
@@ -237,43 +220,51 @@ class BioSim:
                           'g', self.carn_y, 'r')
         self.ax_line.legend(['Herbivore', 'Carnivore'])
 
-
     def heat_map_herbivore(self):
         """
-        A method that shows the population in each cell by showing colors
-        :return:
+        Creates heat map plot of carnivores on the island
         """
-
         herb_cell = self.animal_distribution.pivot('Row', 'Col', 'Herbivore')
 
-        self.herb_density = self.ax_heat_h.imshow(herb_cell, vmax=self.cmax_animals['Herbivore'], interpolation='nearest', cmap='Greens')
+        self.herb_density = self.ax_heat_h.imshow(herb_cell,
+                                                  vmax=self.cmax_animals
+                                                  ['Herbivore'],
+                                                  interpolation='nearest',
+                                                  cmap='Greens')
         self.ax_heat_h.set_title('Herbivore population density')
 
     def heat_map_carnivore(self):
-
+        """
+        Creates heat map plot of carnivores on the island
+        """
         carn_cell = self.animal_distribution.pivot('Row', 'Col', 'Carnivore')
 
-        self.herb_density = self.ax_heat_c.imshow(carn_cell, interpolation='nearest', cmap='Reds')
+        self.herb_density = self.ax_heat_c.imshow(carn_cell,
+                                                  vmax=self.cmax_animals
+                                                  ['Carnivore'],
+                                                  interpolation='nearest',
+                                                  cmap='Reds')
         self.ax_heat_c.set_title('Carnivore population density')
 
-
-    def year_count(self):
-        pass
-        #self.year_plot = self.ax_year.text(8, 8, f'Year: {self.year}')
-
     def update_all(self):
+        """
+        Updates plots for simulation
+        """
         self.heat_map_carnivore()
         self.heat_map_herbivore()
-        self.year_count()
         self.update_population_plot()
+        self.ax_year.set_text(f'Year: {self.year}')
+        self.ax_animal_count.set_text(f'Total: {self.num_animals}')
+
         plt.pause(1e-6)
 
     def simulate(self, num_years, vis_years=1, img_years=None):
         """
-        Run simulation while visualizing the result.
+        Runs simulation while visualizing the result. saves image files
         :param num_years: number of years to simulate
         :param vis_years: years between visualization updates
-        :param img_years: years between visualizations saved to files (default: vis_years)
+        :param img_years: years between visualizations saved to files (default:
+        vis_years)
 
         Image files will be numbered consecutively.
         """
@@ -296,20 +287,24 @@ class BioSim:
             self._year += 1
             self.map.annual_cycle()
 
-        """for year in range(num_years):
-            self.map.annual_cycle()
-            self._year += 1"""
-
     def setup_graphics(self):
-
+        """
+        Sets up figure graphic for plotting each subplot simulation
+        instantiated in the simulation method
+        """
         if self.fig is None:
             self.fig = plt.figure()
             self.fig.suptitle('Simulation of Rossumøya', fontsize=16)
             self.fig.tight_layout()
 
-        #if self.year_plot is None:
-            #self.ax_year =
-            #self.year_count()
+        if self.ax_year is None:
+            self.ax_year = self.fig.text(0.1, 0.92, f'Year: {self.year}',
+                                         fontsize=12)
+
+        if self.ax_animal_count is None:
+            self.ax_animal_count = self.fig.text(0.75, 0.9,
+                                                 f'Total: {self.num_animals}',
+                                                 fontsize=12)
 
         if self.ax_map is None:
             self.ax_map = self.fig.add_subplot(221)
@@ -318,13 +313,9 @@ class BioSim:
         if self.herb_density is None:
             self.ax_heat_h = self.fig.add_subplot(223)
             self.heat_map_herbivore()
-            #self.ax_heat_h = self.fig.add_axes([0.04, 0.0, 0.45, 0.6])
-            #self.heat_map_herbivore()
 
         if self.carn_density is None:
             self.ax_heat_c = self.fig.add_subplot(224)
-
-            #self.ax_heat_c = self.fig.add_axes([0.54, 0.0, 0.45, 0.6])
             self.heat_map_carnivore()
 
         if self.ax_line is None:
@@ -334,8 +325,10 @@ class BioSim:
             self.ax_line.set_xlim(0, self.final_year + 1)
             self.ax_line.set_title('Populations')
 
-
     def save_graphic(self):
+        """
+        Saves graphic in specified img_base
+        """
         if self.img_base is None:
             return
 
@@ -345,13 +338,16 @@ class BioSim:
         self.img_ctr += 1
 
     def make_movie(self, movie_fmt=DEFAULT_MOVIE_FORMAT):
-        """Create MPEG4 movie from visualization images saved."""
+        """
+        Create MPEG4 movie from visualization images saved.
+        """
         if self.img_base is None:
             raise RuntimeError("No filename defined.")
 
         if movie_fmt == 'mp4':
             try:
-                # Parameters chosen according to http://trac.ffmpeg.org/wiki/Encode/H.264,
+                # Parameters chosen according to http://trac.ffmpeg.org/wiki/
+                # Encode/H.264,
                 # section "Compatibility"
                 subprocess.check_call([FFMPEG_BINARY,
                                        '-i',
