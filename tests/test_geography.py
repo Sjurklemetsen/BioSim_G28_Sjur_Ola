@@ -12,8 +12,7 @@ import pytest
 
 class TestGeography:
     """
-    Tests for the geography class where we work with the different
-    landscapes.
+    Tests for the geography class with the different landscape subclasses
     """
     def test_constructor_default(self):
         """
