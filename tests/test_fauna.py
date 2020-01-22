@@ -146,6 +146,9 @@ class TestFauna:
         assert c.weight == 113.5
 
     def test_set_parameter(self):
+        """
+        Tests that new parameters can be set with method
+        """
         new_p = {
             'w_birth': 4,
             'sigma_birth': 2,

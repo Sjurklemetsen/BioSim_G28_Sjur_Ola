@@ -63,6 +63,8 @@ class BioSim:
         self.img_fmt = img_fmt
         if img_base is None:
             self.img_base = os.path.join('..', 'BioSim')
+        else:
+            self.img_base = img_base
 
         # For different graphics
         self.fig = None
@@ -432,8 +434,8 @@ if __name__ == '__main__':
                                             'omega': 0.3, 'F': 65,
                                             'DeltaPhiMax': 9.})
     sim.set_landscape_parameters('J', {'f_max': 700})
-    sim.simulate(num_years=100, vis_years=1, img_years=2000)
+    sim.simulate(num_years=25, vis_years=1, img_years=2000)
     sim.add_population(population=ini_carns)
-    sim.simulate(num_years=100, vis_years=1, img_years=2000)
+    sim.simulate(num_years=25, vis_years=1, img_years=2000)
     plt.savefig('check_sim.pdf')
     input('Press ENTER')

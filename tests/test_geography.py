@@ -237,8 +237,6 @@ class TestGeography:
         j = Geo.Jungle()
         j.populate_cell([Fa.Carnivore(age=1, weight=100),
                          Fa.Herbivore(age=1, weight=100)])
-        # j.populate_cell(geo.Carnivore(age=1, weight=100))
-        # j.add_animal(geo.Herbivore(age=1, weight=100))
         j.populate_cell([Fa.Herbivore(age=10, weight=10) for _ in range(7)])
         j.populate_cell([Fa.Carnivore(age=60, weight=10) for _ in range(7)])
         j.animal_mating()
@@ -248,6 +246,9 @@ class TestGeography:
         assert isinstance(j.pop_carnivores[-1], Fa.Carnivore)
 
     def test_age_weightloss(self):
+        """
+        Tests age and weightloss is updated after calling function
+        """
         d = Geo.Desert()
         d.populate_cell([Fa.Herbivore(age=1, weight=5),
                          Fa.Carnivore(weight=10)])
@@ -258,6 +259,9 @@ class TestGeography:
         assert carn.age == 1 and carn.weight == 8.75
 
     def test_fodder_growth(self):
+        """
+        Tests that fodder grows correctly in the corresponding geography tiles
+        """
         o = Geo.Ocean()
         s = Geo.Savannah()
         s.fodder = 100
@@ -297,8 +301,8 @@ class TestGeography:
 
     def test_desert(self):
         """
+        Tests if desert can be created
         Test if the fodder equals zero
-        :return:
         """
         d = Geo.Desert()
         assert isinstance(d, Geo.Desert)
@@ -307,8 +311,7 @@ class TestGeography:
 
     def test_ocean(self):
         """
-        Tests if ocean is an instance
-        :return:
+        Tests if ocean can be created
         """
         o = Geo.Ocean()
         assert isinstance(o, Geo.Ocean)
@@ -316,14 +319,16 @@ class TestGeography:
 
     def test_mountain(self):
         """
-        Test if mountain is an instance
-        :return:
+        Test if mountain can be created
         """
         m = Geo.Mountain()
         assert isinstance(m, Geo.Mountain)
         assert m.geo_p['f_max'] is None
 
     def test_set_parameter(self):
+        """
+        Tests that new parameters for geography can be set with method
+        """
         new_parameters = {'f_max': 1000, 'alpha': 500}
         Geo.Jungle.set_parameter(new_parameters)
         jung = Geo.Jungle()
