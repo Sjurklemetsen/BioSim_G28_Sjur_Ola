@@ -14,8 +14,6 @@ class TestGeography:
     """
     Tests for the geography class with the different landscape subclasses
     """
-
-<<<<<<< HEAD
     @pytest.fixture(autouse=True)
     def setup_teardown(self):
         p = {
@@ -61,8 +59,6 @@ class TestGeography:
         Geo.Savannah.set_parameter(e)
         yield
 
-=======
->>>>>>> master
     def test_constructor_default(self):
         """
         Tests constructor default parameters and the instance
