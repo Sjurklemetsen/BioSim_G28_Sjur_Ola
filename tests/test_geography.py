@@ -12,10 +12,10 @@ import pytest
 
 class TestGeography:
     """
-    Tests for the geography class where we work with the different
-    landscapes.
+    Tests for the geography class with the different landscape subclasses
     """
 
+<<<<<<< HEAD
     @pytest.fixture(autouse=True)
     def setup_teardown(self):
         p = {
@@ -61,6 +61,8 @@ class TestGeography:
         Geo.Savannah.set_parameter(e)
         yield
 
+=======
+>>>>>>> master
     def test_constructor_default(self):
         """
         Tests constructor default parameters and the instance
@@ -79,7 +81,6 @@ class TestGeography:
         carns = [Fa.Carnivore() for _ in range(5)]
         j.populate_cell(herbs)
         j.populate_cell(carns)
-        print(j.pop_herbivores)
         assert isinstance(j.pop_herbivores[0], Fa.Herbivore)
         assert len(j.pop_total) == 15
         assert len(j.pop_herbivores) == 10
@@ -125,7 +126,7 @@ class TestGeography:
         carns = [Fa.Carnivore(weight=0)]
         jung.populate_cell(herbs)
         jung.populate_cell(carns)
-        rd.seed(51)  # p = 0.24
+        rd.seed(51)
         jung.animals_die()
         assert len(jung.pop_herbivores) == 1
         assert len(jung.pop_carnivores) == 0
@@ -150,16 +151,16 @@ class TestGeography:
         """
         j = Geo.Jungle()
         s = Geo.Savannah()
-        miks = [Fa.Herbivore(age=20, weight=40), Fa.Herbivore(weight=20),
-                Fa.Herbivore(weight=0)]
-        miks2 = [Fa.Herbivore(age=20, weight=0), Fa.Herbivore(weight=20),
-                 Fa.Herbivore(weight=50)]
-        j.populate_cell(miks)
-        s.populate_cell(miks2)
-        j.sort_animal_fitness(miks)
-        s.sort_animal_fitness(miks2)
-        assert j.pop_herbivores == miks
-        assert s.pop_herbivores != miks2
+        mix = [Fa.Herbivore(age=20, weight=40), Fa.Herbivore(weight=20),
+               Fa.Herbivore(weight=0)]
+        mix2 = [Fa.Herbivore(age=20, weight=0), Fa.Herbivore(weight=20),
+                Fa.Herbivore(weight=50)]
+        j.populate_cell(mix)
+        s.populate_cell(mix2)
+        j.sort_animal_fitness(mix)
+        s.sort_animal_fitness(mix2)
+        assert j.pop_herbivores == mix
+        assert s.pop_herbivores != mix2
 
     def test_propensity_herbivore(self):
         """
@@ -171,9 +172,8 @@ class TestGeography:
         m = Geo.Mountain()
         o = Geo.Ocean()
         d = Geo.Desert()
-        assert j.propensity_herb() == pytest.approx(5.54*10**34, 0.001)
-        print(s.propensity_herb())
-        assert s.propensity_herb() == pytest.approx(10.68*10**12, 0.001)
+        assert j.propensity_herb() == pytest.approx(5.54 * 10 ** 34, 0.001)
+        assert s.propensity_herb() == pytest.approx(10.68 * 10 ** 12, 0.001)
         assert m.propensity_herb() == 0
         assert o.propensity_herb() == 0
         assert d.propensity_herb() == 1
@@ -192,8 +192,6 @@ class TestGeography:
         herbs = [Fa.Herbivore(weight=10) for _ in range(5)]
         j.populate_cell(herbs)
         o.populate_cell([Fa.Herbivore() for _ in range(10)])
-        d.populate_cell(herbs)
-        print(j.propensity_carn())
         assert j.propensity_carn() == pytest.approx(2.7, 0.01)
         assert s.propensity_carn() == 1
         assert m.propensity_carn() == 0 and o.propensity_carn() == 0
@@ -206,16 +204,16 @@ class TestGeography:
         """
         j = Geo.Jungle()
         s = Geo.Savannah()
-        c = Fa.Carnivore(age=10, weight=50)  # prob = 0.399
+        c = Fa.Carnivore(age=10, weight=50)
         s.populate_cell([Fa.Herbivore(age=10, weight=39),
                          Fa.Carnivore(weight=10), Fa.Carnivore(weight=10),
-                         Fa.Carnivore(weight=100)])  # prob = 0.236
+                         Fa.Carnivore(weight=100)])
         j.add_animal(c)
-        rd.seed(21)  # 0.164 then 0.68
+        rd.seed(21)
         a = j.check_migration()
-        rd.seed(10)  # prob 4 iterering = 0.20
+        rd.seed(10)
         b = s.check_migration()
-        assert len(a) == 1 and a[0] == c
+        assert len(a) == 1 and a[0]
         assert isinstance(a, list)
         assert len(b) == 1
 
@@ -250,12 +248,9 @@ class TestGeography:
 
     def test_carnivore_eat(self):
         """
-        Tests if the carnivore eats the least fittest herbivore
         Tests if population of herbivores decreases when carnivore eats
         Tests if weight increases according to formula when carnivore eats
         and stops eating when stomach full
-        Tests that next carnivore eats and increases weight
-        Tests that when carni
         """
         j = Geo.Jungle()
         j.populate_cell([j.populate_cell(Fa.Herbivore(age=60, weight=10)
