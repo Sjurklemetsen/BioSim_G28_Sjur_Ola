@@ -3,8 +3,8 @@
 __author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
 __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
-from src.biosim import Map as Ma
-from src.biosim import Fauna as Fa
+from biosim import Map as Ma
+from biosim import Fauna as Fa
 import random as rd
 import pytest
 
@@ -66,6 +66,9 @@ class TestMap:
             m.check_input_in_sim(pos3)
 
     def test_populate_map(self):
+        """
+        Tests that population can be added to specific cells in map
+        """
         map1 = """\
                  OOOOOO
                  OJDJJO

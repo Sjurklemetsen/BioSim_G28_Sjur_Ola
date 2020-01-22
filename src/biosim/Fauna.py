@@ -219,31 +219,3 @@ class Carnivore(BaseFauna):
                     self.weight += herb.weight*self.p['beta']
                     pop_herb.remove(herb)
         return pop_herb
-
-
-if __name__ == "__main__":
-    Herbivore.set_parameter(new_p={
-            'w_birth': 4,
-            'sigma_birth': 2,
-            'F': 15})
-
-    h = Herbivore()
-    print(Herbivore.p['w_birth'])
-    """rd.seed(11)
-    print(rd.random()) # 0.827
-
-    c = Carnivore(age=10, weight=70)
-    pop_herb = [Herbivore() for n in range(100)]
-    print(len(pop_herb))"""
-
-    """n_animals = 60
-    p = min(1, 0.2 * herb.update_fitness() * (n_animals - 1))
-    print(p)
-    print(herb.check_birth(6))
-    print(herb.aging())
-    print(herb.age)
-    print(herb.weight)
-    print(herb.update_fitness())
-    print(herb.check_death())
-    print(herb.check_migration())
-    print(rd.random())"""

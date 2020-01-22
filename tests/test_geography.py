@@ -14,6 +14,50 @@ class TestGeography:
     """
     Tests for the geography class with the different landscape subclasses
     """
+    @pytest.fixture(autouse=True)
+    def setup_teardown(self):
+        p = {
+            "w_birth": 8.0,
+            "sigma_birth": 1.5,
+            "beta": 0.9,
+            "eta": 0.05,
+            "a_half": 40.0,
+            "phi_age": 0.2,
+            "w_half": 10.0,
+            "phi_weight": 0.1,
+            "mu": 0.25,
+            "landa": 1.0,
+            "gamma": 0.2,
+            "zeta": 3.5,
+            "xi": 1.2,
+            "omega": 0.4,
+            "F": 10.0,
+        }
+        d = {'f_max': 800}
+        e = {'f_max': 300, 'alpha': 0.3}
+        f = {
+            "w_birth": 6.0,
+            "sigma_birth": 1.0,
+            "beta": 0.75,
+            "eta": 0.125,
+            "a_half": 60.0,
+            "phi_age": 0.4,
+            "w_half": 4.0,
+            "phi_weight": 0.4,
+            "mu": 0.4,
+            "landa": 1.0,
+            "gamma": 0.8,
+            "zeta": 3.5,
+            "xi": 1.1,
+            "omega": 0.9,
+            "F": 50.0,
+            "DeltaPhiMax": 10.0
+        }
+        Fa.Carnivore.set_parameter(f)
+        Fa.Herbivore.set_parameter(p)
+        Geo.Jungle.set_parameter(d)
+        Geo.Savannah.set_parameter(e)
+        yield
 
     def test_constructor_default(self):
         """
@@ -239,6 +283,9 @@ class TestGeography:
         assert isinstance(j.pop_carnivores[-1], Fa.Carnivore)
 
     def test_age_weightloss(self):
+        """
+        Tests age and weightloss is updated after calling function
+        """
         d = Geo.Desert()
         d.populate_cell([Fa.Herbivore(age=1, weight=5),
                          Fa.Carnivore(weight=10)])
@@ -249,6 +296,9 @@ class TestGeography:
         assert carn.age == 1 and carn.weight == 8.75
 
     def test_fodder_growth(self):
+        """
+        Tests that fodder grows correctly in the corresponding geography tiles
+        """
         o = Geo.Ocean()
         s = Geo.Savannah()
         s.fodder = 100
@@ -288,8 +338,8 @@ class TestGeography:
 
     def test_desert(self):
         """
+        Tests if desert can be created
         Test if the fodder equals zero
-        :return:
         """
         d = Geo.Desert()
         assert isinstance(d, Geo.Desert)
@@ -298,8 +348,7 @@ class TestGeography:
 
     def test_ocean(self):
         """
-        Tests if ocean is an instance
-        :return:
+        Tests if ocean can be created
         """
         o = Geo.Ocean()
         assert isinstance(o, Geo.Ocean)
@@ -307,14 +356,16 @@ class TestGeography:
 
     def test_mountain(self):
         """
-        Test if mountain is an instance
-        :return:
+        Test if mountain can be created
         """
         m = Geo.Mountain()
         assert isinstance(m, Geo.Mountain)
         assert m.geo_p['f_max'] is None
 
     def test_set_parameter(self):
+        """
+        Tests that new parameters for geography can be set with method
+        """
         new_parameters = {'f_max': 1000, 'alpha': 500}
         Geo.Jungle.set_parameter(new_parameters)
         jung = Geo.Jungle()

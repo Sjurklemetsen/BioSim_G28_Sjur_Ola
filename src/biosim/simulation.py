@@ -3,9 +3,9 @@
 __author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
 __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
-from src.biosim import Fauna as Fa
-from src.biosim import Geography as Geo
-from src.biosim import Map as Ma
+from biosim import Fauna as Fa
+from biosim import Geography as Geo
+from biosim import Map as Ma
 import random as rd
 import pandas as pd
 import numpy as np
@@ -67,6 +67,8 @@ class BioSim:
         self.img_fmt = img_fmt
         if img_base is None:
             self.img_base = os.path.join('..', 'BioSim')
+        else:
+            self.img_base = img_base
 
         # For different graphics
         self.fig = None
@@ -78,7 +80,6 @@ class BioSim:
         self.herb_density = None
         self.carn_density = None
         self.ax_animal_count = None
-        self.map_geo = None
         self.final_year = None
         self.herbivore_line = None
         self.carnivore_line = None
@@ -435,9 +436,9 @@ if __name__ == '__main__':
                                             'omega': 0.3, 'F': 65,
                                             'DeltaPhiMax': 9.})
     sim.set_landscape_parameters('J', {'f_max': 700})
-    sim.simulate(num_years=70, vis_years=1, img_years=1)
+    sim.simulate(num_years=25, vis_years=1, img_years=2000)
     sim.add_population(population=ini_carns)
-    sim.simulate(num_years=200, vis_years=1, img_years=1)
-    sim.make_movie()
+    sim.simulate(num_years=25, vis_years=1, img_years=2000)
+
     plt.savefig('check_sim.pdf')
     input('Press ENTER')
