@@ -5,7 +5,6 @@ __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
 from src.biosim import Map as Ma
 from src.biosim import Fauna as Fa
-from src.biosim import Geography as Geo
 import random as rd
 import pytest
 
@@ -25,12 +24,12 @@ class TestMap:
         """
         Tests map creation
         """
-        map = """\
+        map1 = """\
                  OOOO
                  OSDO
                  OOOO"""
-        m = Ma.Map(map)
-        m.create_map(map)
+        m = Ma.Map(map1)
+        m.create_map(map1)
 
     def test_check_map_string(self):
         """
@@ -57,8 +56,8 @@ class TestMap:
         pos1 = (-1, 1)
         pos2 = (1, 1)
         pos3 = (0, 1)
-        map = "OOO\nOMO\nOOO"
-        m = Ma.Map(map)
+        map1 = "OOO\nOMO\nOOO"
+        m = Ma.Map(map1)
         with pytest.raises(ValueError):
             m.check_input_in_sim(pos1)
         with pytest.raises(ValueError):
@@ -67,12 +66,12 @@ class TestMap:
             m.check_input_in_sim(pos3)
 
     def test_populate_map(self):
-        map = """\
+        map1 = """\
                  OOOOOO
                  OJDJJO
                  OSJJOO
                  OOOOOO"""
-        m = Ma.Map(map)
+        m = Ma.Map(map1)
         pos = (1, 1)
         pop = [Fa.Carnivore(), Fa.Herbivore(), Fa.Carnivore()]
         m.populate_map(pos, pop)
@@ -83,11 +82,11 @@ class TestMap:
         """
         Tests that function finds the neighbouring cells of the input
         """
-        map = """\
+        map1 = """\
                  OOOO
                  OSDO
                  OOOO"""
-        m = Ma.Map(map)
+        m = Ma.Map(map1)
         a = m.find_neighbor_cells((2, 3))
         b = m.find_neighbor_cells((1, 1))
         assert isinstance(a, list)
@@ -100,7 +99,7 @@ class TestMap:
         Tests that it returns a tuple based on propensity
         Tests that it can return 4 possible outcomes
         """
-        map = """\
+        map1 = """\
                  OOOOO
                  OJJJO
                  OJJJO
@@ -111,7 +110,7 @@ class TestMap:
                   OOOO
                   OJMO
                   OOOO"""
-        m = Ma.Map(map)
+        m = Ma.Map(map1)
         rd.seed(148)
         pos = (2, 2)
         a = m.migrate_to(pos)
@@ -133,13 +132,13 @@ class TestMap:
         old cell
         """
 
-        map = """\
+        map1 = """\
                  OOOOOO
                  OODOJO
                  OOJJOO
                  OOOOOO"""
         rd.seed(5)
-        m = Ma.Map(map)
+        m = Ma.Map(map1)
         m.populate_map((1, 2), [Fa.Carnivore(
             age=10, weight=50) for _ in range(100)])
         m.populate_map((1, 2), [Fa.Herbivore(
@@ -157,14 +156,14 @@ class TestMap:
         """
         Tests that annual cycle works as it should
         """
-        map = """\
+        map12 = """\
                  OOOO
                  OJJO
                  OOOO"""
-        m = Ma.Map(map)
+        m = Ma.Map(map12)
         m.populate_map((1, 2), [Fa.Carnivore(
-            age=10, weight=50) for _ in range(100)])
+            age=10, weight=50) for _ in range(10)])
         m.populate_map((1, 2), [Fa.Herbivore(
-            age=15, weight=30) for _ in range(10)])
+            age=15, weight=30) for _ in range(5)])
         for _ in range(10):
             m.annual_cycle()
