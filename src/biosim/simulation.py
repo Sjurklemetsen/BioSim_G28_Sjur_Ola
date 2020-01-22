@@ -437,15 +437,9 @@ if __name__ == '__main__':
                                             'omega': 0.3, 'F': 65,
                                             'DeltaPhiMax': 9.})
     sim.set_landscape_parameters('J', {'f_max': 700})
-<<<<<<< HEAD
     sim.simulate(num_years=25, vis_years=1, img_years=2000)
     sim.add_population(population=ini_carns)
     sim.simulate(num_years=25, vis_years=1, img_years=2000)
-=======
-    sim.simulate(num_years=70, vis_years=1, img_years=1)
-    sim.add_population(population=ini_carns)
-    sim.simulate(num_years=200, vis_years=1, img_years=1)
-    sim.make_movie()
->>>>>>> master
+
     plt.savefig('check_sim.pdf')
     input('Press ENTER')
