@@ -51,8 +51,12 @@ class BioSim:
         self.island_map = island_map
         self.map = Ma.Map(island_map)
         self.add_population(ini_pop)
-        self.ymax_animals = ymax_animals
         self._year = 0
+
+        if ymax_animals is None:
+            self.ymax_animals = 15000
+        else:
+            self.ymax_animals = ymax_animals
 
         if cmax_animals is None:
             self.cmax_animals = {'Herbivore': 100, 'Carnivore': 50}
@@ -204,7 +208,7 @@ class BioSim:
         self.ax_map.imshow(island_map, interpolation='nearest')
         self.ax_map.set_title('Geography')
 
-        axlg = self.fig.add_axes([0.03, 0.525, 0.1, 0.4])  # llx, lly, w, h
+        axlg = self.fig.add_axes([0.03, 0.525, 0.1, 0.4])
         axlg.axis('off')
         for ix, name in enumerate(('O', 'M', 'J',
                                    'S', 'D')):
@@ -215,9 +219,9 @@ class BioSim:
 
     def make_line_plot(self):
         """
-        Creates the herbivore and carnivore interactive plot, i.e. the graph in the
-        interactive graphics window showing the total number of herbivores on
-        the island.
+        Creates the herbivore and carnivore interactive plot, i.e. the graph
+        in the interactive graphics window showing the total number of
+         herbivores on the island.
         """
         if self.herbivore_line is None:
             herb_plot = self.ax_line.plot(np.arange(
@@ -356,7 +360,7 @@ class BioSim:
 
         if self.ax_line is None:
             self.ax_line = self.fig.add_subplot(2, 2, 2)
-            self.ax_line.set_ylim(0, 16000)
+            self.ax_line.set_ylim(0, self.ymax_animals)
         self.make_line_plot()
         self.ax_line.set_xlim(0, self.final_year + 1)
         self.ax_line.set_title('Populations')
@@ -428,14 +432,20 @@ if __name__ == '__main__':
                           for _ in range(40)]}]
     sim = BioSim(island_map=geogr, ini_pop=ini_herbs,
                  seed=123456)
-    sim.add_population(population=ini_carns)
     sim.set_animal_parameters('Herbivore', {'zeta': 3.2, 'xi': 1.8})
     sim.set_animal_parameters('Carnivore', {'a_half': 70, 'phi_age': 0.5,
                                             'omega': 0.3, 'F': 65,
                                             'DeltaPhiMax': 9.})
     sim.set_landscape_parameters('J', {'f_max': 700})
+<<<<<<< HEAD
     sim.simulate(num_years=25, vis_years=1, img_years=2000)
     sim.add_population(population=ini_carns)
     sim.simulate(num_years=25, vis_years=1, img_years=2000)
+=======
+    sim.simulate(num_years=70, vis_years=1, img_years=1)
+    sim.add_population(population=ini_carns)
+    sim.simulate(num_years=200, vis_years=1, img_years=1)
+    sim.make_movie()
+>>>>>>> master
     plt.savefig('check_sim.pdf')
     input('Press ENTER')
