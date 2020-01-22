@@ -184,14 +184,12 @@ class TestGeography:
         s = Geo.Savannah()
         m = Geo.Mountain()
         o = Geo.Ocean()
-        d = Geo.Desert()
         herbs = [Fa.Herbivore(weight=10) for _ in range(5)]
         j.populate_cell(herbs)
         o.populate_cell([Fa.Herbivore() for _ in range(10)])
         assert j.propensity_carn() == pytest.approx(2.7, 0.01)
         assert s.propensity_carn() == 1
         assert m.propensity_carn() == 0 and o.propensity_carn() == 0
-        assert d.propensity_carn() == j.propensity_carn()
 
     def test_check_migration(self):
         """
