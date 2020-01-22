@@ -3,9 +3,9 @@
 __author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
 __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
-from src.biosim import Fauna as Fa
-from src.biosim import Geography as Geo
-from src.biosim import Map as Ma
+from biosim import Fauna as Fa
+from biosim import Geography as Geo
+from biosim import Map as Ma
 import random as rd
 import pandas as pd
 import numpy as np
@@ -80,7 +80,6 @@ class BioSim:
         self.herb_density = None
         self.carn_density = None
         self.ax_animal_count = None
-        self.map_geo = None
         self.final_year = None
         self.herbivore_line = None
         self.carnivore_line = None

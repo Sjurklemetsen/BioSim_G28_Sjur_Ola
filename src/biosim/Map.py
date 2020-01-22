@@ -3,7 +3,7 @@
 __author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
 __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
-from src.biosim import Geography as Geo
+from biosim import Geography as Geo
 import random as rd
 import textwrap
 
@@ -191,40 +191,3 @@ class Map:
         for coord, land in self.island.items():
             land.age_weightloss()
             land.animals_die()
-
-
-if __name__ == "__main__":
-    area_type = '''\
-                    OOOOOOOOOOOOOOOOOOOOO
-                    OOOOOOOOSMMMMJJJJJJJO
-                    OSSSSSJJJJMMJJJJJJJOO
-                    OSSSSSSSSSMMJJJJJJOOO
-                    OSSSSSJJJJJJJJJJJJOOO
-                    OSSSSSJJJDDJJJSJJJOOO
-                    OSSJJJJJDDDJJJSSSSOOO
-                    OOSSSSJJJDDJJJSOOOOOO
-                    OSSSJJJJJDDJJJJJJJOOO
-                    OSSSSJJJJDDJJJJOOOOOO
-                    OOSSSSJJJJJJJJOOOOOOO
-                    OOOSSSSJJJJJJJOOOOOOO
-                    OOOOOOOOOOOOOOOOOOOOO'''
-    """m = Map(area_type)
-    m.populate_map((2, 8), [Carnivore(age=10, weight=50) for _ in range(1000)])
-    m.populate_map((2, 8), [Herbivore(age=15, weight=30) for _ in range(1000)])
-    print(m.island[1, 8].total_pop())
-    print(m.island[2, 8].total_pop())
-    print(m.island[3, 8].total_pop())
-    print(m.island[2, 9].total_pop())
-    print(m.island[2, 7].total_pop())
-    rd.seed(1)
-    m.annual_cycle()
-    print('\n')
-    print(m.island[1, 8].total_pop())
-    print(m.island[2, 8].total_pop())
-    print(m.island[3, 8].total_pop())
-    print(m.island[2, 9].total_pop())
-    print(m.island[2, 7].total_pop())
-    print('\n')
-    #print(m.island[2, 10].total_pop())
-    #print(m.island[2, 6].total_pop())
-    #print(m.island[4, 8].total_pop())"""

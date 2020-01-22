@@ -3,8 +3,8 @@
 __author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
 __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
-from src.biosim import Geography as Geo
-from src.biosim import Fauna as Fa
+from biosim import Geography as Geo
+from biosim import Fauna as Fa
 
 import random as rd
 import pytest
@@ -15,6 +15,52 @@ class TestGeography:
     Tests for the geography class where we work with the different
     landscapes.
     """
+
+    @pytest.fixture(autouse=True)
+    def setup_teardown(self):
+        p = {
+            "w_birth": 8.0,
+            "sigma_birth": 1.5,
+            "beta": 0.9,
+            "eta": 0.05,
+            "a_half": 40.0,
+            "phi_age": 0.2,
+            "w_half": 10.0,
+            "phi_weight": 0.1,
+            "mu": 0.25,
+            "landa": 1.0,
+            "gamma": 0.2,
+            "zeta": 3.5,
+            "xi": 1.2,
+            "omega": 0.4,
+            "F": 10.0,
+        }
+        d = {'f_max': 800}
+        e = {'f_max': 300, 'alpha': 0.3}
+        f = {
+            "w_birth": 6.0,
+            "sigma_birth": 1.0,
+            "beta": 0.75,
+            "eta": 0.125,
+            "a_half": 60.0,
+            "phi_age": 0.4,
+            "w_half": 4.0,
+            "phi_weight": 0.4,
+            "mu": 0.4,
+            "landa": 1.0,
+            "gamma": 0.8,
+            "zeta": 3.5,
+            "xi": 1.1,
+            "omega": 0.9,
+            "F": 50.0,
+            "DeltaPhiMax": 10.0
+        }
+        Fa.Carnivore.set_parameter(f)
+        Fa.Herbivore.set_parameter(p)
+        Geo.Jungle.set_parameter(d)
+        Geo.Savannah.set_parameter(e)
+        yield
+
     def test_constructor_default(self):
         """
         Tests constructor default parameters and the instance
