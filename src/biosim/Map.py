@@ -24,7 +24,7 @@ class Map:
         Method that creates a map as a dictionary with coordinates as keys and
         cell instance as values
         :param land_string: string: letter code for landscape type
-        :return: dict: location and
+        :return: dict: location and geography subclass instances
         """
         area_list = []
         for i in land_string:
@@ -57,7 +57,7 @@ class Map:
     def check_string(string):
         """
         Asserts value errors if the string input is not a valid island. Edges
-        must be ocean. letters in string must an allowed landscape. Rows must
+        must be ocean. letters in string must be allowed landscapes. Rows must
         have the same length.
         :param: string: map description
         :return: ValueError or nothing if string is valid
@@ -173,9 +173,9 @@ class Map:
     def annual_cycle(self):
         """
         An annual cycle on the map where every cell and animal on
-        the map goes through yearly changes
-        1) Fodder grow
-        2) Animal eat
+        the map goes through yearly changes in order:
+        1) Fodder grows
+        2) Animals eat
         3) Procreation
         4) Migration
         5) Aging

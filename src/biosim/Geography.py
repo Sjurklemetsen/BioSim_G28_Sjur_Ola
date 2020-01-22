@@ -10,7 +10,6 @@ import random as rd
 
 class BaseGeography:
     """
-<<<<<<< HEAD
     A class that instantiates a cell with area type Ocean, Mountain, Desert,
     Savannah or Jungle. Area types have different qualities. The methods in
     this class and subclass describe how the animals inside a cell eat, migrate
