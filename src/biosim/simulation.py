@@ -76,8 +76,8 @@ class BioSim:
         self.ax_animal_count = None
         self.map_geo = None
         self.final_year = None
-        self.carn_y = []
-        self.herb_y = []
+        self.herbivore_line = None
+        self.carnivore_line = None
 
     @staticmethod
     def set_animal_parameters(species, params):
@@ -211,16 +211,51 @@ class BioSim:
                                          facecolor=color_code[name[0]]))
             axlg.text(0.35, ix * 0.2, name, transform=axlg.transAxes)
 
+    def make_line_plot(self):
+        """
+        Creates the herbivore and carnivore interactive plot, i.e. the graph in the
+        interactive graphics window showing the total number of herbivores on
+        the island.
+        """
+        if self.herbivore_line is None:
+            herb_plot = self.ax_line.plot(np.arange(
+                0, self.final_year), np.full(self.final_year, np.nan))
+            self.herbivore_line = herb_plot[0]
+        else:
+            x, y = self.herbivore_line.get_data()
+            new_x = np.arange(x[-1] + 1, self.final_year)
+            if len(new_x) > 0:
+                new_y = np.full(new_x.shape, np.nan)
+                self.herbivore_line.set_data(
+                    np.hstack((x, new_x)), np.hstack((y, new_y)))
+
+        if self.carnivore_line is None:
+            carnivore_plot = self.ax_line.plot(np.arange(
+                0, self.final_year), np.full(self.final_year, np.nan))
+            self.carnivore_line = carnivore_plot[0]
+        else:
+            x, y = self.carnivore_line.get_data()
+            new_x = np.arange(x[-1] + 1, self.final_year)
+            if len(new_x) > 0:
+                new_y = np.full(new_x.shape, np.nan)
+                self.carnivore_line.set_data(
+                    np.hstack((x, new_x)), np.hstack((y, new_y)))
+
     def update_population_plot(self):
         """
-        Updates population plot
+        A method that updates the population plot with new values
+        :return:
         """
+
         n_herb, n_carn = self.num_animals_per_species.values()
-        self.herb_y.append(n_herb)
-        self.carn_y.append(n_carn)
-        self.ax_line.plot(range(self.year + 1), self.herb_y,
-                          'g', self.carn_y, 'r')
-        self.ax_line.legend(['Herbivore', 'Carnivore'])
+
+        herb_y = self.herbivore_line.get_ydata()
+        herb_y[self.year] = n_herb
+        self.herbivore_line.set_ydata(herb_y)
+
+        carn_y = self.carnivore_line.get_ydata()
+        carn_y[self.year] = n_carn
+        self.carnivore_line.set_ydata(carn_y)
 
     def heat_map_herbivore(self):
         """
@@ -278,9 +313,6 @@ class BioSim:
 
         while self._year < self.final_year:
 
-            if self.num_animals == 0:
-                break
-
             if self._year % vis_years == 0:
                 self.update_all()
 
@@ -321,11 +353,11 @@ class BioSim:
             self.heat_map_carnivore()
 
         if self.ax_line is None:
-            self.ax_line = self.fig.add_subplot(222)
-            if self.ymax_animals is not None:
-                self.ax_line.set_ylim(0, self.ymax_animals)
-            self.ax_line.set_xlim(0, self.final_year + 1)
-            self.ax_line.set_title('Populations')
+            self.ax_line = self.fig.add_subplot(2, 2, 2)
+            self.ax_line.set_ylim(0, 16000)
+        self.make_line_plot()
+        self.ax_line.set_xlim(0, self.final_year + 1)
+        self.ax_line.set_title('Populations')
 
     def save_graphic(self):
         """
@@ -400,13 +432,8 @@ if __name__ == '__main__':
                                             'omega': 0.3, 'F': 65,
                                             'DeltaPhiMax': 9.})
     sim.set_landscape_parameters('J', {'f_max': 700})
-    sim.simulate(num_years=50, vis_years=1, img_years=2000)
-    print(sim.num_animals_per_species['Herbivore'])
-    print(sim.num_animals_per_species['Carnivore'])
-
+    sim.simulate(num_years=100, vis_years=1, img_years=2000)
     sim.add_population(population=ini_carns)
-    sim.simulate(num_years=50, vis_years=1, img_years=2000)
-    print(sim.num_animals_per_species['Herbivore'])
-    print(sim.num_animals_per_species['Carnivore'])
+    sim.simulate(num_years=100, vis_years=1, img_years=2000)
     plt.savefig('check_sim.pdf')
     input('Press ENTER')
