@@ -4,6 +4,8 @@ __author__ = 'Sjur Spjeld Klemetsen, Ola Flesche Hellenes'
 __email__ = 'sjkl@nmbu.no, olhellen@nmbu.no'
 
 from biosim import Geography as Geo
+from biosim import Fauna as Fa
+
 import random as rd
 import textwrap
 
@@ -121,15 +123,19 @@ class Map:
                       (position[0], position[1] - 1)]  # W
         return neighbours
 
-    def migrate_to(self, position):
+    def migrate_to(self, position, animal):
         """
         Method that Calculates which neighbour cell the animal migrates to
         :return: tuple
         """
         neigh = self.find_neighbor_cells(position)
         propensity_list = []
+
         for cell in neigh:
-            propensity_list.append(self.island[cell].propensity_herb())
+            if isinstance(animal, Fa.Herbivore):
+                propensity_list.append(self.island[cell].propensity_herb())
+            else:
+                propensity_list.append(self.island[cell].propensity_carn())
         if sum(propensity_list) == 0:
             return position
 
@@ -161,7 +167,7 @@ class Map:
         for loc, cell in self.island.items():
             moving_animals = cell.check_migration()
             for animal in moving_animals:
-                new_cell = self.migrate_to(loc)
+                new_cell = self.migrate_to(loc, animal)
                 self.island[new_cell].add_animal(animal)
                 animal.animal_moved = True
             cell.remove_animals(moving_animals)
