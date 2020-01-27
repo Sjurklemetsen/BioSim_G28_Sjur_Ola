@@ -126,7 +126,7 @@ class BaseGeography:
         else:
             e_k = self.get_herb_weight() / ((self.carnivore_pop + 1) *
                                             Fa.Carnivore().p['F'])
-            return math.exp(Fa.Herbivore().p['landa'] * e_k)
+            return math.exp(Fa.Carnivore().p['landa'] * e_k)
 
     def check_migration(self):
         """
@@ -186,7 +186,8 @@ class BaseGeography:
         self.sort_animal_fitness(self.pop_carnivores)
         self.sort_animal_fitness(self.pop_herbivores)
         for carnivore in self.pop_carnivores:
-            self.pop_herbivores = carnivore.eat(self.pop_herbivores)
+            pop_herbivores = carnivore.eat(self.pop_herbivores)
+            self.pop_herbivores = pop_herbivores
 
     def get_herb_weight(self):
         """
